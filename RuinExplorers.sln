@@ -1,0 +1,50 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuinExplorers", "RuinExplorers\RuinExplorers\RuinExplorers.csproj", "{8FC18B0B-6A70-424C-88A9-3D4759E50A6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuinExplorersContent", "RuinExplorers\RuinExplorersContent\RuinExplorersContent.contentproj", "{DEA3CCB9-B019-439A-A6DC-E76EE6929FAD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapEditor", "MapEditor\MapEditor\MapEditor.csproj", "{EDF2C9EB-5641-4BE4-9409-5FC7AEC1EBDE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapEditorContent", "MapEditor\MapEditorContent\MapEditorContent.contentproj", "{6782B0FB-1534-4B8B-A359-93CDA8B284B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CharacterEditor", "CharacterEditor\CharacterEditor\CharacterEditor.csproj", "{07CCC11B-844E-4F77-BBF0-3159F3446F79}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "CharacterEditorContent", "CharacterEditor\CharacterEditorContent\CharacterEditorContent.contentproj", "{6DE5649D-A237-49E3-9BA0-B49239C568BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextLibrary", "TextLibrary\TextLibrary.csproj", "{B21FA8E9-3D89-46D2-92F1-AABB0FE42172}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8FC18B0B-6A70-424C-88A9-3D4759E50A6A}.Debug|x86.ActiveCfg = Debug|x86
+		{8FC18B0B-6A70-424C-88A9-3D4759E50A6A}.Debug|x86.Build.0 = Debug|x86
+		{8FC18B0B-6A70-424C-88A9-3D4759E50A6A}.Release|x86.ActiveCfg = Release|x86
+		{8FC18B0B-6A70-424C-88A9-3D4759E50A6A}.Release|x86.Build.0 = Release|x86
+		{DEA3CCB9-B019-439A-A6DC-E76EE6929FAD}.Debug|x86.ActiveCfg = Debug|x86
+		{DEA3CCB9-B019-439A-A6DC-E76EE6929FAD}.Release|x86.ActiveCfg = Release|x86
+		{EDF2C9EB-5641-4BE4-9409-5FC7AEC1EBDE}.Debug|x86.ActiveCfg = Debug|x86
+		{EDF2C9EB-5641-4BE4-9409-5FC7AEC1EBDE}.Debug|x86.Build.0 = Debug|x86
+		{EDF2C9EB-5641-4BE4-9409-5FC7AEC1EBDE}.Release|x86.ActiveCfg = Release|x86
+		{EDF2C9EB-5641-4BE4-9409-5FC7AEC1EBDE}.Release|x86.Build.0 = Release|x86
+		{6782B0FB-1534-4B8B-A359-93CDA8B284B2}.Debug|x86.ActiveCfg = Debug|x86
+		{6782B0FB-1534-4B8B-A359-93CDA8B284B2}.Release|x86.ActiveCfg = Release|x86
+		{07CCC11B-844E-4F77-BBF0-3159F3446F79}.Debug|x86.ActiveCfg = Debug|x86
+		{07CCC11B-844E-4F77-BBF0-3159F3446F79}.Debug|x86.Build.0 = Debug|x86
+		{07CCC11B-844E-4F77-BBF0-3159F3446F79}.Release|x86.ActiveCfg = Release|x86
+		{07CCC11B-844E-4F77-BBF0-3159F3446F79}.Release|x86.Build.0 = Release|x86
+		{6DE5649D-A237-49E3-9BA0-B49239C568BF}.Debug|x86.ActiveCfg = Debug|x86
+		{6DE5649D-A237-49E3-9BA0-B49239C568BF}.Release|x86.ActiveCfg = Release|x86
+		{B21FA8E9-3D89-46D2-92F1-AABB0FE42172}.Debug|x86.ActiveCfg = Debug|x86
+		{B21FA8E9-3D89-46D2-92F1-AABB0FE42172}.Debug|x86.Build.0 = Debug|x86
+		{B21FA8E9-3D89-46D2-92F1-AABB0FE42172}.Release|x86.ActiveCfg = Release|x86
+		{B21FA8E9-3D89-46D2-92F1-AABB0FE42172}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
