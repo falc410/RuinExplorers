@@ -149,7 +149,8 @@ namespace CharacterEditor
 
             base.Draw(gameTime);
         }
-
+        #region Custom Draw Methods
+        #endregion
         // Draws the character on screen by iterating through all parts
         private void DrawCharacter(Vector2 _location, float _scale, int _face, int _frameIndex, bool _preview, float _alpha)
         {
