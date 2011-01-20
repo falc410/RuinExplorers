@@ -119,7 +119,7 @@ namespace CharacterEditor
                 this.Exit();
 
             mouseState = Mouse.GetState();
-
+            // TODO: add in missing fields
             if (mouseState.LeftButton == ButtonState.Pressed)
             {
 
