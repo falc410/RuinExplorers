@@ -56,18 +56,18 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="gfx\head.png">
-      <Name>head</Name>
+    <Compile Include="gfx\head1.png">
+      <Name>head1</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="gfx\legs.png">
-      <Name>legs</Name>
+    <Compile Include="gfx\legs1.png">
+      <Name>legs1</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="gfx\torso.png">
-      <Name>torso</Name>
+    <Compile Include="gfx\torso1.png">
+      <Name>torso1</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
@@ -80,15 +80,27 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="gfx\arrows.png">
-      <Name>arrows</Name>
+    <Compile Include="gfx\folder_open_icon.png">
+      <Name>folder_open_icon</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="gfx\folder_open_icon.png">
-      <Name>folder_open_icon</Name>
+    <Compile Include="gfx\weapon1.png">
+      <Name>weapon1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="gfx\downarrow.png">
+      <Name>downarrow</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="gfx\uparrow.png">
+      <Name>uparrow</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
