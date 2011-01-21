@@ -46,9 +46,12 @@ namespace CharacterEditor
 		int selectedAnimation = 0;
 		int selectedKeyFrame = 0;
 
+		int currentKeyFrame = 0;
+		float currentFrame = 0;
 		int frameScroll;
 		int animScroll;
 		int keyFrameScroll;
+		bool playing = false;
 
 		enum EditingMode
 		{
@@ -183,6 +186,29 @@ namespace CharacterEditor
 
 			UpdateKeys();
 
+			Animation animation = characterDefinition.Animation[selectedAnimation];
+			KeyFrame keyFrame = animation.KeyFrames[currentKeyFrame];
+
+			if (playing)
+			{
+				currentFrame += (float)gameTime.ElapsedGameTime.TotalSeconds * 30.0f;
+
+				if (currentFrame > keyFrame.Duration)
+				{
+					currentFrame -= keyFrame.Duration;
+					currentKeyFrame++;
+
+					if (currentKeyFrame >= animation.KeyFrames.Length)
+						currentKeyFrame = 0;
+					keyFrame = animation.KeyFrames[currentKeyFrame];
+				}
+			}
+			else
+				currentKeyFrame = selectedKeyFrame;
+
+			if (keyFrame.FrameReference < 0)
+				currentKeyFrame = 0;            
+
 			base.Update(gameTime);
 		}
 
@@ -196,28 +222,55 @@ namespace CharacterEditor
 			
 			spriteBatch.Begin();
 
-            //draw dark-blue background rectangle for animation and keyframe list
-            spriteBatch.Draw(nullTexture, new Rectangle(0, 0, 200, 450), new Color(new
-                Vector4(0.0f, 0.0f, 0.0f, 0.5f)));
+			//draw dark-blue background rectangle for animation and keyframe list
+			spriteBatch.Draw(nullTexture, new Rectangle(0, 0, 200, 450), new Color(new
+				Vector4(0.0f, 0.0f, 0.0f, 0.5f)));
 			//draw dark-blue background rectangle for part and frame list
 			spriteBatch.Draw(nullTexture, new Rectangle(590, 0, 300, 600), new Color(new
+				Vector4(0.0f, 0.0f, 0.0f, 0.5f)));
+			// what is this for? red bar at the bottom?
+			spriteBatch.Draw(nullTexture, new Rectangle(300, 450, 200, 5), new Color(new
+	 Vector4(1.0f, 0.0f, 0.0f, 0.5f)));
+			// draw background rectangle for save and load buttons
+			spriteBatch.Draw(nullTexture, new Rectangle(200, 0, 150, 50), new Color(new
 				Vector4(0.0f, 0.0f, 0.0f, 0.5f)));
 
 			spriteBatch.End();
 
-            // draw onionskin effect - previews frame next to currently selected frame
-            // so we draw our character thrice on the screen (twice with low alpha)
-            if (selectedFrame > 0)
-                DrawCharacter(new Vector2(400f, 450f), 2f, FACE_RIGHT, selectedFrame - 1, false, 0.2f);
-            if (selectedFrame < characterDefinition.Frames.Length - 1)
-                DrawCharacter(new Vector2(400f, 450f), 2f, FACE_RIGHT, selectedFrame + 1, false, 0.2f);
-            DrawCharacter(new Vector2(400f, 450f), 2f, FACE_RIGHT, selectedFrame, false, 1.0f);
-            
+			// draw onionskin effect - previews frame next to currently selected frame
+			// so we draw our character thrice on the screen (twice with low alpha)
+			if (selectedFrame > 0)
+				DrawCharacter(new Vector2(400f, 450f), 2f, FACE_RIGHT, selectedFrame - 1, false, 0.2f);
+			if (selectedFrame < characterDefinition.Frames.Length - 1)
+				DrawCharacter(new Vector2(400f, 450f), 2f, FACE_RIGHT, selectedFrame + 1, false, 0.2f);
+			DrawCharacter(new Vector2(400f, 450f), 2f, FACE_RIGHT, selectedFrame, false, 1.0f);
+			
 			DrawPalette();
 			DrawPartList();
 			DrawFramesList();
-            DrawAnimationList();
-            DrawKeyFrameList();
+			DrawAnimationList();
+			DrawKeyFrameList();
+
+			int fref = characterDefinition.Animation[selectedAnimation].KeyFrames[currentKeyFrame].FrameReference;
+			if (fref < 0)
+				fref = 0;
+
+			DrawCharacter(new Vector2(500f, 100f), 0.5f, FACE_LEFT, fref, true, 1.0f);
+			if (playing)
+			{
+				if (text.DrawClickText(480, 100, "stop", mouseState.X, mouseState.Y, mouseClick))
+					playing = false;
+			}
+			else
+			{
+				if (text.DrawClickText(480, 100, "play", mouseState.X, mouseState.Y, mouseClick))
+					playing = true;
+			}
+
+			if (DrawIconAsButton(245, 5, saveIcon, mouseState.X, mouseState.Y, mouseClick))
+				characterDefinition.Write();
+			if (DrawIconAsButton(205, 5, openFolderIcon, mouseState.X, mouseState.Y, mouseClick))
+				characterDefinition.Read();
 
 			mouseClick = false;
 
@@ -323,7 +376,7 @@ namespace CharacterEditor
 		}
 
 		// Used to draw a texture as a clickable button
-		private bool DrawButton(int x, int y, Texture2D buttonTexture, int mouseX, int mouseY, bool mouseClick)
+		private bool DrawScrollButton(int x, int y, Texture2D buttonTexture, int mouseX, int mouseY, bool mouseClick)
 		{
 			bool r = false;
 			Rectangle sourceRect = new Rectangle(0, 0, 64, 35);
@@ -345,6 +398,31 @@ namespace CharacterEditor
 			return r;
 
 		}
+
+		// Used to draw a texture as a clickable button
+		private bool DrawIconAsButton(int x, int y, Texture2D buttonTexture, int mouseX, int mouseY, bool mouseClick)
+		{
+			bool r = false;
+			Rectangle destinationRect = new Rectangle(x, y, 32, 32);
+
+			if (destinationRect.Contains(mouseX, mouseY))
+			{
+				destinationRect.X -= 1;
+				destinationRect.Y -= 1;
+				destinationRect.Width += 2;
+				destinationRect.Height += 2;
+				if (mouseClick)
+					r = true;
+			}
+			spriteBatch.Begin();
+			spriteBatch.Draw(buttonTexture, destinationRect, Color.White);
+			spriteBatch.End();
+
+			return r;
+
+		}
+
+
 		
 		// draw icon palette
 		// TODO: either modify this or our source spritesheet
@@ -436,13 +514,13 @@ namespace CharacterEditor
 					text.color = Color.Lime;
 					text.DrawText(600, y, i.ToString() + ": " + line);
 					// TODO: Fix DrawButton Function!
-					if (DrawButton(675,y,upArrowTexture,mouseState.X,mouseState.Y,mouseClick))
+					if (DrawScrollButton(675,y,upArrowTexture,mouseState.X,mouseState.Y,mouseClick))
 					{
 						SwapParts(selectedPart, selectedPart - 1);
 						if(selectedPart > 0)
 							selectedPart--;
 					}
-					if (DrawButton(705,5+y,downArrowTexture,mouseState.X,mouseState.Y,mouseClick))
+					if (DrawScrollButton(705,5+y,downArrowTexture,mouseState.X,mouseState.Y,mouseClick))
 					{
 						SwapParts(selectedPart, selectedPart + 1);
 						if (selectedPart < characterDefinition.Frames[selectedFrame].Parts.Length - 1)
@@ -515,104 +593,104 @@ namespace CharacterEditor
 					}
 				}
 			}
-            //draw arrow buttons to scroll up or down the list
-			if (DrawButton(770, 280, upArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == ButtonState.Pressed)) && frameScroll > 0 )
+			//draw arrow buttons to scroll up or down the list
+			if (DrawScrollButton(770, 280, upArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == ButtonState.Pressed)) && frameScroll > 0 )
 				frameScroll--;
-			if (DrawButton(770, 570, downArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == ButtonState.Pressed)) && frameScroll < characterDefinition.Frames.Length - 20)
+			if (DrawScrollButton(770, 570, downArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == ButtonState.Pressed)) && frameScroll < characterDefinition.Frames.Length - 20)
 				frameScroll++;
 		}
-       
-        // draws the animation list in the upper left corner. is scroll and editable
-        private void DrawAnimationList()
-        {
-            for (int i = animScroll; i < animScroll + 15; i++)
-            {
-                if (i < characterDefinition.Animation.Length)
-                {
-                    int y = (i - animScroll) * 15 + 5;
-                    if (i == selectedAnimation)
-                    {
-                        text.color = Color.Lime;
-                        text.DrawText(5, y, i.ToString() + ": " + characterDefinition.Animation[i].Name + ((editmode == EditingMode.AnimationName) ? "*" : ""));
-                    }
-                    else
-                    {
-                        if (text.DrawClickText(5,y,i.ToString() + ": " + characterDefinition.Animation[i].Name,mouseState.X,mouseState.Y,mouseClick))
-                        {
-                            selectedAnimation = i;
-                            editmode = EditingMode.AnimationName;
-                        }
-                    }
-                }
-            }
+	   
+		// draws the animation list in the upper left corner. is scroll and editable
+		private void DrawAnimationList()
+		{
+			for (int i = animScroll; i < animScroll + 15; i++)
+			{
+				if (i < characterDefinition.Animation.Length)
+				{
+					int y = (i - animScroll) * 15 + 5;
+					if (i == selectedAnimation)
+					{
+						text.color = Color.Lime;
+						text.DrawText(5, y, i.ToString() + ": " + characterDefinition.Animation[i].Name + ((editmode == EditingMode.AnimationName) ? "*" : ""));
+					}
+					else
+					{
+						if (text.DrawClickText(5,y,i.ToString() + ": " + characterDefinition.Animation[i].Name,mouseState.X,mouseState.Y,mouseClick))
+						{
+							selectedAnimation = i;
+							editmode = EditingMode.AnimationName;
+						}
+					}
+				}
+			}
 
-            //draw scroll buttons (arrows)
-            if (DrawButton(170, 5, upArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == ButtonState.Pressed)) && animScroll > 0)
-                animScroll--;
-            if (DrawButton(170, 200, downArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == ButtonState.Pressed)) && animScroll < characterDefinition.Animation.Length - 15)
-                animScroll++;
-        }
+			//draw scroll buttons (arrows)
+			if (DrawScrollButton(170, 5, upArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == ButtonState.Pressed)) && animScroll > 0)
+				animScroll--;
+			if (DrawScrollButton(170, 200, downArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == ButtonState.Pressed)) && animScroll < characterDefinition.Animation.Length - 15)
+				animScroll++;
+		}
 
-        //draws the keyframe list in the lower left corner
-        private void DrawKeyFrameList()
-        {
-            for (int i = keyFrameScroll; i < keyFrameScroll + 13; i++)
-            {
-                Animation animation = characterDefinition.Animation[selectedAnimation];
+		//draws the keyframe list in the lower left corner
+		private void DrawKeyFrameList()
+		{
+			for (int i = keyFrameScroll; i < keyFrameScroll + 13; i++)
+			{
+				Animation animation = characterDefinition.Animation[selectedAnimation];
 
-                if (i < animation.KeyFrames.Length)
-                {
-                    int y = (i - keyFrameScroll) * 15 + 250;
-                    int frameReference = animation.KeyFrames[i].FrameReference;
-                    string name = "";
+				if (i < animation.KeyFrames.Length)
+				{
+					int y = (i - keyFrameScroll) * 15 + 250;
+					int frameReference = animation.KeyFrames[i].FrameReference;
+					string name = "";
 
-                    if (frameReference > -1)
-                        name = characterDefinition.Frames[frameReference].Name;
+					if (frameReference > -1)
+						name = characterDefinition.Frames[frameReference].Name;
 
-                    if (i == selectedKeyFrame)
-                    {
-                        text.color = Color.Lime;
-                        text.DrawText(5, y, i.ToString() + ": " + name);
-                    }
-                    else
-                    {
-                        if (text.DrawClickText(5, y, i.ToString() + ": " + name, mouseState.X, mouseState.Y, mouseClick))
-                            selectedKeyFrame = i;
-                    }
+					if (i == selectedKeyFrame)
+					{
+						text.color = Color.Lime;
+						text.DrawText(5, y, i.ToString() + ": " + name);
+					}
+					else
+					{
+						if (text.DrawClickText(5, y, i.ToString() + ": " + name, mouseState.X, mouseState.Y, mouseClick))
+							selectedKeyFrame = i;
+					}
 
-                    if (frameReference > -1)
-                    {
-                        if (text.DrawClickText(110,y,"-",mouseState.X,mouseState.Y,mouseClick))
-                        {
-                            animation.KeyFrames[i].Duration--;
-                            // did we drop the duration to 0? then delete keyframe and move all following one row up
-                            if (animation.KeyFrames[i].Duration <= 0)
-                            {
-                                for (int j = i; j < animation.KeyFrames.Length - 1; j++)
-                                {
-                                    KeyFrame keyFrame = animation.KeyFrames[j];
-                                    keyFrame.FrameReference = animation.KeyFrames[j + 1].FrameReference;
-                                    keyFrame.Duration = animation.KeyFrames[j + 1].Duration;
-                                }
-                                animation.KeyFrames[animation.KeyFrames.Length - 1].FrameReference = -1;
-                            }
-                        }
-                        //draw KeyFrame Duration
-                        text.DrawText(125, y, animation.KeyFrames[i].Duration.ToString());
-                        
-                        //add a clickable + sign to increase duration
-                        if (text.DrawClickText(140, y, "+", mouseState.X, mouseState.Y, mouseClick))
-                            animation.KeyFrames[i].Duration++;
-                    }
-                }
-            }
+					if (frameReference > -1)
+					{
+						if (text.DrawClickText(110,y,"-",mouseState.X,mouseState.Y,mouseClick))
+						{
+							animation.KeyFrames[i].Duration--;
+							// did we drop the duration to 0? then delete keyframe and move all following one row up
+							if (animation.KeyFrames[i].Duration <= 0)
+							{
+								for (int j = i; j < animation.KeyFrames.Length - 1; j++)
+								{
+									KeyFrame keyFrame = animation.KeyFrames[j];
+									keyFrame.FrameReference = animation.KeyFrames[j + 1].FrameReference;
+									keyFrame.Duration = animation.KeyFrames[j + 1].Duration;
+								}
+								animation.KeyFrames[animation.KeyFrames.Length - 1].FrameReference = -1;
+							}
+						}
+						//draw KeyFrame Duration
+						text.DrawText(125, y, animation.KeyFrames[i].Duration.ToString());
+						
+						//add a clickable + sign to increase duration
+						if (text.DrawClickText(140, y, "+", mouseState.X, mouseState.Y, mouseClick))
+							animation.KeyFrames[i].Duration++;
+					}
+				}
+			}
 
-            //draw scroll buttons
-            if (DrawButton(170, 250, upArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == ButtonState.Pressed)) && keyFrameScroll > 0)
-                keyFrameScroll--;
-            if (DrawButton(170, 410, downArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == ButtonState.Pressed)) && keyFrameScroll < characterDefinition.Animation[selectedAnimation].KeyFrames.Length - 13)
-                keyFrameScroll++;
-        }
+			//draw scroll buttons
+			if (DrawScrollButton(170, 250, upArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == ButtonState.Pressed)) && keyFrameScroll > 0)
+				keyFrameScroll--;
+			if (DrawScrollButton(170, 410, downArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == ButtonState.Pressed)) && keyFrameScroll < characterDefinition.Animation[selectedAnimation].KeyFrames.Length - 13)
+				keyFrameScroll++;
+		}
 		#endregion
 
 		#region Helper Methods

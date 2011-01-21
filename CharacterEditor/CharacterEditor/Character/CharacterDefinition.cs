@@ -41,5 +41,15 @@ namespace CharacterEditor.Character
         {
             get { return frames; }
         }
+
+        internal void Read()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void Write()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
