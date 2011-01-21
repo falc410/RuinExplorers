@@ -186,7 +186,7 @@ namespace CharacterEditor
 
 			UpdateKeys();
 
-			Animation animation = characterDefinition.Animation[selectedAnimation];
+			Animation animation = characterDefinition.Animations[selectedAnimation];
 			KeyFrame keyFrame = animation.KeyFrames[currentKeyFrame];
 
 			if (playing)
@@ -251,7 +251,7 @@ namespace CharacterEditor
 			DrawAnimationList();
 			DrawKeyFrameList();
 
-			int fref = characterDefinition.Animation[selectedAnimation].KeyFrames[currentKeyFrame].FrameReference;
+			int fref = characterDefinition.Animations[selectedAnimation].KeyFrames[currentKeyFrame].FrameReference;
 			if (fref < 0)
 				fref = 0;
 
@@ -271,6 +271,18 @@ namespace CharacterEditor
 				characterDefinition.Write();
 			if (DrawIconAsButton(205, 5, openFolderIcon, mouseState.X, mouseState.Y, mouseClick))
 				characterDefinition.Read();
+
+            if (editmode == EditingMode.PathName)
+            {
+                text.color = Color.Lime;
+
+                text.DrawText(270, 15, characterDefinition.Path + "*");
+            }
+            else
+            {
+                if (text.DrawClickText(280, 15, characterDefinition.Path, mouseState.X, mouseState.Y, mouseClick))
+                    editmode = EditingMode.PathName;
+            }
 
 			mouseClick = false;
 
@@ -562,7 +574,7 @@ namespace CharacterEditor
 						// clicking the (a) will add a reference of this frame to the selected animation
 						if (text.DrawClickText(720,y,"(a)",mouseState.X,mouseState.Y,mouseClick))
 						{
-							Animation animation = characterDefinition.Animation[selectedAnimation];
+							Animation animation = characterDefinition.Animations[selectedAnimation];
 
 							for (int j = 0; j < animation.KeyFrames.Length; j++)
 							{
@@ -605,17 +617,17 @@ namespace CharacterEditor
 		{
 			for (int i = animScroll; i < animScroll + 15; i++)
 			{
-				if (i < characterDefinition.Animation.Length)
+				if (i < characterDefinition.Animations.Length)
 				{
 					int y = (i - animScroll) * 15 + 5;
 					if (i == selectedAnimation)
 					{
 						text.color = Color.Lime;
-						text.DrawText(5, y, i.ToString() + ": " + characterDefinition.Animation[i].Name + ((editmode == EditingMode.AnimationName) ? "*" : ""));
+						text.DrawText(5, y, i.ToString() + ": " + characterDefinition.Animations[i].Name + ((editmode == EditingMode.AnimationName) ? "*" : ""));
 					}
 					else
 					{
-						if (text.DrawClickText(5,y,i.ToString() + ": " + characterDefinition.Animation[i].Name,mouseState.X,mouseState.Y,mouseClick))
+						if (text.DrawClickText(5,y,i.ToString() + ": " + characterDefinition.Animations[i].Name,mouseState.X,mouseState.Y,mouseClick))
 						{
 							selectedAnimation = i;
 							editmode = EditingMode.AnimationName;
@@ -627,7 +639,7 @@ namespace CharacterEditor
 			//draw scroll buttons (arrows)
 			if (DrawScrollButton(170, 5, upArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == ButtonState.Pressed)) && animScroll > 0)
 				animScroll--;
-			if (DrawScrollButton(170, 200, downArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == ButtonState.Pressed)) && animScroll < characterDefinition.Animation.Length - 15)
+			if (DrawScrollButton(170, 200, downArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == ButtonState.Pressed)) && animScroll < characterDefinition.Animations.Length - 15)
 				animScroll++;
 		}
 
@@ -636,7 +648,7 @@ namespace CharacterEditor
 		{
 			for (int i = keyFrameScroll; i < keyFrameScroll + 13; i++)
 			{
-				Animation animation = characterDefinition.Animation[selectedAnimation];
+				Animation animation = characterDefinition.Animations[selectedAnimation];
 
 				if (i < animation.KeyFrames.Length)
 				{
@@ -688,7 +700,7 @@ namespace CharacterEditor
 			//draw scroll buttons
 			if (DrawScrollButton(170, 250, upArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == ButtonState.Pressed)) && keyFrameScroll > 0)
 				keyFrameScroll--;
-			if (DrawScrollButton(170, 410, downArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == ButtonState.Pressed)) && keyFrameScroll < characterDefinition.Animation[selectedAnimation].KeyFrames.Length - 13)
+			if (DrawScrollButton(170, 410, downArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == ButtonState.Pressed)) && keyFrameScroll < characterDefinition.Animations[selectedAnimation].KeyFrames.Length - 13)
 				keyFrameScroll++;
 		}
 		#endregion
@@ -766,7 +778,7 @@ namespace CharacterEditor
 				case EditingMode.None:
 					break;
 				case EditingMode.AnimationName:
-					t = characterDefinition.Animation[selectedAnimation].Name;
+					t = characterDefinition.Animations[selectedAnimation].Name;
 					break;
 				case EditingMode.FrameName:
 					t = characterDefinition.Frames[selectedFrame].Name;
@@ -797,7 +809,7 @@ namespace CharacterEditor
 				case EditingMode.None:
 					break;
 				case EditingMode.AnimationName:
-					characterDefinition.Animation[selectedAnimation].Name = t;
+					characterDefinition.Animations[selectedAnimation].Name = t;
 					break;
 				case EditingMode.FrameName:
 					characterDefinition.Frames[selectedFrame].Name = t;
