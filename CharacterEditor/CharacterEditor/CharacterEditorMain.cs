@@ -46,9 +46,26 @@ namespace CharacterEditor
 		int selectedAnimation = 0;
 		int selectedKeyFrame = 0;
 
+		int frameScroll;
+		int animScroll;
+		int keyFrameScroll;
+
+		enum EditingMode
+		{
+			None,
+			FrameName,
+			AnimationName,
+			PathName
+		}
+
+		EditingMode editmode = EditingMode.None;
+
 		MouseState mouseState;
 		MouseState previousMouseState;
 		bool mouseClick = false;
+
+		KeyboardState keyBoardState;
+		KeyboardState previousKeyBoardState;
 
 		#endregion
 
@@ -164,6 +181,8 @@ namespace CharacterEditor
 
 			previousMouseState = mouseState;
 
+			UpdateKeys();
+
 			base.Update(gameTime);
 		}
 
@@ -177,17 +196,28 @@ namespace CharacterEditor
 			
 			spriteBatch.Begin();
 
-			//draw dark-blue background rectangle for part list
+            //draw dark-blue background rectangle for animation and keyframe list
+            spriteBatch.Draw(nullTexture, new Rectangle(0, 0, 200, 450), new Color(new
+                Vector4(0.0f, 0.0f, 0.0f, 0.5f)));
+			//draw dark-blue background rectangle for part and frame list
 			spriteBatch.Draw(nullTexture, new Rectangle(590, 0, 300, 600), new Color(new
 				Vector4(0.0f, 0.0f, 0.0f, 0.5f)));
 
 			spriteBatch.End();
 
-
-			DrawCharacter(new Vector2(400f, 450f), 2f, FACE_RIGHT, selectedFrame, false, 1.0f);
-
+            // draw onionskin effect - previews frame next to currently selected frame
+            // so we draw our character thrice on the screen (twice with low alpha)
+            if (selectedFrame > 0)
+                DrawCharacter(new Vector2(400f, 450f), 2f, FACE_RIGHT, selectedFrame - 1, false, 0.2f);
+            if (selectedFrame < characterDefinition.Frames.Length - 1)
+                DrawCharacter(new Vector2(400f, 450f), 2f, FACE_RIGHT, selectedFrame + 1, false, 0.2f);
+            DrawCharacter(new Vector2(400f, 450f), 2f, FACE_RIGHT, selectedFrame, false, 1.0f);
+            
 			DrawPalette();
 			DrawPartList();
+			DrawFramesList();
+            DrawAnimationList();
+            DrawKeyFrameList();
 
 			mouseClick = false;
 
@@ -378,8 +408,7 @@ namespace CharacterEditor
 			}
 			spriteBatch.End();
 		}
-
-
+		
 		private void DrawPartList()
 		{
 			for (int i = 0; i < characterDefinition.Frames[selectedFrame].Parts.Length; i++)
@@ -438,8 +467,156 @@ namespace CharacterEditor
 				}
 			}
 		}
+		
+		// draws the framelist and enables creating / renaming of frames
+		private void DrawFramesList()
+		{
+			for (int i = frameScroll; i < frameScroll + 20; i++)
+			{
+				if (i < characterDefinition.Frames.Length)
+				{
+					int y = (i - frameScroll) * 15 + 280;
+					if (i == selectedFrame)
+					{
+						text.color = Color.Lime;
+						text.DrawText(600, y, i.ToString() + ": " + characterDefinition.Frames[i].Name + (editmode == EditingMode.FrameName ? "*" : ""));
+						
+						// clicking the (a) will add a reference of this frame to the selected animation
+						if (text.DrawClickText(720,y,"(a)",mouseState.X,mouseState.Y,mouseClick))
+						{
+							Animation animation = characterDefinition.Animation[selectedAnimation];
+
+							for (int j = 0; j < animation.KeyFrames.Length; j++)
+							{
+								KeyFrame keyFrame = animation.KeyFrames[j];
+								if (keyFrame.FrameReference == -1)
+								{
+									keyFrame.FrameReference = i;
+									keyFrame.Duration = 1;
+									break;
+								}
+							}
+						}
+					}
+					else
+					{
+						// clicking a new frame will create a copy of the old frame
+						if (text.DrawClickText(600,y,i.ToString() + ": " + characterDefinition.Frames[i].Name,mouseState.X,mouseState.Y,mouseClick))
+						{
+							if (selectedFrame != i)
+							{
+								if (String.IsNullOrEmpty(characterDefinition.Frames[i].Name))
+									CopyFrame(selectedFrame, i);
+								
+								selectedFrame = i;
+								editmode = EditingMode.FrameName;
+							}
+						}
+					}
+				}
+			}
+            //draw arrow buttons to scroll up or down the list
+			if (DrawButton(770, 280, upArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == ButtonState.Pressed)) && frameScroll > 0 )
+				frameScroll--;
+			if (DrawButton(770, 570, downArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == ButtonState.Pressed)) && frameScroll < characterDefinition.Frames.Length - 20)
+				frameScroll++;
+		}
+       
+        // draws the animation list in the upper left corner. is scroll and editable
+        private void DrawAnimationList()
+        {
+            for (int i = animScroll; i < animScroll + 15; i++)
+            {
+                if (i < characterDefinition.Animation.Length)
+                {
+                    int y = (i - animScroll) * 15 + 5;
+                    if (i == selectedAnimation)
+                    {
+                        text.color = Color.Lime;
+                        text.DrawText(5, y, i.ToString() + ": " + characterDefinition.Animation[i].Name + ((editmode == EditingMode.AnimationName) ? "*" : ""));
+                    }
+                    else
+                    {
+                        if (text.DrawClickText(5,y,i.ToString() + ": " + characterDefinition.Animation[i].Name,mouseState.X,mouseState.Y,mouseClick))
+                        {
+                            selectedAnimation = i;
+                            editmode = EditingMode.AnimationName;
+                        }
+                    }
+                }
+            }
+
+            //draw scroll buttons (arrows)
+            if (DrawButton(170, 5, upArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == ButtonState.Pressed)) && animScroll > 0)
+                animScroll--;
+            if (DrawButton(170, 200, downArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == ButtonState.Pressed)) && animScroll < characterDefinition.Animation.Length - 15)
+                animScroll++;
+        }
+
+        //draws the keyframe list in the lower left corner
+        private void DrawKeyFrameList()
+        {
+            for (int i = keyFrameScroll; i < keyFrameScroll + 13; i++)
+            {
+                Animation animation = characterDefinition.Animation[selectedAnimation];
+
+                if (i < animation.KeyFrames.Length)
+                {
+                    int y = (i - keyFrameScroll) * 15 + 250;
+                    int frameReference = animation.KeyFrames[i].FrameReference;
+                    string name = "";
+
+                    if (frameReference > -1)
+                        name = characterDefinition.Frames[frameReference].Name;
+
+                    if (i == selectedKeyFrame)
+                    {
+                        text.color = Color.Lime;
+                        text.DrawText(5, y, i.ToString() + ": " + name);
+                    }
+                    else
+                    {
+                        if (text.DrawClickText(5, y, i.ToString() + ": " + name, mouseState.X, mouseState.Y, mouseClick))
+                            selectedKeyFrame = i;
+                    }
+
+                    if (frameReference > -1)
+                    {
+                        if (text.DrawClickText(110,y,"-",mouseState.X,mouseState.Y,mouseClick))
+                        {
+                            animation.KeyFrames[i].Duration--;
+                            // did we drop the duration to 0? then delete keyframe and move all following one row up
+                            if (animation.KeyFrames[i].Duration <= 0)
+                            {
+                                for (int j = i; j < animation.KeyFrames.Length - 1; j++)
+                                {
+                                    KeyFrame keyFrame = animation.KeyFrames[j];
+                                    keyFrame.FrameReference = animation.KeyFrames[j + 1].FrameReference;
+                                    keyFrame.Duration = animation.KeyFrames[j + 1].Duration;
+                                }
+                                animation.KeyFrames[animation.KeyFrames.Length - 1].FrameReference = -1;
+                            }
+                        }
+                        //draw KeyFrame Duration
+                        text.DrawText(125, y, animation.KeyFrames[i].Duration.ToString());
+                        
+                        //add a clickable + sign to increase duration
+                        if (text.DrawClickText(140, y, "+", mouseState.X, mouseState.Y, mouseClick))
+                            animation.KeyFrames[i].Duration++;
+                    }
+                }
+            }
+
+            //draw scroll buttons
+            if (DrawButton(170, 250, upArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == ButtonState.Pressed)) && keyFrameScroll > 0)
+                keyFrameScroll--;
+            if (DrawButton(170, 410, downArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == ButtonState.Pressed)) && keyFrameScroll < characterDefinition.Animation[selectedAnimation].KeyFrames.Length - 13)
+                keyFrameScroll++;
+        }
 		#endregion
 
+		#region Helper Methods
+		
 		private void SwapParts(int index1, int index2)
 		{
 			if (index1 < 0 || index2 < 0 || index1 >= characterDefinition.Frames[selectedFrame].Parts.Length ||
@@ -452,6 +629,109 @@ namespace CharacterEditor
 			characterDefinition.Frames[selectedFrame].Parts[index1] = j;
 			characterDefinition.Frames[selectedFrame].Parts[index2] = i;
 		}
+
+		private void CopyFrame(int src, int dest)
+		{
+			Frame keySrc = characterDefinition.Frames[src];
+			Frame keyDest = characterDefinition.Frames[dest];
+
+			keyDest.Name = keySrc.Name;
+
+			for (int i = 0; i < keyDest.Parts.Length; i++)
+			{
+				Part srcPart = keySrc.Parts[i];
+				Part destPart = keyDest.Parts[i];
+
+				destPart.Index = srcPart.Index;
+				destPart.Location = srcPart.Location;
+				destPart.Rotation = srcPart.Rotation;
+				destPart.Scaling = srcPart.Scaling;
+			}
+		}
+		#endregion
+
+		#region Input Methods
+		private void UpdateKeys()
+		{
+			keyBoardState = Keyboard.GetState();
+
+			Keys[] currentKeys = keyBoardState.GetPressedKeys();
+			Keys[] lastKeys = previousKeyBoardState.GetPressedKeys();
+
+			bool found = false;
+
+			for (int i = 0; i < currentKeys.Length; i++)
+			{
+				found = false;
+
+				for (int y = 0; y < lastKeys.Length; y++)
+				{
+					if (currentKeys[i] == lastKeys[y])
+					{
+						found = true;
+						break;
+					}
+				}
+
+				if (!found)
+					PressKey(currentKeys[i]);
+			}
+
+			previousKeyBoardState = keyBoardState;
+		}
+
+		private void PressKey(Keys key)
+		{
+			string t = String.Empty;
+			switch (editmode)
+			{
+				case EditingMode.None:
+					break;
+				case EditingMode.AnimationName:
+					t = characterDefinition.Animation[selectedAnimation].Name;
+					break;
+				case EditingMode.FrameName:
+					t = characterDefinition.Frames[selectedFrame].Name;
+					break;
+				case EditingMode.PathName:
+					t = characterDefinition.Path;
+					break;
+				default:
+					break;
+			}
+
+			if (key == Keys.Back)
+			{
+				if (t.Length > 0)
+					t = t.Substring(0, t.Length - 1);
+			}
+			else if (key == Keys.Enter)
+			{
+				editmode = EditingMode.None;
+			}
+			else
+			{
+				t = (t + (char)key).ToLower();
+			}
+
+			switch (editmode)
+			{
+				case EditingMode.None:
+					break;
+				case EditingMode.AnimationName:
+					characterDefinition.Animation[selectedAnimation].Name = t;
+					break;
+				case EditingMode.FrameName:
+					characterDefinition.Frames[selectedFrame].Name = t;
+					break;
+				case EditingMode.PathName:
+					characterDefinition.Path = t;
+					break;
+				default:
+					break;
+			}
+		}
+		#endregion
 	}
 }
  
