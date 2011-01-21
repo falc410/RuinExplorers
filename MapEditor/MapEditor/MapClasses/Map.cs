@@ -79,7 +79,7 @@ namespace MapEditor.MapClasses
 
 		private void ReadSegmentDefinitions()
 		{
-			StreamReader streamReader = new StreamReader(@"Content/mapSegments.dat");
+			StreamReader streamReader = new StreamReader(@"Content/data/mapSegments.dat");
 			string t = "";
 
 			int n;
