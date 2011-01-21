@@ -10,6 +10,9 @@ namespace CharacterEditor.Character
         Part[] parts;
         public string Name;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Frame"/> class.
+        /// </summary>
         public Frame()
         {
             parts = new Part[16];
@@ -20,6 +23,9 @@ namespace CharacterEditor.Character
             Name = String.Empty; 
         }
 
+        /// <summary>
+        /// Gets the parts.
+        /// </summary>
         public Part[] Parts
         {
             get { return parts; }

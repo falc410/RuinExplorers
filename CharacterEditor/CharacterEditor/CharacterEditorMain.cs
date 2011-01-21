@@ -289,8 +289,16 @@ namespace CharacterEditor
 			base.Draw(gameTime);
 		}
 		#region Custom Draw Methods
-		
-		// Draws the character on screen by iterating through all parts
+				
+        /// <summary>
+        /// Draws the character by iterating through all parts.
+        /// </summary>
+        /// <param name="_location">The _location.</param>
+        /// <param name="_scale">The scale of the part.</param>
+        /// <param name="_face">Left or right facing of the character.</param>
+        /// <param name="_frameIndex">Index of the _frame.</param>
+        /// <param name="_preview">if set to <c>true</c> [_preview] will be drawn.</param>
+        /// <param name="_alpha">The alpha value of character.</param>
 		private void DrawCharacter(Vector2 _location, float _scale, int _face, int _frameIndex, bool _preview, float _alpha)
 		{
 			Rectangle sourceRect = new Rectangle();
@@ -387,7 +395,18 @@ namespace CharacterEditor
 			spriteBatch.End();             
 		}
 
-		// Used to draw a texture as a clickable button
+		
+        /// <summary>
+        /// Draws the scroll buttons (little arrows)
+        /// I had to modify this because of different image sizes.
+        /// </summary>
+        /// <param name="x">The x location in screen space.</param>
+        /// <param name="y">The y location in screen space.</param>
+        /// <param name="buttonTexture">The button texture.</param>
+        /// <param name="mouseX">The mouseX from mouseState so we know if the mouse is pointing at the button.</param>
+        /// <param name="mouseY">The mouseY from mouseState so we know if the mouse is pointing at the button.</param>
+        /// <param name="mouseClick">if set to <c>true</c> [mouse click] has occured.</param>
+        /// <returns></returns>
 		private bool DrawScrollButton(int x, int y, Texture2D buttonTexture, int mouseX, int mouseY, bool mouseClick)
 		{
 			bool r = false;
@@ -411,7 +430,17 @@ namespace CharacterEditor
 
 		}
 
-		// Used to draw a texture as a clickable button
+		
+        /// <summary>
+        /// Draws the icons for open and save as button.
+        /// </summary>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
+        /// <param name="buttonTexture">The button texture.</param>
+        /// <param name="mouseX">The mouse X.</param>
+        /// <param name="mouseY">The mouse Y.</param>
+        /// <param name="mouseClick">if set to <c>true</c> [mouse click] has occured.</param>
+        /// <returns></returns>
 		private bool DrawIconAsButton(int x, int y, Texture2D buttonTexture, int mouseX, int mouseY, bool mouseClick)
 		{
 			bool r = false;
@@ -558,7 +587,12 @@ namespace CharacterEditor
 			}
 		}
 		
-		// draws the framelist and enables creating / renaming of frames
+		
+        /// <summary>
+        /// Draws the frames list in the lower right corner of editor.
+        /// Pressing the (a) button next to a frame adds it as KeyFrame to the current Animation
+        /// Frames can be renamed
+        /// </summary>
 		private void DrawFramesList()
 		{
 			for (int i = frameScroll; i < frameScroll + 20; i++)

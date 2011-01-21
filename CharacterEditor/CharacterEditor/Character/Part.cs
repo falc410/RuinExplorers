@@ -14,6 +14,9 @@ namespace CharacterEditor.Character
         public int Index;
         public int Flip;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Part"/> class.
+        /// </summary>
         public Part()
         {
             Index = -1;

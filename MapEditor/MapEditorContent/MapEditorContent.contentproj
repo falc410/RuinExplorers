@@ -61,12 +61,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="mapSegments.dat">
-      <Name>mapSegments</Name>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="gfx\arrows.png">
       <Name>arrows</Name>
       <Importer>TextureImporter</Importer>
@@ -86,6 +80,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\mapSegments.dat">
+      <Name>mapSegments</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="data\placeholder.txt">
       <Name>placeholder</Name>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

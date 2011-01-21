@@ -17,6 +17,9 @@ namespace CharacterEditor.Character
         public int LegsIndex;
         public int WeaponIndex;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CharacterDefinition"/> class.
+        /// </summary>
         public CharacterDefinition()
         {
             animations = new Animation[64];
@@ -33,16 +36,27 @@ namespace CharacterEditor.Character
             Path = "charName";
         }
 
+        /// <summary>
+        /// Gets the animations.
+        /// </summary>
         public Animation[] Animations
         {
             get { return animations; }
         }
 
+        /// <summary>
+        /// Gets the frames.
+        /// </summary>
         public Frame[] Frames
         {
             get { return frames; }
         }
 
+        #region IO Methods
+        
+        /// <summary>
+        /// Writes Character Data to file.
+        /// </summary>
         public void Write()
         {
             BinaryWriter binaryReader = new BinaryWriter(File.Open(@"Content/data/" + Path + ".dat", FileMode.Create));
@@ -89,6 +103,9 @@ namespace CharacterEditor.Character
             binaryReader.Close();
         }
 
+        /// <summary>
+        /// Reads Character Data from file.
+        /// </summary>
         public void Read()
         {
             BinaryReader binaryReader = new BinaryReader(File.Open(@"Content/data/" + Path + ".dat", FileMode.Open, FileAccess.Read));
@@ -139,5 +156,6 @@ namespace CharacterEditor.Character
             Console.WriteLine("Loaded.");
 
         }
+        #endregion
     }
 }

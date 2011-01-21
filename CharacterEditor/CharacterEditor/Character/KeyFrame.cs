@@ -11,6 +11,9 @@ namespace CharacterEditor.Character
         public int Duration;
         string[] scripts;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KeyFrame"/> class.
+        /// </summary>
         public KeyFrame()
         {
             FrameReference = -1;
@@ -22,6 +25,9 @@ namespace CharacterEditor.Character
             }
         }
 
+        /// <summary>
+        /// Gets the scripts.
+        /// </summary>
         public string[] Scripts
         {
             get { return scripts; }
