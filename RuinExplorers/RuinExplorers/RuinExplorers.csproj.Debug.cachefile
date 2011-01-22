@@ -9,4 +9,8 @@ Content\gfx\torso1.xnb
 Content\gfx\uparrow.xnb
 Content\gfx\weapon1.xnb
 Content\gfx\segments1.xnb
+Content\gfx\background1.xnb
+Content\data\mapSegments.dat
 Content\data\placeholder.txt
+Content\data\characters\placeholder.txt
+Content\data\maps\placeholder.txt

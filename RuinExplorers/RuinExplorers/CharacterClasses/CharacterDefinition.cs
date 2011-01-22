@@ -17,7 +17,9 @@ namespace RuinExplorers.CharacterClasses
         public int LegsIndex;
         public int WeaponIndex;
 
-        public CharacterDefinition()
+        public CharacterType CharType = CharacterType.Player1;
+
+        public CharacterDefinition(string path)
         {
             animations = new Animation[64];
             for (int i = 0; i < animations.Length; i++)
@@ -30,7 +32,8 @@ namespace RuinExplorers.CharacterClasses
                 frames[i] = new Frame();
             }
 
-            Path = "charName";
+            Path = path;
+            Read();
         }
 
         public Animation[] Animations
@@ -91,7 +94,7 @@ namespace RuinExplorers.CharacterClasses
 
         public void Read()
         {
-            BinaryReader binaryReader = new BinaryReader(File.Open(@"Content/data/" + Path + ".dat", FileMode.Open, FileAccess.Read));
+            BinaryReader binaryReader = new BinaryReader(File.Open(@"Content/data/characters/" + Path + ".dat", FileMode.Open, FileAccess.Read));
 
             Path = binaryReader.ReadString();
             HeadIndex = binaryReader.ReadInt32();

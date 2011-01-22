@@ -18,6 +18,7 @@ namespace RuinExplorers.MapClasses
 		Ledge[] ledges;
 		private string path = "mapname";
 
+        const int LAYER_BACK = 0;
 
         #endregion
 
@@ -79,7 +80,7 @@ namespace RuinExplorers.MapClasses
 
 		private void ReadSegmentDefinitions()
 		{
-			StreamReader streamReader = new StreamReader(@"Content/mapSegments.dat");
+			StreamReader streamReader = new StreamReader(@"Content/data/mapSegments.dat");
 			string t = "";
 
 			int n;
@@ -204,13 +205,24 @@ namespace RuinExplorers.MapClasses
             return true;
         }
 
-		public void Draw(SpriteBatch spriteBatch, Texture2D[] mapsTexture, int startLayer, int endLayer)
+		public void Draw(SpriteBatch spriteBatch, Texture2D[] mapsTexture, Texture2D[] mapBackground, int startLayer, int endLayer)
 		{
 			Rectangle sourceRect = new Rectangle();
 			Rectangle destinationRect = new Rectangle();
 
 			spriteBatch.Begin();
-			
+
+            if (startLayer == LAYER_BACK)
+            {
+                float xLim = GetXLim();
+                float yLim = GetYLim();
+                Vector2 target = new Vector2(RuinExplorersMain.ScreenSize.X / 2f -
+                ((RuinExplorersMain.Scroll.X / xLim) - 0.5f) * 100f,
+                RuinExplorersMain.ScreenSize.Y / 2f - ((RuinExplorersMain.Scroll.Y / yLim) - 0.5f) * 100f);
+
+                spriteBatch.Draw(mapBackground[0], target, new Rectangle(0, 0, 1280, 720), Color.White, 0f, new Vector2(640f, 360f), 1f, SpriteEffects.None, 1f);
+            }
+
 			for (int l = startLayer; l < endLayer; l++)
 			{
 				float scale = 1.0f;
@@ -292,7 +304,7 @@ namespace RuinExplorers.MapClasses
 
         public void Read()
         {
-            BinaryReader file = new BinaryReader(File.Open(@"Content/data/" + path + ".dat", FileMode.Open));
+            BinaryReader file = new BinaryReader(File.Open(@"Content/data/maps/" + path + ".dat", FileMode.Open));
 
             // read ledge information first
             for (int i = 0; i < ledges.Length; i++)
@@ -335,5 +347,14 @@ namespace RuinExplorers.MapClasses
             file.Close();
         }
         #endregion
+
+        public float GetXLim()
+        {
+            return 1280 - RuinExplorersMain.ScreenSize.X;
+        }
+        public float GetYLim()
+        {
+            return 1280 - RuinExplorersMain.ScreenSize.Y;
+        }
     }
 }

@@ -42,6 +42,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\mapSegments.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>mapSegments</Name>
+    </None>
     <None Include="data\placeholder.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <Name>placeholder</Name>
@@ -123,8 +127,23 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="data\characters\" />
-    <Folder Include="data\maps\" />
+    <Compile Include="gfx\background1.png">
+      <Name>background1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="data\characters\placeholder.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Name>placeholder</Name>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="data\maps\placeholder.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Name>placeholder</Name>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!--  To modify your build process, add your task inside one of the targets below and uncomment it. 

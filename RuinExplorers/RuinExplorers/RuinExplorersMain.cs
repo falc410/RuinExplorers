@@ -8,6 +8,8 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using RuinExplorers.MapClasses;
+using RuinExplorers.CharacterClasses;
 
 namespace RuinExplorers
 {
@@ -16,24 +18,58 @@ namespace RuinExplorers
     /// </summary>
     public class RuinExplorersMain : Microsoft.Xna.Framework.Game
     {
+        #region Fields
+        
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        public static float frameTime = 0f;
         private static Vector2 scroll;
+        private const float friction = 1000f;
+        private const float gravity = 900f;
+        private static Vector2 screenSize = new Vector2();
 
+        Map map;
 
-        public Vector2 Scroll
+        Texture2D[] mapTexture = new Texture2D[1];
+        Texture2D[] mapBackgroundTexture = new Texture2D[1];
+        Character[] character = new Character[16];
+        CharacterDefinition[] characterDefinition = new CharacterDefinition[16];
+
+        #endregion
+        #region Properties
+
+        public static Vector2 ScreenSize
+        {
+            get { return screenSize; }
+            set { screenSize = value; }
+        }
+
+        public static float Friction
+        {
+            get { return friction; }
+        }
+
+        public static float Gravity
+        {
+            get { return gravity; }
+        }
+
+        public static Vector2 Scroll
         {
             get { return scroll; }
             set { scroll = value; }
         }
+        #endregion
 
         public RuinExplorersMain()
         {
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferHeight = 600;
             graphics.PreferredBackBufferWidth = 800;
-
+            screenSize.X = 800f;
+            screenSize.Y = 600f;
+            this.IsMouseVisible = true;
             Content.RootDirectory = "Content";
         }
 
@@ -45,7 +81,14 @@ namespace RuinExplorers
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            map = new Map();
+            map.Path = "map";
+            map.Read();
+
+            characterDefinition[(int)CharacterType.Player1] = new CharacterDefinition("player");
+
+            character[0] = new Character(new Vector2(100f, 100f), characterDefinition[(int)CharacterType.Player1]);
+            character[0].map = map;
 
             base.Initialize();
         }
@@ -59,7 +102,12 @@ namespace RuinExplorers
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            for (int i = 0; i < mapTexture.Length; i++)
+                mapTexture[i] = Content.Load<Texture2D>(@"gfx/segments" + (i + 1).ToString());
+            for (int i = 0; i < mapBackgroundTexture.Length; i++)
+                mapBackgroundTexture[i] = Content.Load<Texture2D>(@"gfx/background" + (i + 1).ToString());
+
+            Character.LoadTextures(Content);
         }
 
         /// <summary>
@@ -82,7 +130,27 @@ namespace RuinExplorers
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            // TODO: Add your update logic here
+            frameTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (character[0] != null)
+            {
+                scroll += ((character[0].Location - new Vector2(400f, 400f)) - scroll) * frameTime * 20f;
+
+                float xLim = map.GetXLim();
+                float yLim = map.GetYLim();
+
+                if (scroll.X < 0f) scroll.X = 0f;
+                else if (scroll.X > xLim) scroll.X = xLim;
+                if (scroll.Y < 0f) scroll.Y = 0f;
+                else if (scroll.Y > yLim) scroll.Y = yLim;
+
+                character[0].DoInput(0);
+            }
+            for (int i = 0; i < character.Length; i++)
+            {
+                if (character[i] != null)
+                    character[i].Update(gameTime);
+            }
 
             base.Update(gameTime);
         }
@@ -95,7 +163,11 @@ namespace RuinExplorers
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            map.Draw(spriteBatch, mapTexture, mapBackgroundTexture, 0, 2);
+
+           // character[0].Draw(spriteBatch);
+
+            map.Draw(spriteBatch, mapTexture, mapBackgroundTexture, 2, 3);
 
             base.Draw(gameTime);
         }

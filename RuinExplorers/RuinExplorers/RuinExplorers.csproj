@@ -110,6 +110,7 @@
     <Compile Include="CharacterClasses\Animation.cs" />
     <Compile Include="CharacterClasses\Character.cs" />
     <Compile Include="CharacterClasses\CharacterDefinition.cs" />
+    <Compile Include="CharacterClasses\CharacterType.cs" />
     <Compile Include="CharacterClasses\Frame.cs" />
     <Compile Include="CharacterClasses\KeyFrame.cs" />
     <Compile Include="CharacterClasses\Part.cs" />
