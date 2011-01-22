@@ -19,6 +19,15 @@ namespace RuinExplorers
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        private static Vector2 scroll;
+
+
+        public Vector2 Scroll
+        {
+            get { return scroll; }
+            set { scroll = value; }
+        }
+
         public RuinExplorersMain()
         {
             graphics = new GraphicsDeviceManager(this);

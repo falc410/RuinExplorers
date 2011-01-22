@@ -120,6 +120,7 @@
     <Compile Include="MapClasses\SegmentDefinitions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="RandomGenerator.cs" />
     <Compile Include="RuinExplorersMain.cs" />
   </ItemGroup>
   <ItemGroup>

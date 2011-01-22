@@ -153,14 +153,65 @@ namespace RuinExplorers.MapClasses
 			return -1;
 		}
 
-		public void Draw(SpriteBatch spriteBatch, Texture2D[] mapsTexture, Vector2 scroll)
+
+        /// <summary>
+        /// Returns the section of a ledge in which an entity's x value reside.
+        /// </summary>
+        /// <param name="l">The l.</param>
+        /// <param name="x">The x.</param>
+        /// <returns></returns>
+        public int GetLedgeSection(int l, float x)
+        {
+            for (int i = 0; i < ledges[l].TotalNodes -1; i++)
+            {
+                if (x >= ledges[l].Nodes[i].X && x <= ledges[l].Nodes[i + 1].X)
+                    return i;
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// Determine if a characters locations is within a ledge's bounds.
+        /// </summary>
+        /// <param name="l">The ledge index.</param>
+        /// <param name="i">The section index.</param>
+        /// <param name="x">The x value.</param>
+        /// <returns></returns>
+        public float GetLedgeYLocation(int l,int i,float x)
+        {
+            return (ledges[l].Nodes[i + 1].Y - ledges[l].Nodes[i].Y) * ((x - ledges[l].Nodes[i].X) / (ledges[l].Nodes[i + 1].X - ledges[l].Nodes[i].X)) +
+                ledges[l].Nodes[i].Y;
+        }
+
+        /// <summary>
+        /// Quickly check the collision based on a location and our collision grid (which is only 20x20 array).
+        /// </summary>
+        /// <param name="location">The location to check.</param>
+        /// <returns></returns>
+        public bool CheckCollision(Vector2 location)
+        {
+            if (location.X < 0f)
+                return true;
+            if (location.Y < 0f)
+                return true;
+
+            int x = (int)(location.X / 64f);
+            int y = (int)(location.Y / 64f);
+
+            if (x >= 0 && y >= 0 && x < 20 && y < 20)
+                if (colisionGrid[x, y] == 0)
+                    return false;
+            return true;
+        }
+
+		public void Draw(SpriteBatch spriteBatch, Texture2D[] mapsTexture, int startLayer, int endLayer)
 		{
 			Rectangle sourceRect = new Rectangle();
 			Rectangle destinationRect = new Rectangle();
 
 			spriteBatch.Begin();
-			// 3 = Number of Layers
-			for (int l = 0; l < 3; l++)
+			
+			for (int l = startLayer; l < endLayer; l++)
 			{
 				float scale = 1.0f;
 				Color color = Color.White;
@@ -173,17 +224,15 @@ namespace RuinExplorers.MapClasses
 				{
 					color = Color.DarkGray;
 					scale = 1.25f;
-				}
-
-				scale *= 0.5f;
+				}			
 
 				for (int i = 0; i < 64; i++)
 				{
 					if (mapSegment[l,i] != null)
 					{
 						sourceRect = segDef[mapSegment[l, i].Index].sourceRect;
-						destinationRect.X = (int)(mapSegment[l, i].location.X - scroll.X * scale);
-						destinationRect.Y = (int)(mapSegment[l, i].location.Y - scroll.Y * scale);
+						destinationRect.X = (int)(mapSegment[l, i].location.X * 2f - RuinExplorersMain.Scroll.X * scale);
+                        destinationRect.Y = (int)(mapSegment[l, i].location.Y * 2f - RuinExplorersMain.Scroll.Y * scale);
 						destinationRect.Width = (int)(sourceRect.Width * scale);
 						destinationRect.Height = (int)(sourceRect.Height * scale);
 
@@ -195,7 +244,8 @@ namespace RuinExplorers.MapClasses
 			spriteBatch.End();
 		}
 
-
+        #region Map IO Methods
+        
         public void Write()
         {
             BinaryWriter file = new BinaryWriter(File.Open(@"Content/data/" + path + ".dat", FileMode.Create));
@@ -252,7 +302,7 @@ namespace RuinExplorers.MapClasses
                 for (int n = 0; n < ledges[i].TotalNodes; n++)
                 {
                     ledges[i].Nodes[n] = new Vector2(
-                    file.ReadSingle(), file.ReadSingle());
+                    file.ReadSingle() * 2f, file.ReadSingle() *2f);
                 }
                 ledges[i].isHardLedge = file.ReadInt32();
             }
@@ -284,5 +334,6 @@ namespace RuinExplorers.MapClasses
             }
             file.Close();
         }
+        #endregion
     }
 }

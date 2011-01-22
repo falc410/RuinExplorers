@@ -175,6 +175,7 @@ namespace MapEditor.MapClasses
 					scale = 1.25f;
 				}
 
+                // zoom out to give a better overview while in editor
 				scale *= 0.5f;
 
 				for (int i = 0; i < 64; i++)
