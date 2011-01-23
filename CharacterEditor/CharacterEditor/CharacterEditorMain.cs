@@ -45,6 +45,7 @@ namespace CharacterEditor
 		int selectedFrame = 0;
 		int selectedAnimation = 0;
 		int selectedKeyFrame = 0;
+        int selectedScriptLine = 0;
 
 		int currentKeyFrame = 0;
 		float currentFrame = 0;
@@ -58,7 +59,8 @@ namespace CharacterEditor
 			None,
 			FrameName,
 			AnimationName,
-			PathName
+			PathName,
+            Script
 		}
 
 		EditingMode editmode = EditingMode.None;
@@ -228,12 +230,12 @@ namespace CharacterEditor
 			//draw dark-blue background rectangle for part and frame list
 			spriteBatch.Draw(nullTexture, new Rectangle(590, 0, 300, 600), new Color(new
 				Vector4(0.0f, 0.0f, 0.0f, 0.5f)));
-			// what is this for? red bar at the bottom?
+			// red bar at the bottom
 			spriteBatch.Draw(nullTexture, new Rectangle(300, 450, 200, 5), new Color(new
 	 Vector4(1.0f, 0.0f, 0.0f, 0.5f)));
-			// draw background rectangle for save and load buttons
-			spriteBatch.Draw(nullTexture, new Rectangle(200, 0, 150, 50), new Color(new
-				Vector4(0.0f, 0.0f, 0.0f, 0.5f)));
+			// draw background rectangle for save and load buttons and scripts
+			spriteBatch.Draw(nullTexture, new Rectangle(200, 0, 150, 110), new Color(new
+				Vector4(0.0f, 0.0f, 0.0f, 0.5f)));                        
 
 			spriteBatch.End();
 
@@ -283,6 +285,25 @@ namespace CharacterEditor
 				if (text.DrawClickText(280, 15, characterDefinition.Path, mouseState.X, mouseState.Y, mouseClick))
 					editmode = EditingMode.PathName;
 			}
+
+            #region Script
+            for (int i = 0; i < 4; i++)
+            {
+                if (editmode == EditingMode.Script && selectedScriptLine == i)
+                {
+                    text.color = Color.Lime;
+                    text.DrawText(210, 42 + i * 16, i.ToString() + ": " + characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Scripts[i] + "*");
+                }
+                else
+                {
+                    if (text.DrawClickText(210, 42 + i * 16, i.ToString() + ": " + characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Scripts[i], mouseState.X, mouseState.Y, mouseClick))
+                    {
+                        selectedScriptLine = i;
+                        editmode = EditingMode.Script;
+                    }
+                }
+            }
+            #endregion
 
 			mouseClick = false;
 
@@ -820,6 +841,9 @@ namespace CharacterEditor
 				case EditingMode.PathName:
 					t = characterDefinition.Path;
 					break;
+                case EditingMode.Script:
+                    t = characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Scripts[selectedScriptLine];
+                    break;
 				default:
 					break;
 			}
@@ -851,6 +875,9 @@ namespace CharacterEditor
 				case EditingMode.PathName:
 					characterDefinition.Path = t;
 					break;
+                case EditingMode.Script:
+                    characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Scripts[selectedScriptLine] = t;
+                    break;
 				default:
 					break;
 			}
