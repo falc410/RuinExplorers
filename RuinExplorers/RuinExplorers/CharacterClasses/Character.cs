@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using RuinExplorers.MapClasses;
 using Microsoft.Xna.Framework.Content;
+using RuinExplorers.Helpers;
 
 namespace RuinExplorers.CharacterClasses
 {
@@ -545,13 +546,14 @@ namespace RuinExplorers.CharacterClasses
                 previousGamepadState.Buttons.Y == ButtonState.Released) || currentKeyboardState.IsKeyDown(Keys.X))
                 keyAttack = true;
 
-            if ((currentGamepadState.Buttons.X == ButtonState.Pressed &&
-                previousGamepadState.Buttons.X == ButtonState.Released) || currentKeyboardState.IsKeyDown(Keys.C))
+            if (currentKeyboardState.IsKeyDown(Keys.C))
                 keySecondary = true;
 
             //currentKeyboardState = Keyboard.GetState();
             previousGamepadState = currentGamepadState;
-            previousKeyboardState = currentKeyboardState;
+            //previousKeyboardState = currentKeyboardState;
+            //Log.Write(keySecondary.ToString());
+            //Console.WriteLine(keySecondary.ToString());
         }
         #endregion
     }
