@@ -355,7 +355,7 @@ namespace MapEditor
 			spriteBatch.End();
 
 			// TODO: if new shapes are added increase i in for loop
-			for (int i = 0; i < 6; i++)
+			for (int i = 0; i < 9; i++)
 			{
 				SegmentDefinitions segDef = map.segDef[i];
 				if (segDef == null)

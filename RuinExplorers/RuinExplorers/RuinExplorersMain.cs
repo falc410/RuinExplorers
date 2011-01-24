@@ -165,7 +165,7 @@ namespace RuinExplorers
 
             map.Draw(spriteBatch, mapTexture, mapBackgroundTexture, 0, 2);
 
-           // character[0].Draw(spriteBatch);
+           character[0].Draw(spriteBatch);
 
             map.Draw(spriteBatch, mapTexture, mapBackgroundTexture, 2, 3);
 

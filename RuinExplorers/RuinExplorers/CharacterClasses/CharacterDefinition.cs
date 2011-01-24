@@ -44,53 +44,7 @@ namespace RuinExplorers.CharacterClasses
         public Frame[] Frames
         {
             get { return frames; }
-        }
-
-        public void Write()
-        {
-            BinaryWriter binaryReader = new BinaryWriter(File.Open(@"Content/data/" + Path + ".dat", FileMode.Create));
-
-            binaryReader.Write(Path);
-            binaryReader.Write(HeadIndex);
-            binaryReader.Write(TorsoIndex);
-            binaryReader.Write(LegsIndex);
-            binaryReader.Write(WeaponIndex);
-
-            for (int i = 0; i < animations.Length; i++)
-            {
-                binaryReader.Write(animations[i].Name);
-
-                for (int j = 0; j <
-                    animations[i].KeyFrames.Length; j++)
-                {
-                    KeyFrame keyframe = animations[i].KeyFrames[j];
-                    binaryReader.Write(keyframe.FrameReference);
-                    binaryReader.Write(keyframe.Duration);
-                    String[] scripts = keyframe.Scripts;
-                    for (int s = 0; s < scripts.Length; s++)
-                        binaryReader.Write(scripts[s]);
-                }
-            }
-
-            for (int i = 0; i < frames.Length; i++)
-            {
-                binaryReader.Write(frames[i].Name);
-
-                for (int j = 0; j < frames[i].Parts.Length; j++)
-                {
-                    Part part = frames[i].Parts[j];
-                    binaryReader.Write(part.Index);
-                    binaryReader.Write(part.Location.X);
-                    binaryReader.Write(part.Location.Y);
-                    binaryReader.Write(part.Rotation);
-                    binaryReader.Write(part.Scaling.X);
-                    binaryReader.Write(part.Scaling.Y);
-                    binaryReader.Write(part.Flip);
-                }
-            }
-
-            binaryReader.Close();
-        }
+        }        
 
         public void Read()
         {
@@ -114,9 +68,9 @@ namespace RuinExplorers.CharacterClasses
                     keyframe.FrameReference = binaryReader.ReadInt32();
                     keyframe.Duration = binaryReader.ReadInt32();
 
-                    string[] scripts = keyframe.Scripts;
+                    ScriptLine[] scripts = keyframe.Scripts;
                     for (int s = 0; s < scripts.Length; s++)
-                        scripts[s] = binaryReader.ReadString();
+                        scripts[s] = new ScriptLine(binaryReader.ReadString());
                 }
             }
 

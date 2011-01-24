@@ -46,6 +46,8 @@ namespace RuinExplorers.CharacterClasses
         public CharacterState State;
         public int Animation;
         public String AnimationName;
+        public bool floating;
+        public float Speed = 200f;
 
         public bool keyLeft;
         public bool keyRight;
@@ -54,7 +56,10 @@ namespace RuinExplorers.CharacterClasses
         public bool keyJump;
         public bool keyAttack;
         public bool keySecondary;
-        CharacterDefinition characterDefinition;
+        public PressedKeys PressedKey;
+        public int[] GotoGoal = { -1, -1, -1, -1, -1, -1, -1, -1 };
+        private Script script;
+        private CharacterDefinition characterDefinition;
 
         float frame = 0f;
         int ledgeAttach = -1;
@@ -64,6 +69,11 @@ namespace RuinExplorers.CharacterClasses
         KeyboardState currentKeyboardState = new KeyboardState();
         KeyboardState previousKeyboardState = new KeyboardState();
         #endregion
+
+        public CharacterDefinition Definition
+        {
+            get { return characterDefinition; }
+        }
 
         #region Constructor
         
@@ -79,10 +89,12 @@ namespace RuinExplorers.CharacterClasses
             SetAnim("fly");
 
             State = CharacterState.Air;
+
+            script = new Script(this);
         }
         #endregion
 
-        private void SetAnim(string newAnim)
+        public void SetAnim(string newAnim)
         {
             if (AnimationName == newAnim)
                 return;
@@ -116,9 +128,13 @@ namespace RuinExplorers.CharacterClasses
             frame += elapsedTime * 30.0f;
             if (frame > (float)keyFrame.Duration)
             {
-                frame -= (float)keyFrame.Duration;
-                AnimationFrame++;
+                int previousFrame = AnimationFrame;
+                script.DoScript(Animation, AnimationFrame);
 
+                frame -= (float)keyFrame.Duration;
+                if (AnimationFrame == previousFrame)
+                    AnimationFrame++;
+                
                 if (AnimationFrame >= animation.KeyFrames.Length)
                     AnimationFrame = 0;
 
@@ -260,9 +276,15 @@ namespace RuinExplorers.CharacterClasses
                 {
                     SetAnim("idle");
                 }
+
+                if (keyAttack)
+                    SetAnim("attack");
+                if (keySecondary)
+                    SetAnim("second");
+
                 if (keyJump)
                 {
-                    SetAnim("fly");
+                    SetAnim("jump");
                     Trajectory.Y = -600f;
                     State = CharacterState.Air;
                     ledgeAttach = -1;
@@ -288,6 +310,43 @@ namespace RuinExplorers.CharacterClasses
                         Trajectory.X += 500f * RuinExplorersMain.frameTime;
                 }
             }
+
+            if (keyAttack)
+            {
+                PressedKey = PressedKeys.Attack;
+                if (keyUp) PressedKey = PressedKeys.Lower;
+                if (keyDown) PressedKey = PressedKeys.Upper;
+            }
+
+            if (keySecondary)
+            {
+                PressedKey = PressedKeys.Secondary;
+                if (keyUp) PressedKey = PressedKeys.SecUp;
+                if (keyDown) PressedKey = PressedKeys.SecDown;
+            }
+
+            if (PressedKey != PressedKeys.None)
+            {
+                if (GotoGoal[(int)PressedKey] > -1)
+                {
+                    AnimationFrame = GotoGoal[(int)PressedKey];
+
+                    if (keyLeft)
+                        Face = CharacterDirection.Left;
+                    if (keyRight)
+                        Face = CharacterDirection.Right;
+
+                    PressedKey = PressedKeys.None;
+
+                    for (int i = 0; i < GotoGoal.Length; i++)
+                        GotoGoal[i] = -1;
+
+                    frame = 0f;
+
+                    script.DoScript(Animation, AnimationFrame);
+                }
+            }
+
             #endregion
         }
 
@@ -325,6 +384,18 @@ namespace RuinExplorers.CharacterClasses
         {
             State = CharacterState.Ground;
             SetAnim("idle");
+        }
+
+        public void Slide(float distance)
+        {
+            Trajectory.X = (float)Face * 2f * distance - distance;
+        }
+
+        public void SetJump(float jump)
+        {
+            Trajectory.Y = -jump;
+            State = CharacterState.Air;
+            ledgeAttach = -1;
         }
 
         /// <summary>
@@ -466,18 +537,19 @@ namespace RuinExplorers.CharacterClasses
             if (currentGamepadState.ThumbSticks.Left.Y > 0.1f || currentKeyboardState.IsKeyDown(Keys.Up))
                 keyUp = true;
 
-            if (currentGamepadState.Buttons.A == ButtonState.Pressed &&
-                previousGamepadState.Buttons.A == ButtonState.Released)
+            if ((currentGamepadState.Buttons.A == ButtonState.Pressed &&
+                previousGamepadState.Buttons.A == ButtonState.Released) || currentKeyboardState.IsKeyDown(Keys.Space))
                 keyJump = true;
 
-            if (currentGamepadState.Buttons.Y == ButtonState.Pressed &&
-                previousGamepadState.Buttons.Y == ButtonState.Released)
+            if ((currentGamepadState.Buttons.Y == ButtonState.Pressed &&
+                previousGamepadState.Buttons.Y == ButtonState.Released) || currentKeyboardState.IsKeyDown(Keys.X))
                 keyAttack = true;
 
-            if (currentGamepadState.Buttons.X == ButtonState.Pressed &&
-                previousGamepadState.Buttons.X == ButtonState.Released)
+            if ((currentGamepadState.Buttons.X == ButtonState.Pressed &&
+                previousGamepadState.Buttons.X == ButtonState.Released) || currentKeyboardState.IsKeyDown(Keys.C))
                 keySecondary = true;
 
+            //currentKeyboardState = Keyboard.GetState();
             previousGamepadState = currentGamepadState;
             previousKeyboardState = currentKeyboardState;
         }

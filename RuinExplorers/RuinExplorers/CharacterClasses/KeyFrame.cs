@@ -9,20 +9,18 @@ namespace RuinExplorers.CharacterClasses
     {
         public int FrameReference;
         public int Duration;
-        string[] scripts;
+        ScriptLine[] scripts;
 
         public KeyFrame()
         {
             FrameReference = -1;
             Duration = 0;
-            scripts = new string[4];
-            for (int i = 0; i < scripts.Length; i++)
-            {
-                scripts[i] = String.Empty;
-            }
+            
+            scripts = new ScriptLine[4];
+           
         }
 
-        public string[] Scripts
+        public ScriptLine[] Scripts
         {
             get { return scripts; }
         }

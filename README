@@ -9,7 +9,9 @@ Improvements planned for the future:
 - Ledge deleting
 - Script editor (planned)
 - Map script definition (planned)
-- Better handling of saving and opening
+- Undo Function
+- Better input handling
+- Better handling of saving and opening (file exists and so on)
 - Move to Windows Forms / WPF project
 
 RuinExplorers - CharacterEditor
@@ -19,7 +21,9 @@ Improvements planned for the future:
 - Code cleanup & documentation
 - Better Texture handling / loading
 - Add scripting (planned)
-- Better handling of saving and opening
+- Undo Function
+- Better handling of saving and opening (file exists)
+- Better input handling
 - Move to Windows Forms / WPF project 
 
 RuinExplorers - MainEngine
@@ -27,5 +31,5 @@ RuinExplorers - MainEngine
 Improvements planned for the future:
 
 - Code cleanup & documentation
-- Completely handle keyboard input
+- Completely handle keyboard input (broken atm)
 - Different Resolutions
