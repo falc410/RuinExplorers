@@ -22,20 +22,20 @@ namespace RuinExplorers.CharacterClasses
         /// </summary>
         /// <param name="animIndex">Index of the anim.</param>
         /// <param name="keyFrameIndex">Index of the key frame.</param>
-        public void DoScript(int animIndex, int keyFrameIndex)
+        public void DoScript(int animIdx, int keyFrameIdx)
         {
-            CharacterDefinition characterDefinition = character.Definition;
-            Animation animation = characterDefinition.Animations[animIndex];
-            KeyFrame keyFrame = animation.KeyFrames[keyFrameIndex];
+            CharacterDefinition charDef = character.Definition;
+            Animation animation = charDef.Animations[animIdx];
+            KeyFrame keyFrame = animation.KeyFrames[keyFrameIdx];
 
             bool done = false;
 
             for (int i = 0; i < keyFrame.Scripts.Length; i++)
             {
-                if (done)
-                    break;
+                if (done) break;
 
                 ScriptLine line = keyFrame.Scripts[i];
+
                 if (line != null)
                 {
                     switch (line.Command)
@@ -45,7 +45,6 @@ namespace RuinExplorers.CharacterClasses
                             break;
                         case Commands.Goto:
                             character.AnimationFrame = line.IParam;
-                            done = true;
                             break;
                         case Commands.IfUpGoto:
                             if (character.keyUp)
@@ -88,9 +87,6 @@ namespace RuinExplorers.CharacterClasses
                         case Commands.SetUpperGoto:
                             character.GotoGoal[(int)PressedKeys.Upper] = line.IParam;
                             break;
-                        case Commands.SetLowerGoto:
-                            character.GotoGoal[(int)PressedKeys.Lower] = line.IParam;
-                            break;
                         case Commands.SetAtkGoto:
                             character.GotoGoal[(int)PressedKeys.Attack] = line.IParam;
                             break;
@@ -100,9 +96,9 @@ namespace RuinExplorers.CharacterClasses
                             character.GotoGoal[(int)PressedKeys.Attack] = line.IParam;
                             break;
                         case Commands.SetSecondaryGoto:
+                            character.GotoGoal[(int)PressedKeys.Secondary] = line.IParam;
                             character.GotoGoal[(int)PressedKeys.SecUp] = line.IParam;
                             character.GotoGoal[(int)PressedKeys.SecDown] = line.IParam;
-                            character.GotoGoal[(int)PressedKeys.Secondary] = line.IParam;
                             break;
                         case Commands.SetSecUpGoto:
                             character.GotoGoal[(int)PressedKeys.SecUp] = line.IParam;
@@ -110,11 +106,10 @@ namespace RuinExplorers.CharacterClasses
                         case Commands.SetSecDownGoto:
                             character.GotoGoal[(int)PressedKeys.SecDown] = line.IParam;
                             break;
-                        default:
-                            break;
                     }
                 }
             }
+
         }
     }
 }

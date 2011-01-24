@@ -34,11 +34,11 @@ namespace RuinExplorers.CharacterClasses
         {
             string[] split = line.Split(' ');
 
-            try 
-	        {
+            try
+            {
                 switch (split[0].Trim().ToLower())
                 {
-                    case "setAnim":
+                    case "setanim":
                         command = Commands.SetAnim;
                         sParam = split[1];
                         break;
@@ -74,7 +74,6 @@ namespace RuinExplorers.CharacterClasses
                         break;
                     case "joymove":
                         command = Commands.JoyMove;
-                        iParam = Convert.ToInt32(split[1]);
                         break;
                     case "clearkeys":
                         command = Commands.ClearKeys;
@@ -106,16 +105,13 @@ namespace RuinExplorers.CharacterClasses
                     case "setsecdowngoto":
                         command = Commands.SetSecDownGoto;
                         iParam = Convert.ToInt32(split[1]);
-                        break;                       
-
-                    default:
                         break;
                 }
-	        }
-	        catch (Exception e)
-	        {		
-		        Console.WriteLine(e.StackTrace);
-	        }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.StackTrace);
+            }
         }
         #endregion
     }

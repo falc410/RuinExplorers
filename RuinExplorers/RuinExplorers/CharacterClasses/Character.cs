@@ -68,7 +68,7 @@ namespace RuinExplorers.CharacterClasses
         GamePadState currentGamepadState = new GamePadState();
         GamePadState previousGamepadState = new GamePadState();
         KeyboardState currentKeyboardState = new KeyboardState();
-        KeyboardState previousKeyboardState = new KeyboardState();
+        
         #endregion
 
         public CharacterDefinition Definition
@@ -178,7 +178,7 @@ namespace RuinExplorers.CharacterClasses
             if (State == CharacterState.Air)
             {
                 #region Air State
-                CheckXCollision(map, previousLocation);
+                CheckXCollision(previousLocation);
 
                 #region Land on ledge
                 if (Trajectory.Y > 0.0f)
@@ -253,7 +253,7 @@ namespace RuinExplorers.CharacterClasses
                         FallOff();
                 }
 
-                CheckXCollision(map, previousLocation);
+                CheckXCollision(previousLocation);
                 #endregion
             }
             #endregion
@@ -302,13 +302,13 @@ namespace RuinExplorers.CharacterClasses
                 {
                     Face = CharacterDirection.Left;
                     if (Trajectory.X > -200f)
-                        Trajectory.X -= 500f * RuinExplorersMain.frameTime;
+                        Trajectory.X -= 500f * elapsedTime;
                 }
                 if (keyRight)
                 {
                     Face = CharacterDirection.Right;
                     if (Trajectory.X < 200f)
-                        Trajectory.X += 500f * RuinExplorersMain.frameTime;
+                        Trajectory.X += 500f * elapsedTime;
                 }
             }
 
@@ -357,21 +357,21 @@ namespace RuinExplorers.CharacterClasses
         /// </summary>
         /// <param name="map">The map.</param>
         /// <param name="pLoc">The previous location.</param>
-        private void CheckXCollision(Map map, Vector2 pLocation)
+        public void CheckXCollision(Vector2 pLocation)
         {
             if (Trajectory.X > 0f)
                 if (map.CheckCollision(new Vector2(Location.X + 25f, Location.Y - 15f)))
                     Location.X = pLocation.X;
             if (Trajectory.X < 0f)
                 if (map.CheckCollision(new Vector2(Location.X - 25f, Location.Y - 15f)))
-                    Location.X = pLocation.X;
+                    Location.X = pLocation.X;            
         }
 
         /// <summary>
         /// When no ledges or collision cells are beneath the character
         /// set anim to fly and reset his trajectory.Y.
         /// </summary>
-        private void FallOff()
+        public void FallOff()
         {
             State = CharacterState.Air;
             SetAnim("fly");
@@ -381,10 +381,10 @@ namespace RuinExplorers.CharacterClasses
         /// <summary>
         /// Character lands on collision cell or ledge.
         /// </summary>
-        private void Land()
+        public void Land()
         {
             State = CharacterState.Ground;
-            SetAnim("idle");
+            SetAnim("land");
         }
 
         public void Slide(float distance)
@@ -548,12 +548,8 @@ namespace RuinExplorers.CharacterClasses
 
             if (currentKeyboardState.IsKeyDown(Keys.C))
                 keySecondary = true;
-
-            //currentKeyboardState = Keyboard.GetState();
-            previousGamepadState = currentGamepadState;
-            //previousKeyboardState = currentKeyboardState;
-            //Log.Write(keySecondary.ToString());
-            //Console.WriteLine(keySecondary.ToString());
+                        
+            previousGamepadState = currentGamepadState;            
         }
         #endregion
     }
