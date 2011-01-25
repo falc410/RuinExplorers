@@ -5,6 +5,10 @@ using System.Text;
 
 namespace RuinExplorers.CharacterClasses
 {
+    /// <summary>
+    /// A frame is part a character
+    /// It contains an array of invidivual parts [16] and a name
+    /// </summary>
     class Frame
     {
         Part[] parts;

@@ -8,23 +8,32 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace RuinExplorers.MapClasses
 {
+	/// <summary>
+	/// A map consists out of an array of segments[64] which are located on
+	/// three different layers (back, middle, foreground)
+	/// it also got a collisiongrid for quick collision testing and an array
+	/// of ledges[16] to draw a collision line
+	/// It also contains an array of segmentDefinitions[512] which essentially
+	/// reads in a file containing rectangle information and flags for a specific
+	/// texture file.
+	/// </summary>
 	class Map
-    {
-        #region Variable Declaration
-        
-        public SegmentDefinitions[] segDef;
+	{
+		#region Variable Declaration
+		
+		public SegmentDefinitions[] segDef;
 		MapSegment[,] mapSegment;
 		int[,] colisionGrid;
 		Ledge[] ledges;
 		private string path = "mapname";
 
-        const int LAYER_BACK = 0;
+		const int LAYER_BACK = 0;
 
-        #endregion
+		#endregion
 
-        #region Constructor
+		#region Constructor
 
-        public Map()
+		public Map()
 		{
 			segDef = new SegmentDefinitions[512];
 			mapSegment = new MapSegment[3, 64];
@@ -36,17 +45,17 @@ namespace RuinExplorers.MapClasses
 			}
 			ReadSegmentDefinitions();
 		}
-        #endregion
+		#endregion
 
-        #region Properties
+		#region Properties
 
-        public string Path
-        {
-            get { return path; }
-            set { path = value; }
-        }
+		public string Path
+		{
+			get { return path; }
+			set { path = value; }
+		}
 
-        public Ledge[] Legdes
+		public Ledge[] Legdes
 		{
 			get { return ledges; }
 		}
@@ -155,55 +164,55 @@ namespace RuinExplorers.MapClasses
 		}
 
 
-        /// <summary>
-        /// Returns the section of a ledge in which an entity's x value reside.
-        /// </summary>
-        /// <param name="l">The l.</param>
-        /// <param name="x">The x.</param>
-        /// <returns></returns>
-        public int GetLedgeSection(int l, float x)
-        {
-            for (int i = 0; i < ledges[l].TotalNodes -1; i++)
-            {
-                if (x >= ledges[l].Nodes[i].X && x <= ledges[l].Nodes[i + 1].X)
-                    return i;
-            }
-            return -1;
-        }
+		/// <summary>
+		/// Returns the section of a ledge in which an entity's x value reside.
+		/// </summary>
+		/// <param name="l">The l.</param>
+		/// <param name="x">The x.</param>
+		/// <returns></returns>
+		public int GetLedgeSection(int l, float x)
+		{
+			for (int i = 0; i < ledges[l].TotalNodes -1; i++)
+			{
+				if (x >= ledges[l].Nodes[i].X && x <= ledges[l].Nodes[i + 1].X)
+					return i;
+			}
+			return -1;
+		}
 
-        /// <summary>
-        /// Determine if a characters locations is within a ledge's bounds.
-        /// </summary>
-        /// <param name="l">The ledge index.</param>
-        /// <param name="i">The section index.</param>
-        /// <param name="x">The x value.</param>
-        /// <returns></returns>
-        public float GetLedgeYLocation(int l,int i,float x)
-        {
-            return (ledges[l].Nodes[i + 1].Y - ledges[l].Nodes[i].Y) * ((x - ledges[l].Nodes[i].X) / (ledges[l].Nodes[i + 1].X - ledges[l].Nodes[i].X)) +
-                ledges[l].Nodes[i].Y;
-        }
+		/// <summary>
+		/// Determine if a characters locations is within a ledge's bounds (x value to the left and right side).
+		/// </summary>
+		/// <param name="l">The ledge index.</param>
+		/// <param name="i">The section index.</param>
+		/// <param name="x">The x value.</param>
+		/// <returns></returns>
+		public float GetLedgeYLocation(int l,int i,float x)
+		{
+			return (ledges[l].Nodes[i + 1].Y - ledges[l].Nodes[i].Y) * ((x - ledges[l].Nodes[i].X) / (ledges[l].Nodes[i + 1].X - ledges[l].Nodes[i].X)) +
+				ledges[l].Nodes[i].Y;
+		}
 
-        /// <summary>
-        /// Quickly check the collision based on a location and our collision grid (which is only 20x20 array).
-        /// </summary>
-        /// <param name="location">The location to check.</param>
-        /// <returns></returns>
-        public bool CheckCollision(Vector2 location)
-        {
-            if (location.X < 0f)
-                return true;
-            if (location.Y < 0f)
-                return true;
+		/// <summary>
+		/// Quickly check the collision based on a location and our collision grid (which is only 20x20 array).
+		/// </summary>
+		/// <param name="location">The location to check.</param>
+		/// <returns></returns>
+		public bool CheckCollision(Vector2 location)
+		{
+			if (location.X < 0f)
+				return true;
+			if (location.Y < 0f)
+				return true;
 
-            int x = (int)(location.X / 64f);
-            int y = (int)(location.Y / 64f);
+			int x = (int)(location.X / 64f);
+			int y = (int)(location.Y / 64f);
 
-            if (x >= 0 && y >= 0 && x < 20 && y < 20)
-                if (colisionGrid[x, y] == 0)
-                    return false;
-            return true;
-        }
+			if (x >= 0 && y >= 0 && x < 20 && y < 20)
+				if (colisionGrid[x, y] == 0)
+					return false;
+			return true;
+		}
 
 		public void Draw(SpriteBatch spriteBatch, Texture2D[] mapsTexture, Texture2D[] mapBackground, int startLayer, int endLayer)
 		{
@@ -212,16 +221,16 @@ namespace RuinExplorers.MapClasses
 
 			spriteBatch.Begin();
 
-            if (startLayer == LAYER_BACK)
-            {
-                float xLim = GetXLim();
-                float yLim = GetYLim();
-                Vector2 target = new Vector2(RuinExplorersMain.ScreenSize.X / 2f -
-                ((RuinExplorersMain.Scroll.X / xLim) - 0.5f) * 100f,
-                RuinExplorersMain.ScreenSize.Y / 2f - ((RuinExplorersMain.Scroll.Y / yLim) - 0.5f) * 100f);
+			if (startLayer == LAYER_BACK)
+			{
+				float xLim = GetXLim();
+				float yLim = GetYLim();
+				Vector2 target = new Vector2(RuinExplorersMain.ScreenSize.X / 2f -
+				((RuinExplorersMain.Scroll.X / xLim) - 0.5f) * 100f,
+				RuinExplorersMain.ScreenSize.Y / 2f - ((RuinExplorersMain.Scroll.Y / yLim) - 0.5f) * 100f);
 
-                spriteBatch.Draw(mapBackground[0], target, new Rectangle(0, 0, 1280, 720), Color.White, 0f, new Vector2(640f, 360f), 1f, SpriteEffects.None, 1f);
-            }
+				spriteBatch.Draw(mapBackground[0], target, new Rectangle(0, 0, 1280, 720), Color.White, 0f, new Vector2(640f, 360f), 1f, SpriteEffects.None, 1f);
+			}
 
 			for (int l = startLayer; l < endLayer; l++)
 			{
@@ -244,7 +253,7 @@ namespace RuinExplorers.MapClasses
 					{
 						sourceRect = segDef[mapSegment[l, i].Index].sourceRect;
 						destinationRect.X = (int)(mapSegment[l, i].location.X * 2f - RuinExplorersMain.Scroll.X * scale);
-                        destinationRect.Y = (int)(mapSegment[l, i].location.Y * 2f - RuinExplorersMain.Scroll.Y * scale);
+						destinationRect.Y = (int)(mapSegment[l, i].location.Y * 2f - RuinExplorersMain.Scroll.Y * scale);
 						destinationRect.Width = (int)(sourceRect.Width * scale);
 						destinationRect.Height = (int)(sourceRect.Height * scale);
 
@@ -256,105 +265,105 @@ namespace RuinExplorers.MapClasses
 			spriteBatch.End();
 		}
 
-        #region Map IO Methods
-        
-        public void Write()
-        {
-            BinaryWriter file = new BinaryWriter(File.Open(@"Content/data/" + path + ".dat", FileMode.Create));
+		#region Map IO Methods
+		
+		public void Write()
+		{
+			BinaryWriter file = new BinaryWriter(File.Open(@"Content/data/" + path + ".dat", FileMode.Create));
 
-            //Write all information about our map in binary to file
-            // start with ledges information
-            for (int i = 0; i < ledges.Length; i++)
-            {               
-            file.Write(ledges[i].TotalNodes);
-            for (int n = 0; n < ledges[i].TotalNodes; n++)
-            {
-                file.Write(ledges[i].Nodes[n].X);
-                file.Write(ledges[i].Nodes[n].Y);
-            }
-            file.Write(ledges[i].isHardLedge);
-       
-            }
-            // write layer / segment informatoin
-            for (int l = 0; l < 3; l++)
-            {
-                for (int i = 0; i < 64; i++)
-                {
-                    if (mapSegment[l, i] == null)
-                        file.Write(-1);
-                    else
-                    {
-                        file.Write(mapSegment[l, i].Index);
-                        file.Write(mapSegment[l, i].location.X);
-                        file.Write(mapSegment[l, i].location.Y);
-                    }
-                }
-            }
-            // write collision grid information
-            for (int x = 0; x < 20; x++)
-            {
-                for (int y = 0; y < 20; y++)
-                {
-                    file.Write(colisionGrid[x, y]);
-                }
-            }
+			//Write all information about our map in binary to file
+			// start with ledges information
+			for (int i = 0; i < ledges.Length; i++)
+			{               
+			file.Write(ledges[i].TotalNodes);
+			for (int n = 0; n < ledges[i].TotalNodes; n++)
+			{
+				file.Write(ledges[i].Nodes[n].X);
+				file.Write(ledges[i].Nodes[n].Y);
+			}
+			file.Write(ledges[i].isHardLedge);
+	   
+			}
+			// write layer / segment informatoin
+			for (int l = 0; l < 3; l++)
+			{
+				for (int i = 0; i < 64; i++)
+				{
+					if (mapSegment[l, i] == null)
+						file.Write(-1);
+					else
+					{
+						file.Write(mapSegment[l, i].Index);
+						file.Write(mapSegment[l, i].location.X);
+						file.Write(mapSegment[l, i].location.Y);
+					}
+				}
+			}
+			// write collision grid information
+			for (int x = 0; x < 20; x++)
+			{
+				for (int y = 0; y < 20; y++)
+				{
+					file.Write(colisionGrid[x, y]);
+				}
+			}
 
-            file.Close();
-        }
+			file.Close();
+		}
 
-        public void Read()
-        {
-            BinaryReader file = new BinaryReader(File.Open(@"Content/data/maps/" + path + ".dat", FileMode.Open));
+		public void Read()
+		{
+			BinaryReader file = new BinaryReader(File.Open(@"Content/data/maps/" + path + ".dat", FileMode.Open));
 
-            // read ledge information first
-            for (int i = 0; i < ledges.Length; i++)
-            {
-                ledges[i] = new Ledge();
-                ledges[i].TotalNodes = file.ReadInt32();
-                for (int n = 0; n < ledges[i].TotalNodes; n++)
-                {
-                    ledges[i].Nodes[n] = new Vector2(
-                    file.ReadSingle() * 2f, file.ReadSingle() *2f);
-                }
-                ledges[i].isHardLedge = file.ReadInt32();
-            }
-            // read layer / segment information
-            for (int l = 0; l < 3; l++)
-            {
-                for (int i = 0; i < 64; i++)
-                {
-                    int t = file.ReadInt32();
-                    if (t == -1)
-                        mapSegment[l, i] = null;
-                    else
-                    {
-                        mapSegment[l, i] = new MapSegment();
-                        mapSegment[l, i].Index = t;
-                        mapSegment[l, i].location = new Vector2(
-                        file.ReadSingle(),
-                        file.ReadSingle());
-                    }
-                }
-            }
-            // read collision grid information
-            for (int x = 0; x < 20; x++)
-            {
-                for (int y = 0; y < 20; y++)
-                {
-                    colisionGrid[x, y] = file.ReadInt32();
-                }
-            }
-            file.Close();
-        }
-        #endregion
+			// read ledge information first
+			for (int i = 0; i < ledges.Length; i++)
+			{
+				ledges[i] = new Ledge();
+				ledges[i].TotalNodes = file.ReadInt32();
+				for (int n = 0; n < ledges[i].TotalNodes; n++)
+				{
+					ledges[i].Nodes[n] = new Vector2(
+					file.ReadSingle() * 2f, file.ReadSingle() *2f);
+				}
+				ledges[i].isHardLedge = file.ReadInt32();
+			}
+			// read layer / segment information
+			for (int l = 0; l < 3; l++)
+			{
+				for (int i = 0; i < 64; i++)
+				{
+					int t = file.ReadInt32();
+					if (t == -1)
+						mapSegment[l, i] = null;
+					else
+					{
+						mapSegment[l, i] = new MapSegment();
+						mapSegment[l, i].Index = t;
+						mapSegment[l, i].location = new Vector2(
+						file.ReadSingle(),
+						file.ReadSingle());
+					}
+				}
+			}
+			// read collision grid information
+			for (int x = 0; x < 20; x++)
+			{
+				for (int y = 0; y < 20; y++)
+				{
+					colisionGrid[x, y] = file.ReadInt32();
+				}
+			}
+			file.Close();
+		}
+		#endregion
 
-        public float GetXLim()
-        {
-            return 1280 - RuinExplorersMain.ScreenSize.X;
-        }
-        public float GetYLim()
-        {
-            return 1280 - RuinExplorersMain.ScreenSize.Y;
-        }
-    }
+		public float GetXLim()
+		{
+			return 1280 - RuinExplorersMain.ScreenSize.X;
+		}
+		public float GetYLim()
+		{
+			return 1280 - RuinExplorersMain.ScreenSize.Y;
+		}
+	}
 }

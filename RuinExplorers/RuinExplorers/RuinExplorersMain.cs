@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using RuinExplorers.MapClasses;
 using RuinExplorers.CharacterClasses;
+using RuinExplorers.Helpers;
 
 namespace RuinExplorers
 {
@@ -162,11 +163,11 @@ namespace RuinExplorers
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
+            // draw the background and back layers first
             map.Draw(spriteBatch, mapTexture, mapBackgroundTexture, 0, 2);
-
+            // next draw the character(s)
            character[0].Draw(spriteBatch);
-
+            // finally draw the foreground layer
             map.Draw(spriteBatch, mapTexture, mapBackgroundTexture, 2, 3);
 
             base.Draw(gameTime);

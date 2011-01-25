@@ -20,7 +20,7 @@ namespace RuinExplorers.CharacterClasses
         /// a keyframe can call setanim x and then goto y, effectively setting the animation
         /// to x, frame y, but two gotos in a row cannot be called from the same keyframe
         /// </summary>
-        /// <param name="animIndex">Index of the anim.</param>
+        /// <param name="animIndex">Index of the animation.</param>
         /// <param name="keyFrameIndex">Index of the key frame.</param>
         public void DoScript(int animIdx, int keyFrameIdx)
         {
@@ -41,22 +41,22 @@ namespace RuinExplorers.CharacterClasses
                     switch (line.Command)
                     {
                         case Commands.SetAnim:
-                            character.SetAnim(line.SParam);
+                            character.SetAnim(line.StringParameter);
                             break;
                         case Commands.Goto:
-                            character.AnimationFrame = line.IParam;
+                            character.AnimationFrame = line.IntParameter;
                             break;
                         case Commands.IfUpGoto:
                             if (character.keyUp)
                             {
-                                character.AnimationFrame = line.IParam;
+                                character.AnimationFrame = line.IntParameter;
                                 done = true;
                             }
                             break;
                         case Commands.IfDownGoto:
                             if (character.keyDown)
                             {
-                                character.AnimationFrame = line.IParam;
+                                character.AnimationFrame = line.IntParameter;
                                 done = true;
                             }
                             break;
@@ -67,13 +67,13 @@ namespace RuinExplorers.CharacterClasses
                             character.floating = false;
                             break;
                         case Commands.Slide:
-                            character.Slide(line.IParam);
+                            character.Slide(line.IntParameter);
                             break;
                         case Commands.Backup:
-                            character.Slide(-line.IParam);
+                            character.Slide(-line.IntParameter);
                             break;
                         case Commands.SetJump:
-                            character.SetJump(line.IParam);
+                            character.SetJump(line.IntParameter);
                             break;
                         case Commands.JoyMove:
                             if (character.keyLeft)
@@ -85,26 +85,26 @@ namespace RuinExplorers.CharacterClasses
                             character.PressedKey = PressedKeys.None;
                             break;
                         case Commands.SetUpperGoto:
-                            character.GotoGoal[(int)PressedKeys.Upper] = line.IParam;
+                            character.GotoGoal[(int)PressedKeys.Upper] = line.IntParameter;
                             break;
                         case Commands.SetAtkGoto:
-                            character.GotoGoal[(int)PressedKeys.Attack] = line.IParam;
+                            character.GotoGoal[(int)PressedKeys.Attack] = line.IntParameter;
                             break;
                         case Commands.SetAnyGoto:
-                            character.GotoGoal[(int)PressedKeys.Upper] = line.IParam;
-                            character.GotoGoal[(int)PressedKeys.Lower] = line.IParam;
-                            character.GotoGoal[(int)PressedKeys.Attack] = line.IParam;
+                            character.GotoGoal[(int)PressedKeys.Upper] = line.IntParameter;
+                            character.GotoGoal[(int)PressedKeys.Lower] = line.IntParameter;
+                            character.GotoGoal[(int)PressedKeys.Attack] = line.IntParameter;
                             break;
                         case Commands.SetSecondaryGoto:
-                            character.GotoGoal[(int)PressedKeys.Secondary] = line.IParam;
-                            character.GotoGoal[(int)PressedKeys.SecUp] = line.IParam;
-                            character.GotoGoal[(int)PressedKeys.SecDown] = line.IParam;
+                            character.GotoGoal[(int)PressedKeys.Secondary] = line.IntParameter;
+                            character.GotoGoal[(int)PressedKeys.SecUp] = line.IntParameter;
+                            character.GotoGoal[(int)PressedKeys.SecDown] = line.IntParameter;
                             break;
                         case Commands.SetSecUpGoto:
-                            character.GotoGoal[(int)PressedKeys.SecUp] = line.IParam;
+                            character.GotoGoal[(int)PressedKeys.SecUp] = line.IntParameter;
                             break;
                         case Commands.SetSecDownGoto:
-                            character.GotoGoal[(int)PressedKeys.SecDown] = line.IParam;
+                            character.GotoGoal[(int)PressedKeys.SecDown] = line.IntParameter;
                             break;
                     }
                 }

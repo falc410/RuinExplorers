@@ -6,6 +6,12 @@ using System.IO;
 
 namespace RuinExplorers.CharacterClasses
 {
+    /// <summary>
+    /// Deinfes a character. 
+    /// A character consists of an array of Frames[512] (each made up out of parts) 
+    /// and another array of animations[64] (each made up out of keyFrames which in fact are frames + duration)
+    /// Requires a previously created character data from the editor.
+    /// </summary>
     class CharacterDefinition
     {
         Animation[] animations;
@@ -18,7 +24,14 @@ namespace RuinExplorers.CharacterClasses
         public int WeaponIndex;
 
         public CharacterType CharType = CharacterType.Player1;
+        #region Constructor
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CharacterDefinition"/> class.
+        /// Creates the animation and frame array and then reads character data from file to fill
+        /// all fields
+        /// </summary>
+        /// <param name="path">The path.</param>
         public CharacterDefinition(string path)
         {
             animations = new Animation[64];
@@ -35,6 +48,8 @@ namespace RuinExplorers.CharacterClasses
             Path = path;
             Read();
         }
+        #endregion
+        #region Properties
 
         public Animation[] Animations
         {
@@ -44,8 +59,11 @@ namespace RuinExplorers.CharacterClasses
         public Frame[] Frames
         {
             get { return frames; }
-        }        
-
+        }
+        #endregion
+        /// <summary>
+        /// Reads character definition (parts, animations, scripts, keyframes) from file.
+        /// </summary>
         public void Read()
         {
             BinaryReader binaryReader = new BinaryReader(File.Open(@"Content/data/characters/" + Path + ".dat", FileMode.Open, FileAccess.Read));

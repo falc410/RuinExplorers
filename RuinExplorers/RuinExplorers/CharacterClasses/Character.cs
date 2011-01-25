@@ -11,8 +11,14 @@ using RuinExplorers.Helpers;
 
 namespace RuinExplorers.CharacterClasses
 {
+    /// <summary>
+    /// Handles input, drawing, updating and collision check for characters
+    /// Requires a start location and a CharacterDefinition to create a new character
+    /// and of course proper textures which are loaded in the LoadTextures method
+    /// </summary>
     class Character
-    {        
+    {
+        #region enums
         
         public enum CharacterState
         {
@@ -30,7 +36,7 @@ namespace RuinExplorers.CharacterClasses
         {
             Solid = 0
         }
-
+        #endregion
         #region Fields
         public static Texture2D[] headTexture = new Texture2D[1];
         public static Texture2D[] torsoTexture = new Texture2D[1];
@@ -379,7 +385,7 @@ namespace RuinExplorers.CharacterClasses
         }
 
         /// <summary>
-        /// Character lands on collision cell or ledge.
+        /// Character lands on collision cell or ledge - set animation and characterState
         /// </summary>
         public void Land()
         {
@@ -387,11 +393,16 @@ namespace RuinExplorers.CharacterClasses
             SetAnim("land");
         }
 
+        /// <summary>
+        /// Set via script. Slides the character in facing x-direction.
+        /// </summary>
+        /// <param name="distance">The distance to slide the character (set by script).</param>
         public void Slide(float distance)
         {
             Trajectory.X = (float)Face * 2f * distance - distance;
         }
 
+        
         public void SetJump(float jump)
         {
             Trajectory.Y = -jump;
@@ -546,7 +557,8 @@ namespace RuinExplorers.CharacterClasses
                 previousGamepadState.Buttons.Y == ButtonState.Released) || currentKeyboardState.IsKeyDown(Keys.X))
                 keyAttack = true;
 
-            if (currentKeyboardState.IsKeyDown(Keys.C))
+            if ((currentGamepadState.Buttons.B == ButtonState.Pressed &&
+                previousGamepadState.Buttons.B == ButtonState.Released) || currentKeyboardState.IsKeyDown(Keys.C))
                 keySecondary = true;
                         
             previousGamepadState = currentGamepadState;            

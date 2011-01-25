@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 
-namespace RuinExplorers
+namespace RuinExplorers.Helpers
 {
     public static class RandomGenerator
     {
