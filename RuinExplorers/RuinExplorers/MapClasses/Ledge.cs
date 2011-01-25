@@ -6,6 +6,12 @@ using Microsoft.Xna.Framework;
 
 namespace RuinExplorers.MapClasses
 {
+    /// <summary>
+    /// A Ledge is used for collision detection. It consists of
+    /// an array of 16 nodes. A ledge can either be a soft ledge or
+    /// hard ledge - meaning that a character can not move past it.
+    /// A node is a simple Vector2 object.
+    /// </summary>
     class Ledge
     {
         Vector2[] nodes = new Vector2[16];

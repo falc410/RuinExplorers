@@ -6,6 +6,12 @@ using Microsoft.Xna.Framework;
 
 namespace RuinExplorers.MapClasses
 {
+    /// <summary>
+    /// Used to define segments on a texture
+    /// segmentDefinition requires a Name, a sourceIndex (Texture), a source Rectangle
+    /// where the segment is located on the texture and additional flags which
+    /// might be used for particle or script system in the future
+    /// </summary>
     class SegmentDefinitions
     {
         private string Name;

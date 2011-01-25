@@ -28,8 +28,10 @@ Improvements planned for the future:
 
 RuinExplorers - MainEngine
 
+Current Bugs:
+- crashes when trying to do air-combo (reason is that the attack animation on keyframe 6 (attack 7) sets setanygoto 11, so the next time attack is pressed any animation should play frame 11. but in midair we are using the fly animation which does have a frame 11)
+
 Improvements planned for the future:
 
 - Code cleanup & documentation
-- Completely handle keyboard input (broken atm)
-- Different Resolutions
+- Allow for Different Resolutions

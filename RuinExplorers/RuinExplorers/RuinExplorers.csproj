@@ -120,7 +120,6 @@
     <Compile Include="CharacterClasses\ScriptLine.cs" />
     <Compile Include="Helpers\Log.cs" />
     <Compile Include="Helpers\StringHelper.cs" />
-    <Compile Include="MapClasses\DrawingMode.cs" />
     <Compile Include="MapClasses\Ledge.cs" />
     <Compile Include="MapClasses\Map.cs" />
     <Compile Include="MapClasses\MapSegment.cs" />

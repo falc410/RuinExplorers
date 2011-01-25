@@ -15,7 +15,7 @@ namespace RuinExplorers.MapClasses
 	/// of ledges[16] to draw a collision line
 	/// It also contains an array of segmentDefinitions[512] which essentially
 	/// reads in a file containing rectangle information and flags for a specific
-	/// texture file.
+	/// texture file (max of 512 lines).
 	/// </summary>
 	class Map
 	{
@@ -33,6 +33,13 @@ namespace RuinExplorers.MapClasses
 
 		#region Constructor
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Map"/> class.
+		/// Creates an empty array for segmentDefinition, 3 layers each with
+		/// room for 64 segments, an array of 16 ledges and a collision grid which is 20x20
+		/// then it reads segment definitions - to load a map from a file the Read() method
+		/// has to be invoked manually (we do this in the initialize method from the main class)
+		/// </summary>
 		public Map()
 		{
 			segDef = new SegmentDefinitions[512];
@@ -87,6 +94,18 @@ namespace RuinExplorers.MapClasses
 			return -1;
 		}
 
+		/// <summary>
+		/// Reads the segment definitions from fixed path (mapSegments.dat).
+		/// The layout of the file has to look like this:
+		/// #src 1
+		/// name
+		/// 0 0 0 0
+		/// 0
+		/// line 1: index of source texture
+		/// line 2: name of the segment - is drawn in the level editor
+		/// line 3: coordinates of source rectangle in the following order: x coordinate of upper left corner,
+		/// y coordinate of upper left corner, width of rectangle, height of rectangle
+		/// </summary>
 		private void ReadSegmentDefinitions()
 		{
 			StreamReader streamReader = new StreamReader(@"Content/data/mapSegments.dat");
@@ -266,7 +285,11 @@ namespace RuinExplorers.MapClasses
 		}
 
 		#region Map IO Methods
-		
+
+		/// <summary>
+		/// Writes the map to disk. Not used in the live engine - only for editor!
+		/// might want to delete this in the future from here.
+		/// </summary>
 		public void Write()
 		{
 			BinaryWriter file = new BinaryWriter(File.Open(@"Content/data/" + path + ".dat", FileMode.Create));
@@ -311,6 +334,9 @@ namespace RuinExplorers.MapClasses
 			file.Close();
 		}
 
+		/// <summary>
+		/// Reads the map from file.
+		/// </summary>
 		public void Read()
 		{
 			BinaryReader file = new BinaryReader(File.Open(@"Content/data/maps/" + path + ".dat", FileMode.Open));
