@@ -99,6 +99,18 @@ namespace CharacterEditorWindows
             get { return selectedPart; }
             set { selectedPart = value; }
         }
+
+        public int SelectedKeyFrame
+        {
+            get { return selectedKeyFrame; }
+            set { selectedKeyFrame = value; }
+        }
+
+        public int SelectedScriptLine
+        {
+            get { return selectedScriptLine; }
+            set { selectedScriptLine = value; }
+        }
 		#endregion
 
 		/// <summary>

@@ -23,7 +23,7 @@ namespace CharacterEditorWindows
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 characterEditorMain1.charDef.Path = openFileDialog1.FileName;
-                characterEditorMain1.charDef.Read();
+                characterEditorMain1.charDef.Read();                
 
                 //fill box with animation names
                 for (int i = 0; i < characterEditorMain1.charDef.Animations.Length; i++)
@@ -52,6 +52,19 @@ namespace CharacterEditorWindows
 
                     partListBox.Items.Add(i.ToString() + ": " + line);
                 }
+
+                // load frame information
+                for (int i = 0; i < characterEditorMain1.charDef.Frames.Length; i++)
+                {
+                    framesListBox.Items.Add(i.ToString() + ": " + characterEditorMain1.charDef.Frames[i].Name);
+                }
+
+                // initially select some stuff - or maybe not
+                //animationsListBox.SelectedIndex = characterEditorMain1.SelectedAnimation;
+                //framesListBox.SelectedIndex = characterEditorMain1.SelectedFrame;
+                //partListBox.SelectedIndex = characterEditorMain1.SelectedPart;
+                //keyFrameListBox.SelectedIndex = characterEditorMain1.SelectedKeyFrame;
+                //scriptsListBox.SelectedIndex = characterEditorMain1.SelectedScriptLine;
             }
         }
 
@@ -80,6 +93,7 @@ namespace CharacterEditorWindows
 
         }
         #endregion
+
         #region Animation Related Forms
         
         private void animationsDeletebutton_Click(object sender, System.EventArgs e)
@@ -122,6 +136,7 @@ namespace CharacterEditorWindows
             
         }
         #endregion
+
         #region Part Related Forms
        
         private void partDeleteButton_Click(object sender, System.EventArgs e)
@@ -176,6 +191,11 @@ namespace CharacterEditorWindows
                 characterEditorMain1.charDef.Frames[characterEditorMain1.SelectedFrame].Parts[characterEditorMain1.SelectedPart].Flip = 1;
             if (partFlipCheckBox.Checked == false)
                 characterEditorMain1.charDef.Frames[characterEditorMain1.SelectedFrame].Parts[characterEditorMain1.SelectedPart].Flip = 0;
+        }
+
+        private void partResetRotationButton_Click(object sender, System.EventArgs e)
+        {
+
         }
 
         private void partResetXScaleButton_Click(object sender, System.EventArgs e)
@@ -259,7 +279,72 @@ namespace CharacterEditorWindows
         {
             characterEditorMain1.charDef.Frames[characterEditorMain1.SelectedFrame].Parts[partListBox.SelectedIndex].Scaling.Y = (float)partScaleYUpDown.Value / 100.0f;
         }
+               
         #endregion
 
+        #region KeyFrame Related Forms
+       
+        private void keyFrameListBox_SelectedIndexChanged(object sender, System.EventArgs e)
+        {
+
+        }
+
+        private void keyFrameDurationUpDown_ValueChanged(object sender, System.EventArgs e)
+        {
+
+        }
+        #endregion
+
+        #region Frames Related Forms
+        
+        private void framesListBox_SelectedIndexChanged(object sender, System.EventArgs e)
+        {
+
+        }
+
+        private void framesAddReferenceButton_Click(object sender, System.EventArgs e)
+        {
+
+        }
+
+        private void framesNametextBox_TextChanged(object sender, System.EventArgs e)
+        {
+
+        }
+
+        private void framesEditbutton_Click(object sender, System.EventArgs e)
+        {
+
+        }
+
+        private void framesDeletebutton_Click(object sender, System.EventArgs e)
+        {
+
+        }
+        #endregion
+
+        #region Script Related Forms
+        
+        private void scriptsListBox_SelectedIndexChanged(object sender, System.EventArgs e)
+        {
+
+        }
+
+        private void scriptsNametextBox_TextChanged(object sender, System.EventArgs e)
+        {
+
+        }
+
+        private void scriptsEditbutton_Click(object sender, System.EventArgs e)
+        {
+
+        }
+
+        private void scriptsDeletebutton_Click(object sender, System.EventArgs e)
+        {
+
+        }
+        #endregion
+       
     }
 }
