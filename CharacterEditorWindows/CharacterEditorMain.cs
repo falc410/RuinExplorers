@@ -234,18 +234,11 @@ namespace CharacterEditorWindows
 
 			spriteBatch.Begin();
 
-			//draw dark-blue background rectangle for animation and keyframe list
-			spriteBatch.Draw(nullTexture, new Rectangle(0, 0, 200, 450), new Color(new
-				Vector4(0.0f, 0.0f, 0.0f, 0.5f)));
-			//draw dark-blue background rectangle for part and frame list
-			spriteBatch.Draw(nullTexture, new Rectangle(590, 0, 300, 600), new Color(new
-				Vector4(0.0f, 0.0f, 0.0f, 0.5f)));
+
 			// red bar at the bottom
 			spriteBatch.Draw(nullTexture, new Rectangle(300, 450, 200, 5), new Color(new
 	 Vector4(1.0f, 0.0f, 0.0f, 0.5f)));
-			// draw background rectangle for save and load buttons and scripts
-			spriteBatch.Draw(nullTexture, new Rectangle(200, 0, 150, 110), new Color(new
-				Vector4(0.0f, 0.0f, 0.0f, 0.5f)));
+
 
 			spriteBatch.End();
 
@@ -259,8 +252,7 @@ namespace CharacterEditorWindows
 
 			DrawPalette();
           
-			DrawFramesList();
-			DrawKeyFrameList();
+			DrawFramesList();			
 
 			int fref = characterDefinition.Animations[selectedAnimation].KeyFrames[currentKeyFrame].FrameReference;
 			if (fref < 0)
@@ -276,39 +268,7 @@ namespace CharacterEditorWindows
 			{
 				if (text.DrawClickText(480, 100, "play", mouseState.X, mouseState.Y, mouseClick))
 					playing = true;
-			}			
-
-			if (editmode == EditingMode.PathName)
-			{
-				text.color = Color.Lime;
-
-				text.DrawText(270, 15, characterDefinition.Path + "*");
-			}
-			else
-			{
-				if (text.DrawClickText(280, 15, characterDefinition.Path, mouseState.X, mouseState.Y, mouseClick))
-					editmode = EditingMode.PathName;
-			}
-
-			#region Script
-			for (int i = 0; i < 4; i++)
-			{
-				if (editmode == EditingMode.Script && selectedScriptLine == i)
-				{
-					text.color = Color.Lime;
-					text.DrawText(210, 42 + i * 16, i.ToString() + ": " + characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Scripts[i] + "*");
-				}
-				else
-				{
-					if (text.DrawClickText(210, 42 + i * 16, i.ToString() + ": " + characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Scripts[i], mouseState.X, mouseState.Y, mouseClick))
-					{
-						selectedScriptLine = i;
-						editmode = EditingMode.Script;
-					}
-				}
-			}
-			#endregion
-
+			}		
 			mouseClick = false;           
 		}
 		#region Custom Draw Methods
@@ -543,61 +503,7 @@ namespace CharacterEditorWindows
 			}			
 		}
 	   
-		//draws the keyframe list in the lower left corner
-		private void DrawKeyFrameList()
-		{
-			for (int i = keyFrameScroll; i < keyFrameScroll + 13; i++)
-			{
-				Animation animation = characterDefinition.Animations[selectedAnimation];
-
-				if (i < animation.KeyFrames.Length)
-				{
-					int y = (i - keyFrameScroll) * 15 + 250;
-					int frameReference = animation.KeyFrames[i].FrameReference;
-					string name = "";
-
-					if (frameReference > -1)
-						name = characterDefinition.Frames[frameReference].Name;
-
-					if (i == selectedKeyFrame)
-					{
-						text.color = Color.Lime;
-						text.DrawText(5, y, i.ToString() + ": " + name);
-					}
-					else
-					{
-						if (text.DrawClickText(5, y, i.ToString() + ": " + name, mouseState.X, mouseState.Y, mouseClick))
-							selectedKeyFrame = i;
-					}
-
-					if (frameReference > -1)
-					{
-						if (text.DrawClickText(110,y,"-",mouseState.X,mouseState.Y,mouseClick))
-						{
-							animation.KeyFrames[i].Duration--;
-							// did we drop the duration to 0? then delete keyframe and move all following one row up
-							if (animation.KeyFrames[i].Duration <= 0)
-							{
-								for (int j = i; j < animation.KeyFrames.Length - 1; j++)
-								{
-									KeyFrame keyFrame = animation.KeyFrames[j];
-									keyFrame.FrameReference = animation.KeyFrames[j + 1].FrameReference;
-									keyFrame.Duration = animation.KeyFrames[j + 1].Duration;
-								}
-								animation.KeyFrames[animation.KeyFrames.Length - 1].FrameReference = -1;
-							}
-						}
-						//draw KeyFrame Duration
-						text.DrawText(125, y, animation.KeyFrames[i].Duration.ToString());
-						
-						//add a clickable + sign to increase duration
-						if (text.DrawClickText(140, y, "+", mouseState.X, mouseState.Y, mouseClick))
-							animation.KeyFrames[i].Duration++;
-					}
-				}
-			}
-				
-		}
+		
 		#endregion
 
 		#region Helper Methods

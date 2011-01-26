@@ -1,5 +1,6 @@
 ﻿
 using System.Windows.Forms;
+using CharacterEditorWindows.Character;
 
 
 namespace CharacterEditorWindows
@@ -59,12 +60,26 @@ namespace CharacterEditorWindows
                     framesListBox.Items.Add(i.ToString() + ": " + characterEditorMain1.charDef.Frames[i].Name);
                 }
 
+                // load key frame information
+                for (int i = 0; i < characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames.Length; i++)
+                {
+                    if (characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[i].FrameReference > -1)
+                        keyFrameListBox.Items.Add(i.ToString() + ": " + characterEditorMain1.charDef.Frames[characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[i].FrameReference].Name);                        
+                    else
+                        keyFrameListBox.Items.Add(i.ToString() + ": ");
+                }
+
+                // load script information
+                for (int i = 0; i < characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[characterEditorMain1.SelectedKeyFrame].Scripts.Length; i++)
+                {
+                    scriptsListBox.Items.Add(i.ToString() + ": " + characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[characterEditorMain1.SelectedKeyFrame].Scripts[i]);
+                }
                 // initially select some stuff - or maybe not
-                //animationsListBox.SelectedIndex = characterEditorMain1.SelectedAnimation;
-                //framesListBox.SelectedIndex = characterEditorMain1.SelectedFrame;
-                //partListBox.SelectedIndex = characterEditorMain1.SelectedPart;
-                //keyFrameListBox.SelectedIndex = characterEditorMain1.SelectedKeyFrame;
-                //scriptsListBox.SelectedIndex = characterEditorMain1.SelectedScriptLine;
+                animationsListBox.SelectedIndex = characterEditorMain1.SelectedAnimation;
+                framesListBox.SelectedIndex = characterEditorMain1.SelectedFrame;
+                partListBox.SelectedIndex = characterEditorMain1.SelectedPart;
+                keyFrameListBox.SelectedIndex = characterEditorMain1.SelectedKeyFrame;
+                scriptsListBox.SelectedIndex = characterEditorMain1.SelectedScriptLine;
             }
         }
 
@@ -102,8 +117,8 @@ namespace CharacterEditorWindows
             // TODO: how can we really erase it?
             characterEditorMain1.charDef.Animations[animationsListBox.SelectedIndex].Name = "";
             // next problem is updating the listbox. We can't delete the entry from here and we can not
-            // rename it. so we clear it completely and reload it.
-            // sucks!
+            // rename it. so we clear it completely and reload it. haven't found a better way to handle it
+
             animationsListBox.Items.Clear();
             //fill box with animation names
             for (int i = 0; i < characterEditorMain1.charDef.Animations.Length; i++)
@@ -117,6 +132,18 @@ namespace CharacterEditorWindows
         {
             characterEditorMain1.SelectedAnimation = animationsListBox.SelectedIndex;
             animationsNametextBox.Text = characterEditorMain1.charDef.Animations[animationsListBox.SelectedIndex].Name;
+            // reload key frame box
+            keyFrameListBox.Items.Clear();
+            // load key frame information
+            for (int i = 0; i < characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames.Length; i++)
+            {
+                if (characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[i].FrameReference > -1)
+                    keyFrameListBox.Items.Add(i.ToString() + ": " + characterEditorMain1.charDef.Frames[characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[i].FrameReference].Name);
+                else
+                    keyFrameListBox.Items.Add(i.ToString() + ": ");
+            }
+            keyFrameListBox.SelectedIndex = characterEditorMain1.SelectedKeyFrame;
+
         }
 
         private void animationsEditbutton_Click(object sender, System.EventArgs e)
@@ -286,12 +313,42 @@ namespace CharacterEditorWindows
        
         private void keyFrameListBox_SelectedIndexChanged(object sender, System.EventArgs e)
         {
-
+            characterEditorMain1.SelectedKeyFrame = keyFrameListBox.SelectedIndex;
+            keyFrameDurationUpDown.Value = characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[characterEditorMain1.SelectedKeyFrame].Duration;
+            // reload script box
+            scriptsListBox.Items.Clear();
+            // load script information
+            for (int i = 0; i < characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[characterEditorMain1.SelectedKeyFrame].Scripts.Length; i++)
+            {
+                scriptsListBox.Items.Add(i.ToString() + ": " + characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[characterEditorMain1.SelectedKeyFrame].Scripts[i]);
+            }
         }
 
         private void keyFrameDurationUpDown_ValueChanged(object sender, System.EventArgs e)
         {
-
+            if (keyFrameDurationUpDown.Value <= 0)
+            {
+                Animation animation = characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation];
+                for (int j = keyFrameListBox.SelectedIndex; j < characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames.Length - 1; j++)
+                {
+                    KeyFrame keyFrame = characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[j];
+                    keyFrame.FrameReference = animation.KeyFrames[j + 1].FrameReference;
+                    keyFrame.Duration = animation.KeyFrames[j + 1].Duration;
+                }
+                animation.KeyFrames[animation.KeyFrames.Length - 1].FrameReference = -1;
+                //reload list box
+                keyFrameListBox.Items.Clear();
+                // load key frame information
+                for (int i = 0; i < characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames.Length; i++)
+                {
+                    if (characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[i].FrameReference > -1)
+                        keyFrameListBox.Items.Add(i.ToString() + ": " + characterEditorMain1.charDef.Frames[characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[i].FrameReference].Name);
+                    else
+                        keyFrameListBox.Items.Add(i.ToString() + ": ");
+                }
+                keyFrameListBox.SelectedIndex = characterEditorMain1.SelectedKeyFrame;
+            }
+            characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[characterEditorMain1.SelectedKeyFrame].Duration = (int)keyFrameDurationUpDown.Value;            
         }
         #endregion
 
@@ -327,7 +384,8 @@ namespace CharacterEditorWindows
         
         private void scriptsListBox_SelectedIndexChanged(object sender, System.EventArgs e)
         {
-
+            characterEditorMain1.SelectedScriptLine = scriptsListBox.SelectedIndex;
+            scriptsTextBox.Text = characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[characterEditorMain1.SelectedKeyFrame].Scripts[characterEditorMain1.SelectedScriptLine];
         }
 
         private void scriptsNametextBox_TextChanged(object sender, System.EventArgs e)
@@ -337,12 +395,26 @@ namespace CharacterEditorWindows
 
         private void scriptsEditbutton_Click(object sender, System.EventArgs e)
         {
-
+            characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[characterEditorMain1.SelectedKeyFrame].Scripts[characterEditorMain1.SelectedScriptLine] = scriptsTextBox.Text;
+            // reload script box
+            scriptsListBox.Items.Clear();
+            // load script information
+            for (int i = 0; i < characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[characterEditorMain1.SelectedKeyFrame].Scripts.Length; i++)
+            {
+                scriptsListBox.Items.Add(i.ToString() + ": " + characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[characterEditorMain1.SelectedKeyFrame].Scripts[i]);
+            }
         }
 
         private void scriptsDeletebutton_Click(object sender, System.EventArgs e)
         {
-
+            characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[characterEditorMain1.SelectedKeyFrame].Scripts[characterEditorMain1.SelectedScriptLine] = "";
+            // reload script box
+            scriptsListBox.Items.Clear();
+            // load script information
+            for (int i = 0; i < characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[characterEditorMain1.SelectedKeyFrame].Scripts.Length; i++)
+            {
+                scriptsListBox.Items.Add(i.ToString() + ": " + characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[characterEditorMain1.SelectedKeyFrame].Scripts[i]);
+            }
         }
         #endregion
        

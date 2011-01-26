@@ -75,6 +75,9 @@
             this.scriptsTextBox = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.characterEditorMain1 = new CharacterEditorWindows.CharacterEditorMain();
+            this.previewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.partRotationUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.partScaleXUpDown)).BeginInit();
@@ -85,7 +88,8 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
+            this.fileToolStripMenuItem,
+            this.previewToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1140, 24);
@@ -499,10 +503,33 @@
             this.characterEditorMain1.Name = "characterEditorMain1";
             this.characterEditorMain1.SelectedAnimation = 0;
             this.characterEditorMain1.SelectedFrame = 0;
+            this.characterEditorMain1.SelectedKeyFrame = 0;
             this.characterEditorMain1.SelectedPart = 0;
+            this.characterEditorMain1.SelectedScriptLine = 0;
             this.characterEditorMain1.Size = new System.Drawing.Size(800, 600);
             this.characterEditorMain1.TabIndex = 30;
             this.characterEditorMain1.Text = "characterEditorMain1";
+            // 
+            // previewToolStripMenuItem
+            // 
+            this.previewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.startToolStripMenuItem,
+            this.stopToolStripMenuItem});
+            this.previewToolStripMenuItem.Name = "previewToolStripMenuItem";
+            this.previewToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
+            this.previewToolStripMenuItem.Text = "Preview";
+            // 
+            // startToolStripMenuItem
+            // 
+            this.startToolStripMenuItem.Name = "startToolStripMenuItem";
+            this.startToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.startToolStripMenuItem.Text = "Start";
+            // 
+            // stopToolStripMenuItem
+            // 
+            this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.stopToolStripMenuItem.Text = "Stop";
             // 
             // MainForm
             // 
@@ -612,6 +639,9 @@
         private System.Windows.Forms.TextBox scriptsTextBox;
         private System.Windows.Forms.Label label9;
         private CharacterEditorMain characterEditorMain1;
+        private System.Windows.Forms.ToolStripMenuItem previewToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem startToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;
         
     }
 }
