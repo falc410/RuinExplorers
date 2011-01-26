@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CharacterEditorWindows.Character
 {
-    class KeyFrame
+    public class KeyFrame
     {
         public int FrameReference;
         public int Duration;

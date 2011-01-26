@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CharacterEditorWindows.Character
 {
-    class Frame
+    public class Frame
     {
         Part[] parts;
         public string Name;

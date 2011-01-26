@@ -7,6 +7,8 @@ using Microsoft.Xna.Framework.Input;
 using TextLibrary;
 using CharacterEditorWindows.Character;
 using System;
+using System.Windows.Forms;
+using System.Diagnostics;
 
 
 namespace CharacterEditorWindows
@@ -18,11 +20,12 @@ namespace CharacterEditorWindows
 	{        
 
 		#region Variable Declartion
-                
-        ContentManager content;		
+				
+		ContentManager Content;		
 		SpriteBatch spriteBatch;
 		SpriteFont font;
 		Text text;
+		Stopwatch timer;
 
 		CharacterDefinition characterDefinition;
 
@@ -44,7 +47,7 @@ namespace CharacterEditorWindows
 		int selectedFrame = 0;
 		int selectedAnimation = 0;
 		int selectedKeyFrame = 0;
-        int selectedScriptLine = 0;
+		int selectedScriptLine = 0;
 
 		int currentKeyFrame = 0;
 		float currentFrame = 0;
@@ -59,7 +62,7 @@ namespace CharacterEditorWindows
 			FrameName,
 			AnimationName,
 			PathName,
-            Script
+			Script
 		}
 
 		EditingMode editmode = EditingMode.None;
@@ -72,7 +75,32 @@ namespace CharacterEditorWindows
 		KeyboardState previousKeyBoardState;
 
 		#endregion
-        
+
+		#region Properties
+		public CharacterDefinition charDef
+		{
+			get { return characterDefinition; }            
+		}
+
+        public int SelectedAnimation
+        {
+            get { return selectedAnimation; }
+            set { selectedAnimation = value; }
+        }
+
+        public int SelectedFrame
+        {
+            get { return selectedFrame; }
+            set { selectedFrame = value; }
+        }
+
+        public int SelectedPart
+        {
+            get { return selectedPart; }
+            set { selectedPart = value; }
+        }
+		#endregion
+
 		/// <summary>
 		/// Allows the game to perform any initialization it needs to before starting to run.
 		/// This is where it can query for any required services and load any non-graphic
@@ -81,229 +109,196 @@ namespace CharacterEditorWindows
 		/// </summary>
 		protected override void Initialize()
 		{
-            content = new ContentManager(Services, "CharacterEditorWindowsContent");
+			Content = new ContentManager(Services, "CharacterEditorWindowsContent");
 
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+			spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            nullTexture = content.Load<Texture2D>(@"gfx/1x1");
-            font = content.Load<SpriteFont>(@"Fonts/Arial");
+			timer = Stopwatch.StartNew();
 
-            // Hook the idle event to constantly redraw our animation.
-            //Application.Idle += delegate { Invalidate(); };
+			font = Content.Load<SpriteFont>(@"Fonts/Arial");
+			text = new Text(spriteBatch, font);
+            text.size = 0.75f;
 
-			//characterDefinition = new CharacterDefinition();			
+			LoadTextures(legsTexture, @"gfx/legs");
+			LoadTextures(headTexture, @"gfx/head");
+			LoadTextures(torsoTexture, @"gfx/torso");
+			LoadTextures(weaponTexture, @"gfx/weapon");
+
+			saveIcon = Content.Load<Texture2D>(@"gfx/save_icon");
+			openFolderIcon = Content.Load<Texture2D>(@"gfx/folder_open_icon");
+			upArrowTexture = Content.Load<Texture2D>(@"gfx/upArrow");
+			downArrowTexture = Content.Load<Texture2D>(@"gfx/downArrow");
+			nullTexture = Content.Load<Texture2D>(@"gfx/1x1");
+
+            characterDefinition = new CharacterDefinition();
+
+			// Hook the idle event to constantly redraw our animation.
+			Application.Idle += delegate { Invalidate(); };						
 		}
-
-		/// <summary>
-		/// LoadContent will be called once per game and is the place to load
-		/// all of your content.
-		/// </summary>
-        //protected override void LoadContent()
-        //{
-        //    // Create a new SpriteBatch, which can be used to draw textures.
-        //    spriteBatch = new SpriteBatch(GraphicsDevice);
-
-        //    //font = Content.Load<SpriteFont>(@"Fonts/Arial");
-        //    //text = new Text(spriteBatch, font);
-
-        //    //LoadTextures(legsTexture, @"gfx/legs");
-        //    //LoadTextures(headTexture, @"gfx/head");
-        //    //LoadTextures(torsoTexture, @"gfx/torso");
-        //    //LoadTextures(weaponTexture, @"gfx/weapon");
-
-        //    //saveIcon = Content.Load<Texture2D>(@"gfx/save_icon");
-        //    //openFolderIcon = Content.Load<Texture2D>(@"gfx/folder_open_icon");
-        //    //upArrowTexture = Content.Load<Texture2D>(@"gfx/upArrow");
-        //    //downArrowTexture = Content.Load<Texture2D>(@"gfx/downArrow");
-        //    //nullTexture = Content.Load<Texture2D>(@"gfx/1x1");
-        //}
 
 		private void LoadTextures(Texture2D[] textures, string path)
 		{
 			for (int i = 0; i < textures.Length; i++)
 			{
-				textures[i] = content.Load<Texture2D>(path + (i + 1).ToString());
+				textures[i] = Content.Load<Texture2D>(path + (i + 1).ToString());
 			}
 		}
 
-		/// <summary>
-		/// UnloadContent will be called once per game and is the place to unload
-		/// all content.
-		/// </summary>
-        //protected override void UnloadContent()
-        //{
-        //    // TODO: Unload any non ContentManager content here
-        //}
 
 		/// <summary>
 		/// Allows the game to run logic such as updating the world,
 		/// checking for collisions, gathering input, and playing audio.
 		/// </summary>
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
-        //protected override void Update(GameTime gameTime)
-        //{
-        //    // Allows the game to exit
-        //    if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-        //        this.Exit();
+		//protected override void Update()
+		//{
+		//    mouseState = Mouse.GetState();
 
-        //    mouseState = Mouse.GetState();
+		//    int mouseDiffX = mouseState.X - previousMouseState.X;
+		//    int mouseDiffY = mouseState.Y - previousMouseState.Y;
 
-        //    int mouseDiffX = mouseState.X - previousMouseState.X;
-        //    int mouseDiffY = mouseState.Y - previousMouseState.Y;
-						
-        //    if (mouseState.LeftButton == ButtonState.Pressed)
-        //    {
-        //        if (previousMouseState.LeftButton == ButtonState.Pressed)
-        //            characterDefinition.Frames[selectedFrame].Parts[selectedPart].Location +=
-        //                new Vector2((float)mouseDiffX / 2.0f, (float)mouseDiffY / 2.0f);
-        //    }
-        //    else
-        //    {
-        //        if (previousMouseState.LeftButton == ButtonState.Pressed)
-        //        {
-        //            mouseClick = true;
-        //        }
-        //    }
+		//    if (mouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
+		//    {
+		//        if (previousMouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
+		//            characterDefinition.Frames[selectedFrame].Parts[selectedPart].Location +=
+		//                new Vector2((float)mouseDiffX / 2.0f, (float)mouseDiffY / 2.0f);
+		//    }
+		//    else
+		//    {
+		//        if (previousMouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
+		//        {
+		//            mouseClick = true;
+		//        }
+		//    }
 
-        //    if (mouseState.RightButton == ButtonState.Pressed)
-        //    {
-        //        if (previousMouseState.RightButton == ButtonState.Pressed)
-        //            characterDefinition.Frames[selectedFrame].Parts[selectedPart].Rotation +=
-        //                (float)mouseDiffY / 100.0f;
-        //    }
+		//    if (mouseState.RightButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
+		//    {
+		//        if (previousMouseState.RightButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
+		//            characterDefinition.Frames[selectedFrame].Parts[selectedPart].Rotation +=
+		//                (float)mouseDiffY / 100.0f;
+		//    }
 
-        //    if (mouseState.MiddleButton == ButtonState.Pressed)
-        //    {
-        //        if (previousMouseState.MiddleButton == ButtonState.Pressed)
-        //            characterDefinition.Frames[selectedFrame].Parts[selectedPart].Scaling +=
-        //                new Vector2((float)mouseDiffX * 0.01f, (float)mouseDiffY * 0.01f);
-        //    }
+		//    if (mouseState.MiddleButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
+		//    {
+		//        if (previousMouseState.MiddleButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
+		//            characterDefinition.Frames[selectedFrame].Parts[selectedPart].Scaling +=
+		//                new Vector2((float)mouseDiffX * 0.01f, (float)mouseDiffY * 0.01f);
+		//    }
 
-        //    previousMouseState = mouseState;
+		//    previousMouseState = mouseState;
 
-        //    UpdateKeys();
+		//    UpdateKeys();
 
-        //    Animation animation = characterDefinition.Animations[selectedAnimation];
-        //    KeyFrame keyFrame = animation.KeyFrames[currentKeyFrame];
+		//    Animation animation = characterDefinition.Animations[selectedAnimation];
+		//    KeyFrame keyFrame = animation.KeyFrames[currentKeyFrame];
 
-        //    if (playing)
-        //    {
-        //        currentFrame += (float)gameTime.ElapsedGameTime.TotalSeconds * 30.0f;
+		//    if (playing)
+		//    {
+		//        currentFrame += (float)timer.Elapsed.TotalSeconds * 30.0f;
 
-        //        if (currentFrame > keyFrame.Duration)
-        //        {
-        //            currentFrame -= keyFrame.Duration;
-        //            currentKeyFrame++;
+		//        if (currentFrame > keyFrame.Duration)
+		//        {
+		//            currentFrame -= keyFrame.Duration;
+		//            currentKeyFrame++;
 
-        //            if (currentKeyFrame >= animation.KeyFrames.Length)
-        //                currentKeyFrame = 0;
-        //            keyFrame = animation.KeyFrames[currentKeyFrame];
-        //        }
-        //    }
-        //    else
-        //        currentKeyFrame = selectedKeyFrame;
+		//            if (currentKeyFrame >= animation.KeyFrames.Length)
+		//                currentKeyFrame = 0;
+		//            keyFrame = animation.KeyFrames[currentKeyFrame];
+		//        }
+		//    }
+		//    else
+		//        currentKeyFrame = selectedKeyFrame;
 
-        //    if (keyFrame.FrameReference < 0)
-        //        currentKeyFrame = 0;            
-
-        //    base.Update(gameTime);
-        //}
+		//    if (keyFrame.FrameReference < 0)
+		//        currentKeyFrame = 0;
+		//}
 
 		/// <summary>
-		/// This is called when the game should draw itself.
-		/// </summary>
-		/// <param name="gameTime">Provides a snapshot of timing values.</param>
-     //   protected override void Draw(GameTime gameTime)
-     //   {
-     //       GraphicsDevice.Clear(Color.CornflowerBlue);
-			
-     //       spriteBatch.Begin();
+		/// This is called when the windows form should draw itself.
+		/// </summary>		
+		protected override void Draw()
+		{
+			GraphicsDevice.Clear(Color.CornflowerBlue);
 
-     //       //draw dark-blue background rectangle for animation and keyframe list
-     //       spriteBatch.Draw(nullTexture, new Rectangle(0, 0, 200, 450), new Color(new
-     //           Vector4(0.0f, 0.0f, 0.0f, 0.5f)));
-     //       //draw dark-blue background rectangle for part and frame list
-     //       spriteBatch.Draw(nullTexture, new Rectangle(590, 0, 300, 600), new Color(new
-     //           Vector4(0.0f, 0.0f, 0.0f, 0.5f)));
-     //       // red bar at the bottom
-     //       spriteBatch.Draw(nullTexture, new Rectangle(300, 450, 200, 5), new Color(new
-     //Vector4(1.0f, 0.0f, 0.0f, 0.5f)));
-     //       // draw background rectangle for save and load buttons and scripts
-     //       spriteBatch.Draw(nullTexture, new Rectangle(200, 0, 150, 110), new Color(new
-     //           Vector4(0.0f, 0.0f, 0.0f, 0.5f)));                        
+			spriteBatch.Begin();
 
-     //       spriteBatch.End();
+			//draw dark-blue background rectangle for animation and keyframe list
+			spriteBatch.Draw(nullTexture, new Rectangle(0, 0, 200, 450), new Color(new
+				Vector4(0.0f, 0.0f, 0.0f, 0.5f)));
+			//draw dark-blue background rectangle for part and frame list
+			spriteBatch.Draw(nullTexture, new Rectangle(590, 0, 300, 600), new Color(new
+				Vector4(0.0f, 0.0f, 0.0f, 0.5f)));
+			// red bar at the bottom
+			spriteBatch.Draw(nullTexture, new Rectangle(300, 450, 200, 5), new Color(new
+	 Vector4(1.0f, 0.0f, 0.0f, 0.5f)));
+			// draw background rectangle for save and load buttons and scripts
+			spriteBatch.Draw(nullTexture, new Rectangle(200, 0, 150, 110), new Color(new
+				Vector4(0.0f, 0.0f, 0.0f, 0.5f)));
 
-     //       // draw onionskin effect - previews frame next to currently selected frame
-     //       // so we draw our character thrice on the screen (twice with low alpha)
-     //       if (selectedFrame > 0)
-     //           DrawCharacter(new Vector2(400f, 450f), 2f, FACE_RIGHT, selectedFrame - 1, false, 0.2f);
-     //       if (selectedFrame < characterDefinition.Frames.Length - 1)
-     //           DrawCharacter(new Vector2(400f, 450f), 2f, FACE_RIGHT, selectedFrame + 1, false, 0.2f);
-     //       DrawCharacter(new Vector2(400f, 450f), 2f, FACE_RIGHT, selectedFrame, false, 1.0f);
-			
-     //       DrawPalette();
-     //       DrawPartList();
-     //       DrawFramesList();
-     //       DrawAnimationList();
-     //       DrawKeyFrameList();
+			spriteBatch.End();
 
-     //       int fref = characterDefinition.Animations[selectedAnimation].KeyFrames[currentKeyFrame].FrameReference;
-     //       if (fref < 0)
-     //           fref = 0;
+			// draw onionskin effect - previews frame next to currently selected frame
+			// so we draw our character thrice on the screen (twice with low alpha)
+            if (selectedFrame > 0)
+                DrawCharacter(new Vector2(400f, 450f), 2f, FACE_RIGHT, selectedFrame - 1, false, 0.2f);
+            if (selectedFrame < characterDefinition.Frames.Length - 1)
+                DrawCharacter(new Vector2(400f, 450f), 2f, FACE_RIGHT, selectedFrame + 1, false, 0.2f);
+            DrawCharacter(new Vector2(400f, 450f), 2f, FACE_RIGHT, selectedFrame, false, 1.0f);
 
-     //       DrawCharacter(new Vector2(500f, 100f), 0.5f, FACE_LEFT, fref, true, 1.0f);
-     //       if (playing)
-     //       {
-     //           if (text.DrawClickText(480, 100, "stop", mouseState.X, mouseState.Y, mouseClick))
-     //               playing = false;
-     //       }
-     //       else
-     //       {
-     //           if (text.DrawClickText(480, 100, "play", mouseState.X, mouseState.Y, mouseClick))
-     //               playing = true;
-     //       }
+			DrawPalette();
+          
+			DrawFramesList();
+			DrawKeyFrameList();
 
-     //       if (DrawIconAsButton(245, 5, saveIcon, mouseState.X, mouseState.Y, mouseClick))
-     //           characterDefinition.Write();
-     //       if (DrawIconAsButton(205, 5, openFolderIcon, mouseState.X, mouseState.Y, mouseClick))
-     //           characterDefinition.Read();
+			int fref = characterDefinition.Animations[selectedAnimation].KeyFrames[currentKeyFrame].FrameReference;
+			if (fref < 0)
+				fref = 0;
 
-     //       if (editmode == EditingMode.PathName)
-     //       {
-     //           text.color = Color.Lime;
+			DrawCharacter(new Vector2(500f, 100f), 0.5f, FACE_LEFT, fref, true, 1.0f);
+			if (playing)
+			{
+				if (text.DrawClickText(480, 100, "stop", mouseState.X, mouseState.Y, mouseClick))
+					playing = false;
+			}
+			else
+			{
+				if (text.DrawClickText(480, 100, "play", mouseState.X, mouseState.Y, mouseClick))
+					playing = true;
+			}			
 
-     //           text.DrawText(270, 15, characterDefinition.Path + "*");
-     //       }
-     //       else
-     //       {
-     //           if (text.DrawClickText(280, 15, characterDefinition.Path, mouseState.X, mouseState.Y, mouseClick))
-     //               editmode = EditingMode.PathName;
-     //       }
+			if (editmode == EditingMode.PathName)
+			{
+				text.color = Color.Lime;
 
-     //       #region Script
-     //       for (int i = 0; i < 4; i++)
-     //       {
-     //           if (editmode == EditingMode.Script && selectedScriptLine == i)
-     //           {
-     //               text.color = Color.Lime;
-     //               text.DrawText(210, 42 + i * 16, i.ToString() + ": " + characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Scripts[i] + "*");
-     //           }
-     //           else
-     //           {
-     //               if (text.DrawClickText(210, 42 + i * 16, i.ToString() + ": " + characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Scripts[i], mouseState.X, mouseState.Y, mouseClick))
-     //               {
-     //                   selectedScriptLine = i;
-     //                   editmode = EditingMode.Script;
-     //               }
-     //           }
-     //       }
-     //       #endregion
+				text.DrawText(270, 15, characterDefinition.Path + "*");
+			}
+			else
+			{
+				if (text.DrawClickText(280, 15, characterDefinition.Path, mouseState.X, mouseState.Y, mouseClick))
+					editmode = EditingMode.PathName;
+			}
 
-     //       mouseClick = false;
+			#region Script
+			for (int i = 0; i < 4; i++)
+			{
+				if (editmode == EditingMode.Script && selectedScriptLine == i)
+				{
+					text.color = Color.Lime;
+					text.DrawText(210, 42 + i * 16, i.ToString() + ": " + characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Scripts[i] + "*");
+				}
+				else
+				{
+					if (text.DrawClickText(210, 42 + i * 16, i.ToString() + ": " + characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Scripts[i], mouseState.X, mouseState.Y, mouseClick))
+					{
+						selectedScriptLine = i;
+						editmode = EditingMode.Script;
+					}
+				}
+			}
+			#endregion
 
-     //       base.Draw(gameTime);
-     //   }
+			mouseClick = false;           
+		}
 		#region Custom Draw Methods
 				
 		/// <summary>
@@ -411,197 +406,76 @@ namespace CharacterEditorWindows
 			spriteBatch.End();             
 		}
 
-		
-		/// <summary>
-		/// Draws the scroll buttons (little arrows)
-		/// I had to modify this because of different image sizes.
-		/// </summary>
-		/// <param name="x">The x location in screen space.</param>
-		/// <param name="y">The y location in screen space.</param>
-		/// <param name="buttonTexture">The button texture.</param>
-		/// <param name="mouseX">The mouseX from mouseState so we know if the mouse is pointing at the button.</param>
-		/// <param name="mouseY">The mouseY from mouseState so we know if the mouse is pointing at the button.</param>
-		/// <param name="mouseClick">if set to <c>true</c> [mouse click] has occured.</param>
-		/// <returns></returns>
-		private bool DrawScrollButton(int x, int y, Texture2D buttonTexture, int mouseX, int mouseY, bool mouseClick)
-		{
-			bool r = false;
-			Rectangle sourceRect = new Rectangle(0, 0, 64, 35);
-			Rectangle destinationRect = new Rectangle(x, y, 32, 16);
 
-			if (destinationRect.Contains(mouseX, mouseY))
-			{
-				destinationRect.X -= 1;
-				destinationRect.Y -= 1;
-				destinationRect.Width += 2;
-				destinationRect.Height += 2;
-				if (mouseClick)
-					r = true;
-			}
-			spriteBatch.Begin();
-			spriteBatch.Draw(buttonTexture, destinationRect, sourceRect, Color.White);
-			spriteBatch.End();
 
-			return r;
-
-		}
-
-		
-		/// <summary>
-		/// Draws the icons for open and save as button.
-		/// </summary>
-		/// <param name="x">The x.</param>
-		/// <param name="y">The y.</param>
-		/// <param name="buttonTexture">The button texture.</param>
-		/// <param name="mouseX">The mouse X.</param>
-		/// <param name="mouseY">The mouse Y.</param>
-		/// <param name="mouseClick">if set to <c>true</c> [mouse click] has occured.</param>
-		/// <returns></returns>
-		private bool DrawIconAsButton(int x, int y, Texture2D buttonTexture, int mouseX, int mouseY, bool mouseClick)
-		{
-			bool r = false;
-			Rectangle destinationRect = new Rectangle(x, y, 32, 32);
-
-			if (destinationRect.Contains(mouseX, mouseY))
-			{
-				destinationRect.X -= 1;
-				destinationRect.Y -= 1;
-				destinationRect.Width += 2;
-				destinationRect.Height += 2;
-				if (mouseClick)
-					r = true;
-			}
-			spriteBatch.Begin();
-			spriteBatch.Draw(buttonTexture, destinationRect, Color.White);
-			spriteBatch.End();
-
-			return r;
-
-		}
-
+       
+	
 
 		
 		// draw icon palette
 		// TODO: either modify this or our source spritesheet
-		private void DrawPalette()
-		{
-			spriteBatch.Begin();
-			// iterate over the 4 main spritesheets
-			for (int l = 0; l < 4; l++)
-			{
-				Texture2D texture = null;
-				switch (l)
-				{
-					case 0:
-						texture = headTexture[characterDefinition.HeadIndex];
-						break;
-					case 1:
-						texture = torsoTexture[characterDefinition.TorsoIndex];
-						break;
-					case 2:
-						texture = legsTexture[characterDefinition.LegsIndex];
-						break;
-					case 3:
-						texture = weaponTexture[characterDefinition.WeaponIndex];
-						break;
-					default:
-						break;
-				}
+        private void DrawPalette()
+        {
+            spriteBatch.Begin();
+            // iterate over the 4 main spritesheets
+            for (int l = 0; l < 4; l++)
+            {
+                Texture2D texture = null;
+                switch (l)
+                {
+                    case 0:
+                        texture = headTexture[characterDefinition.HeadIndex];
+                        break;
+                    case 1:
+                        texture = torsoTexture[characterDefinition.TorsoIndex];
+                        break;
+                    case 2:
+                        texture = legsTexture[characterDefinition.LegsIndex];
+                        break;
+                    case 3:
+                        texture = weaponTexture[characterDefinition.WeaponIndex];
+                        break;
+                    default:
+                        break;
+                }
 
-				if (texture != null)
-				{
-					// iterate over sprites in sheet 
-					for (int i = 0; i < 25; i++)
-					{
-						Rectangle sourceRect = new Rectangle((i % 5) * 64, (i / 5) * 64, 64, 64);
-						Rectangle destinationRect = new Rectangle(i * 23, 467 + l * 32, 23, 32);
-						spriteBatch.Draw(nullTexture, destinationRect, new Color(0, 0, 0, 25));
+                if (texture != null)
+                {
+                    // iterate over sprites in sheet 
+                    for (int i = 0; i < 25; i++)
+                    {
+                        Rectangle sourceRect = new Rectangle((i % 5) * 64, (i / 5) * 64, 64, 64);
+                        Rectangle destinationRect = new Rectangle(i * 23, 467 + l * 32, 23, 32);
+                        spriteBatch.Draw(nullTexture, destinationRect, new Color(0, 0, 0, 25));
 
-						// special case for weapon texture
-						if (l == 3)
-						{
-							sourceRect.X = (i % 4) * 80;
-							sourceRect.Y = (i / 4) * 64;
-							sourceRect.Width = 80;
+                        // special case for weapon texture
+                        if (l == 3)
+                        {
+                            sourceRect.X = (i % 4) * 80;
+                            sourceRect.Y = (i / 4) * 64;
+                            sourceRect.Width = 80;
 
-							if (i < 15)
-							{
-								destinationRect.X = i * 30;
-								destinationRect.Width = 30;
-							}
-						}
-						
-						spriteBatch.Draw(texture, destinationRect, sourceRect, Color.White);
+                            if (i < 15)
+                            {
+                                destinationRect.X = i * 30;
+                                destinationRect.Width = 30;
+                            }
+                        }
 
-						if (destinationRect.Contains(mouseState.X, mouseState.Y))
-						{
-							if (mouseClick)
-								characterDefinition.Frames[selectedFrame].Parts[selectedPart].Index = i + 64 * l;
-						}
-					}
-				}
-			}
-			spriteBatch.End();
-		}
+                        spriteBatch.Draw(texture, destinationRect, sourceRect, Color.White);
+
+                        if (destinationRect.Contains(mouseState.X, mouseState.Y))
+                        {
+                            if (mouseClick)
+                                characterDefinition.Frames[selectedFrame].Parts[selectedPart].Index = i + 64 * l;
+                        }
+                    }
+                }
+            }
+            spriteBatch.End();
+        }
 		
-		private void DrawPartList()
-		{
-			for (int i = 0; i < characterDefinition.Frames[selectedFrame].Parts.Length; i++)
-			{
-				int y = 5 + i * 15;
-				text.size = 0.75f;
-				string line = "";
-				int index = characterDefinition.Frames[selectedFrame].Parts[i].Index;
-
-				if (index < 0)
-					line = "";
-				else if (index < 64)
-					line = "head" + index.ToString();
-				else if (index < 74)
-					line = "torso" + index.ToString();
-				else if (index < 128)
-					line = "arms" + index.ToString();
-				else if (index < 192)
-					line = "legs" + index.ToString();
-				else
-					line = "weapons" + index.ToString();
-
-				if (selectedPart == i)
-				{
-					text.color = Color.Lime;
-					text.DrawText(600, y, i.ToString() + ": " + line);
-					// TODO: Fix DrawButton Function!
-					if (DrawScrollButton(675,y,upArrowTexture,mouseState.X,mouseState.Y,mouseClick))
-					{
-						SwapParts(selectedPart, selectedPart - 1);
-						if(selectedPart > 0)
-							selectedPart--;
-					}
-					if (DrawScrollButton(705,5+y,downArrowTexture,mouseState.X,mouseState.Y,mouseClick))
-					{
-						SwapParts(selectedPart, selectedPart + 1);
-						if (selectedPart < characterDefinition.Frames[selectedFrame].Parts.Length - 1)
-							selectedPart++;
-					}
-
-					Part part = characterDefinition.Frames[selectedFrame].Parts[selectedPart];
-					// flip part button
-					if (text.DrawClickText(740, y, (part.Flip == 0 ? "(n)" : "(m)"), mouseState.X, mouseState.Y, mouseClick))
-						part.Flip = 1 - part.Flip;
-					// reset scale of part button
-					if (text.DrawClickText(762, y, "(r)", mouseState.X, mouseState.Y, mouseClick))
-						part.Scaling = new Vector2(1.0f, 1.0f);
-					// delete part button
-					if (text.DrawClickText(780, y, "(x)", mouseState.X, mouseState.Y, mouseClick))
-						part.Index = -1;
-				}
-				else
-				{
-					if (text.DrawClickText(600, y, i.ToString() + ":" + line, mouseState.X, mouseState.Y, mouseClick))
-						selectedPart = i;
-				}
-			}
-		}
+		
 		
 		
 		/// <summary>
@@ -654,45 +528,9 @@ namespace CharacterEditorWindows
 						}
 					}
 				}
-			}
-			//draw arrow buttons to scroll up or down the list
-			if (DrawScrollButton(770, 280, upArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)) && frameScroll > 0 )
-				frameScroll--;
-			if (DrawScrollButton(770, 570, downArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)) && frameScroll < characterDefinition.Frames.Length - 20)
-				frameScroll++;
+			}			
 		}
 	   
-		// draws the animation list in the upper left corner. is scroll and editable
-		private void DrawAnimationList()
-		{
-			for (int i = animScroll; i < animScroll + 15; i++)
-			{
-				if (i < characterDefinition.Animations.Length)
-				{
-					int y = (i - animScroll) * 15 + 5;
-					if (i == selectedAnimation)
-					{
-						text.color = Color.Lime;
-						text.DrawText(5, y, i.ToString() + ": " + characterDefinition.Animations[i].Name + ((editmode == EditingMode.AnimationName) ? "*" : ""));
-					}
-					else
-					{
-						if (text.DrawClickText(5,y,i.ToString() + ": " + characterDefinition.Animations[i].Name,mouseState.X,mouseState.Y,mouseClick))
-						{
-							selectedAnimation = i;
-							editmode = EditingMode.AnimationName;
-						}
-					}
-				}
-			}
-
-			//draw scroll buttons (arrows)
-			if (DrawScrollButton(170, 5, upArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)) && animScroll > 0)
-				animScroll--;
-			if (DrawScrollButton(170, 200, downArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)) && animScroll < characterDefinition.Animations.Length - 15)
-				animScroll++;
-		}
-
 		//draws the keyframe list in the lower left corner
 		private void DrawKeyFrameList()
 		{
@@ -746,28 +584,25 @@ namespace CharacterEditorWindows
 					}
 				}
 			}
-
-			//draw scroll buttons
-			if (DrawScrollButton(170, 250, upArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)) && keyFrameScroll > 0)
-				keyFrameScroll--;
-			if (DrawScrollButton(170, 410, downArrowTexture, mouseState.X, mouseState.Y, (mouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)) && keyFrameScroll < characterDefinition.Animations[selectedAnimation].KeyFrames.Length - 13)
-				keyFrameScroll++;
+				
 		}
 		#endregion
 
 		#region Helper Methods
 		
-		private void SwapParts(int index1, int index2)
+		public bool SwapParts(int index1, int index2)
 		{
 			if (index1 < 0 || index2 < 0 || index1 >= characterDefinition.Frames[selectedFrame].Parts.Length ||
 				index2 >= characterDefinition.Frames[selectedFrame].Parts.Length)
-				return;
+                return false;
 
 			Part i = characterDefinition.Frames[selectedFrame].Parts[index1];
 			Part j = characterDefinition.Frames[selectedFrame].Parts[index2];
 
 			characterDefinition.Frames[selectedFrame].Parts[index1] = j;
 			characterDefinition.Frames[selectedFrame].Parts[index2] = i;
+
+            return true;
 		}
 
 		private void CopyFrame(int src, int dest)
@@ -836,9 +671,9 @@ namespace CharacterEditorWindows
 				case EditingMode.PathName:
 					t = characterDefinition.Path;
 					break;
-                case EditingMode.Script:
-                    t = characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Scripts[selectedScriptLine];
-                    break;
+				case EditingMode.Script:
+					t = characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Scripts[selectedScriptLine];
+					break;
 				default:
 					break;
 			}
@@ -870,29 +705,24 @@ namespace CharacterEditorWindows
 				case EditingMode.PathName:
 					characterDefinition.Path = t;
 					break;
-                case EditingMode.Script:
-                    characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Scripts[selectedScriptLine] = t;
-                    break;
+				case EditingMode.Script:
+					characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Scripts[selectedScriptLine] = t;
+					break;
 				default:
 					break;
 			}
 		}
-		#endregion
+		#endregion       
 
-        protected override void Draw()
-        {  
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-        }
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+			   Content.Unload();
+			}
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                content.Unload();
-            }
-
-            base.Dispose(disposing);
-        }
-    }
+			base.Dispose(disposing);
+		}
+	}
 }
  

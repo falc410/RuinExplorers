@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CharacterEditorWindows.Character
 {
-    class Animation
+    public class Animation
     {
         public string Name;
         KeyFrame[] keyFrames;

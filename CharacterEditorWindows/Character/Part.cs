@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace CharacterEditorWindows.Character
 {
-    class Part
+    public class Part
     {
         public Vector2 Location;
         public float Rotation;

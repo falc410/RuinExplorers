@@ -1,5 +1,8 @@
 RuinExplorers - MapEditor
 
+Windows Forms port started. All issues will be adressed in the Windows Forms solution!
+It's still not userfriendly nor functional!
+
 Improvements planned for the future:
 - Code cleanup & documentation
 - Better Texture handling / loading

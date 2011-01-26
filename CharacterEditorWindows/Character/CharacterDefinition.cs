@@ -6,7 +6,7 @@ using System.IO;
 
 namespace CharacterEditorWindows.Character
 {
-    class CharacterDefinition
+    public class CharacterDefinition
     {
         Animation[] animations;
         Frame[] frames;
@@ -59,7 +59,7 @@ namespace CharacterEditorWindows.Character
         /// </summary>
         public void Write()
         {
-            BinaryWriter binaryReader = new BinaryWriter(File.Open(@"Content/data/" + Path + ".dat", FileMode.Create));
+            BinaryWriter binaryReader = new BinaryWriter(File.Open(Path, FileMode.Create));
 
             binaryReader.Write(Path);
             binaryReader.Write(HeadIndex);
@@ -108,7 +108,7 @@ namespace CharacterEditorWindows.Character
         /// </summary>
         public void Read()
         {
-            BinaryReader binaryReader = new BinaryReader(File.Open(@"Content/data/" + Path + ".dat", FileMode.Open, FileAccess.Read));
+            BinaryReader binaryReader = new BinaryReader(File.Open(Path, FileMode.Open, FileAccess.Read));
 
             Path = binaryReader.ReadString();
             HeadIndex = binaryReader.ReadInt32();
