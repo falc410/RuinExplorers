@@ -101,6 +101,8 @@
             this.availableTorsoParts = new System.Windows.Forms.ListBox();
             this.availableLegsParts = new System.Windows.Forms.ListBox();
             this.characterEditorMain1 = new CharacterEditorWindows.CharacterEditorMain();
+            this.editModeComboBox = new System.Windows.Forms.ComboBox();
+            this.label10 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.partRotationUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.partScaleXUpDown)).BeginInit();
@@ -664,6 +666,7 @@
             this.addHeadButton.TabIndex = 40;
             this.addHeadButton.Text = "Add";
             this.addHeadButton.UseVisualStyleBackColor = true;
+            this.addHeadButton.Click += new System.EventHandler(this.addHeadButton_Click);
             // 
             // addWeaponButton
             // 
@@ -673,6 +676,7 @@
             this.addWeaponButton.TabIndex = 40;
             this.addWeaponButton.Text = "Add";
             this.addWeaponButton.UseVisualStyleBackColor = true;
+            this.addWeaponButton.Click += new System.EventHandler(this.addWeaponButton_Click);
             // 
             // torsoPreview
             // 
@@ -700,6 +704,7 @@
             this.addTorsoButton.TabIndex = 40;
             this.addTorsoButton.Text = "Add";
             this.addTorsoButton.UseVisualStyleBackColor = true;
+            this.addTorsoButton.Click += new System.EventHandler(this.addTorsoButton_Click);
             // 
             // legsPreview
             // 
@@ -727,6 +732,7 @@
             this.addLegsButton.TabIndex = 40;
             this.addLegsButton.Text = "Add";
             this.addLegsButton.UseVisualStyleBackColor = true;
+            this.addLegsButton.Click += new System.EventHandler(this.addLegsButton_Click);
             // 
             // availableHeadParts
             // 
@@ -744,6 +750,7 @@
             this.availableTorsoParts.Name = "availableTorsoParts";
             this.availableTorsoParts.Size = new System.Drawing.Size(120, 95);
             this.availableTorsoParts.TabIndex = 41;
+            this.availableTorsoParts.SelectedIndexChanged += new System.EventHandler(this.availableTorsoParts_SelectedIndexChanged);
             // 
             // availableLegsParts
             // 
@@ -752,11 +759,11 @@
             this.availableLegsParts.Name = "availableLegsParts";
             this.availableLegsParts.Size = new System.Drawing.Size(120, 95);
             this.availableLegsParts.TabIndex = 41;
+            this.availableLegsParts.SelectedIndexChanged += new System.EventHandler(this.availableLegsParts_SelectedIndexChanged);
             // 
             // characterEditorMain1
             // 
             this.characterEditorMain1.charDef = null;
-            this.characterEditorMain1.EditMode = CharacterEditorWindows.CharacterEditorMain.EditingMode.None;
             this.characterEditorMain1.Location = new System.Drawing.Point(13, 28);
             this.characterEditorMain1.Name = "characterEditorMain1";
             this.characterEditorMain1.Playing = false;
@@ -768,12 +775,43 @@
             this.characterEditorMain1.Size = new System.Drawing.Size(500, 500);
             this.characterEditorMain1.TabIndex = 42;
             this.characterEditorMain1.Text = "characterEditorMain1";
+            this.characterEditorMain1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.onMouseClick);
+            this.characterEditorMain1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.onMouseDown);
+            this.characterEditorMain1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.onMouseMove);
+            this.characterEditorMain1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.onMouseUp);
+            // 
+            // editModeComboBox
+            // 
+            this.editModeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.editModeComboBox.FormattingEnabled = true;
+            this.editModeComboBox.Items.AddRange(new object[] {
+            "Location",
+            "Rotation",
+            "Scale"});
+            this.editModeComboBox.Location = new System.Drawing.Point(519, 448);
+            this.editModeComboBox.MaxDropDownItems = 3;
+            this.editModeComboBox.Name = "editModeComboBox";
+            this.editModeComboBox.Size = new System.Drawing.Size(121, 21);
+            this.editModeComboBox.TabIndex = 43;
+            this.editModeComboBox.SelectedIndexChanged += new System.EventHandler(this.editModeComboBox_SelectedIndexChanged);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(519, 429);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(126, 13);
+            this.label10.TabIndex = 44;
+            this.label10.Text = "Current Editing Mode";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(983, 662);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.editModeComboBox);
             this.Controls.Add(this.characterEditorMain1);
             this.Controls.Add(this.availableLegsParts);
             this.Controls.Add(this.availableTorsoParts);
@@ -924,6 +962,8 @@
         private System.Windows.Forms.ListBox availableTorsoParts;
         private System.Windows.Forms.ListBox availableLegsParts;
         private CharacterEditorMain characterEditorMain1;
+        private System.Windows.Forms.ComboBox editModeComboBox;
+        private System.Windows.Forms.Label label10;
         
         
     }

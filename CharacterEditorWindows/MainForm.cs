@@ -3,19 +3,33 @@ using System.Windows.Forms;
 using CharacterEditorWindows.Character;
 using System;
 using System.Drawing;
+using Microsoft.Xna.Framework;
+using Rect = System.Drawing.Rectangle;
 
 
 namespace CharacterEditorWindows
 {
     public partial class MainForm : Form
     {
+        enum EditingMode
+        {
+            Location,
+            Scale,
+            Rotation
+        }
+
+        EditingMode editMode;
+
         bool initialize;
         int mouseX;
-        int mouseY;       
+        int mouseY;
+        bool isMouseDown;
 
         public MainForm()
         {
-            InitializeComponent();            
+            InitializeComponent();
+
+            editModeComboBox.SelectedIndex = 0;
         }
 
         #region MenuStrip1
@@ -67,7 +81,7 @@ namespace CharacterEditorWindows
             {
                 scriptsListBox.Items.Add(i.ToString() + ": ");
             }
-            // initially select some stuff - or maybe not
+            // initially select some stuff
             animationsListBox.SelectedIndex = characterEditorMain1.SelectedAnimation;
             framesListBox.SelectedIndex = characterEditorMain1.SelectedFrame;
             partListBox.SelectedIndex = characterEditorMain1.SelectedPart;
@@ -75,11 +89,30 @@ namespace CharacterEditorWindows
             scriptsListBox.SelectedIndex = characterEditorMain1.SelectedScriptLine;
 
             //load picture boxes with textures
+            // TODO: arms are not imported!
+            // spritesheet thinks that every sprite is 64x64
+            // except weapons which are 80x64
+            /* index 0-63 for head texture
+             * 64-127 for torso texture
+             * 128-191 for legs texture
+             * 192 - 256 for weapons texture
+            */
             for (int i = 0; i < 25; i++)
             {
-                availableHeadParts.Items.Add(i.ToString() + ": " + "head" + (i + 64 * 1).ToString());
+                availableHeadParts.Items.Add(i.ToString() + ": " + "head" + i.ToString());
+                availableTorsoParts.Items.Add(i.ToString() + ": " + "torso" + (i + 64 * 1).ToString());
+                availableLegsParts.Items.Add(i.ToString() + ": " + "legs" + (i + 64 * 2).ToString());
+                availableWeaponsParts.Items.Add(i.ToString() + ": " + "weapons" + (i + 64 * 3).ToString());
             }
-            FillPictureBox(headPreview, 0);
+            FillPictureBox(headPreview,characterEditorMain1.HeadBitmap, 0);
+            FillPictureBox(torsoPreview, characterEditorMain1.TorsoBitmap, 0);
+            FillPictureBox(legsPreview, characterEditorMain1.LegsBitmap, 0);
+            FillPictureBox(weaponsPreview, characterEditorMain1.WeaponsBitmap, 0);
+
+            availableHeadParts.SelectedIndex = 0;
+            availableTorsoParts.SelectedIndex = 0;
+            availableLegsParts.SelectedIndex = 0;
+            availableWeaponsParts.SelectedIndex = 0;
 
             initialize = false;
         }
@@ -144,12 +177,38 @@ namespace CharacterEditorWindows
                 {
                     scriptsListBox.Items.Add(i.ToString() + ": " + characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[characterEditorMain1.SelectedKeyFrame].Scripts[i]);
                 }
-                // initially select some stuff - or maybe not
+                // initially select some stuff
                 animationsListBox.SelectedIndex = characterEditorMain1.SelectedAnimation;
                 framesListBox.SelectedIndex = characterEditorMain1.SelectedFrame;
                 partListBox.SelectedIndex = characterEditorMain1.SelectedPart;
                 keyFrameListBox.SelectedIndex = characterEditorMain1.SelectedKeyFrame;
                 scriptsListBox.SelectedIndex = characterEditorMain1.SelectedScriptLine;
+
+                //load picture boxes with textures
+                // TODO: arms are not imported!
+                // spritesheet thinks that every sprite is 64x64
+                // except weapons which are 80x64
+                /* index 0-63 for head texture
+                 * 64-127 for torso texture
+                 * 128-191 for legs texture
+                 * 192 - 256 for weapons texture
+                */
+                for (int i = 0; i < 25; i++)
+                {
+                    availableHeadParts.Items.Add(i.ToString() + ": " + "head" + i.ToString());
+                    availableTorsoParts.Items.Add(i.ToString() + ": " + "torso" + (i + 64 * 1).ToString());
+                    availableLegsParts.Items.Add(i.ToString() + ": " + "legs" + (i + 64 * 2).ToString());
+                    availableWeaponsParts.Items.Add(i.ToString() + ": " + "weapons" + (i + 64 * 3).ToString());
+                }
+                FillPictureBox(headPreview, characterEditorMain1.HeadBitmap, 0);
+                FillPictureBox(torsoPreview, characterEditorMain1.TorsoBitmap, 0);
+                FillPictureBox(legsPreview, characterEditorMain1.LegsBitmap, 0);
+                FillPictureBox(weaponsPreview, characterEditorMain1.WeaponsBitmap, 0);
+
+                availableHeadParts.SelectedIndex = 0;
+                availableTorsoParts.SelectedIndex = 0;
+                availableLegsParts.SelectedIndex = 0;
+                availableWeaponsParts.SelectedIndex = 0;
             }
         }
 
@@ -201,6 +260,8 @@ namespace CharacterEditorWindows
             moveToolStripMenuItem.Checked = true;
             rotateToolStripMenuItem.Checked = false;
             scaleToolStripMenuItem.Checked = false;
+            editModeComboBox.SelectedIndex = 0;
+            editMode = EditingMode.Location;
         }
 
         private void rotateToolStripMenuItem_Click(object sender, EventArgs e)
@@ -208,13 +269,17 @@ namespace CharacterEditorWindows
             moveToolStripMenuItem.Checked = false;
             rotateToolStripMenuItem.Checked = true;
             scaleToolStripMenuItem.Checked = false;
+            editModeComboBox.SelectedIndex = 1;
+            editMode = EditingMode.Rotation;
         }
 
         private void scaleToolStripMenuItem_Click(object sender, EventArgs e)
         {
             moveToolStripMenuItem.Checked = false;
             rotateToolStripMenuItem.Checked = false;
-            scaleToolStripMenuItem.Checked = true;            
+            scaleToolStripMenuItem.Checked = true;
+            editModeComboBox.SelectedIndex = 2;
+            editMode = EditingMode.Scale;
         }
         #endregion
 
@@ -332,7 +397,7 @@ namespace CharacterEditorWindows
 
         private void partResetRotationButton_Click(object sender, System.EventArgs e)
         {
-
+            characterEditorMain1.charDef.Frames[characterEditorMain1.SelectedFrame].Parts[partListBox.SelectedIndex].Rotation = 0.0f;
         }
 
         private void partResetXScaleButton_Click(object sender, System.EventArgs e)
@@ -610,59 +675,200 @@ namespace CharacterEditorWindows
         #endregion
 
         #region Mouse Events
-
-        private void characterEditorMain1_onMouseMove(object sender, MouseEventArgs e)
-        {
-            mouseX = e.X;
-            mouseY = e.Y;
-        }
-
+        
         private void onMouseClick(object sender, MouseEventArgs e)
         {
-            Console.WriteLine("Mouse Click!");
+            
         }
 
         private void onMouseHover(object sender, EventArgs e)
         {
-            Console.WriteLine("Mouse Hover");
+            
         }
 
         private void onMouseDown(object sender, MouseEventArgs e)
         {
-            Console.WriteLine("Mouse Button down");
+            isMouseDown = true;
         }
 
-        private void availableWeaponsListBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void onMouseMove(object sender, MouseEventArgs e)
         {
+            int mouseDiffX = e.X - mouseX;
+            int mouseDiffY = e.Y - mouseY;
 
-        }       
+            switch (editMode)
+            {
+                case EditingMode.Location:
+                    if (isMouseDown)
+                        characterEditorMain1.charDef.Frames[framesListBox.SelectedIndex].Parts[partListBox.SelectedIndex].Location +=
+                           new Microsoft.Xna.Framework.Vector2((mouseDiffX / 2.0f), (mouseDiffY / 2.0f));
+                    break;
+                case EditingMode.Scale:
+                    if (isMouseDown)
+                        characterEditorMain1.charDef.Frames[framesListBox.SelectedIndex].Parts[partListBox.SelectedIndex].Scaling +=
+                           new Microsoft.Xna.Framework.Vector2((float)mouseDiffX * 0.01f, (float)mouseDiffY * 0.01f);
+                    break;
+                case EditingMode.Rotation:
+                    if (isMouseDown)
+                        characterEditorMain1.charDef.Frames[framesListBox.SelectedIndex].Parts[partListBox.SelectedIndex].Rotation +=
+                           (float)mouseDiffY / 100.0f;
+                    break;
+                default:
+                    break;
+            }
+            mouseX = e.X;
+            mouseY = e.Y;
+        }
+
+        private void onMouseUp(object sender, MouseEventArgs e)
+        {
+            isMouseDown = false;
+        }
+       
         #endregion
 
-        private void FillPictureBox(PictureBox targetPictureBox , int index)
-        {            
-            Image image = (Image)new Bitmap(64, 64);
+        #region Part Preview Area
+        
+        private void FillPictureBox(PictureBox targetPictureBox, Image sourceBitmap, int index)
+        {
+            // either we have a second method or this stupid if/else for weapons
+            if (targetPictureBox == weaponsPreview)
+            {
+                Image image = (Image)new Bitmap(80, 64);
+                Rect destRectangle = new Rect(0, 0, 80, 64);
+                Rect sourceRect = new Rect();
+                sourceRect.X = (index % 4) * 80;
+                sourceRect.Y = (index /4) * 64;
+                sourceRect.Width = 80;
+                sourceRect.Height = 64;
 
-            Rectangle destRectangle = new Rectangle(0, 0, 64, 64);
+                Graphics gi = Graphics.FromImage(image);
+                gi.DrawImage(sourceBitmap,
+                    destRectangle,
+                    sourceRect,
+                    GraphicsUnit.Pixel);
 
-            Rectangle sourceRect = new Rectangle();
-            sourceRect.X = ((index % 64) % 5) * 64;
-            sourceRect.Y = ((index % 64) / 5) * 64;
-            sourceRect.Width = 64;
-            sourceRect.Height = 64;
+                targetPictureBox.Image = image;
+            }
+            else
+            {
+                Image image = (Image)new Bitmap(64, 64);
+                Rect destRectangle = new Rect(0, 0, 64, 64);
+                Rect sourceRect = new Rect();
+                sourceRect.X = ((index % 64) % 5) * 64;
+                sourceRect.Y = ((index % 64) / 5) * 64;
+                sourceRect.Width = 64;
+                sourceRect.Height = 64;
 
-            Graphics gi = Graphics.FromImage(image);
-            gi.DrawImage(characterEditorMain1.Head1Bitmap,
-                destRectangle,
-                sourceRect,
-                GraphicsUnit.Pixel);
+                Graphics gi = Graphics.FromImage(image);
+                gi.DrawImage(sourceBitmap,
+                    destRectangle,
+                    sourceRect,
+                    GraphicsUnit.Pixel);
 
-            targetPictureBox.Image = image;         
+                targetPictureBox.Image = image;
+            }
+            // not needed I think        
             //this.Invalidate();
         }
 
         private void availableHeadParts_SelectedIndexChanged(object sender, EventArgs e)
         {
-            FillPictureBox(headPreview, availableHeadParts.SelectedIndex);
+            FillPictureBox(headPreview, characterEditorMain1.HeadBitmap, availableHeadParts.SelectedIndex);
+        }
+
+        private void availableTorsoParts_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void availableLegsParts_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void availableWeaponsListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+        #endregion
+
+        #region Add New Part to Frame
+        
+        private void addHeadButton_Click(object sender, EventArgs e)
+        {
+            int saveSelectedPartIndex = partListBox.SelectedIndex;
+            characterEditorMain1.charDef.Frames[framesListBox.SelectedIndex].Parts[partListBox.SelectedIndex].Index = availableHeadParts.SelectedIndex;
+           // characterEditorMain1.charDef.Frames[framesListBox.SelectedIndex].Parts[partListBox.SelectedIndex].Location = new Microsoft.Xna.Framework.Vector2(characterEditorMain1.Height / 2, characterEditorMain1.Width / 2);
+            //update part list
+            partListBox.Items.Clear();
+            for (int i = 0; i < characterEditorMain1.charDef.Frames[characterEditorMain1.SelectedFrame].Parts.Length; i++)
+            {
+                string line = "";
+                int index = characterEditorMain1.charDef.Frames[characterEditorMain1.SelectedFrame].Parts[i].Index;
+
+                if (index < 0)
+                    line = "";
+                else if (index < 64)
+                    line = "head" + index.ToString();
+                else if (index < 74)
+                    line = "torso" + index.ToString();
+                else if (index < 128)
+                    line = "arms" + index.ToString();
+                else if (index < 192)
+                    line = "legs" + index.ToString();
+                else
+                    line = "weapons" + index.ToString();
+
+                partListBox.Items.Add(i.ToString() + ": " + line);
+            }
+            partListBox.SelectedIndex = saveSelectedPartIndex;
+
+            //characterDefinition.Frames[selectedFrame].Parts[selectedPart].Index = i + 64 * l
+        }
+
+        private void addTorsoButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void addLegsButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void addWeaponButton_Click(object sender, EventArgs e)
+        {
+
+        }
+        #endregion
+
+        private void editModeComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (editModeComboBox.SelectedItem.ToString())
+            {
+                case "Location":
+                    moveToolStripMenuItem.Checked = true;
+                    rotateToolStripMenuItem.Checked = false;
+                    scaleToolStripMenuItem.Checked = false;
+                    editMode = EditingMode.Location;
+                    break;
+                case "Rotation":
+                    moveToolStripMenuItem.Checked = false;
+                    rotateToolStripMenuItem.Checked = true;
+                    scaleToolStripMenuItem.Checked = false;
+                    editMode = EditingMode.Rotation;
+                    break;
+                case "Scale":
+                    moveToolStripMenuItem.Checked = false;
+                    rotateToolStripMenuItem.Checked = false;
+                    scaleToolStripMenuItem.Checked = true;
+                    editMode = EditingMode.Scale;
+                    break;
+
+                default:
+                    break;
+            }
         }
 
     }

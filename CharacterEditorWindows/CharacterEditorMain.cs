@@ -28,9 +28,11 @@ namespace CharacterEditorWindows
 		ContentManager Content;		
 		SpriteBatch spriteBatch;
 		Stopwatch timer;
-      
         
-        Image head1Bitmap;   
+        Image headBitmap;
+        Image torsoBitmap;
+        Image legsBitmap;
+        Image weaponsBitmap;
 
 		CharacterDefinition characterDefinition;
 
@@ -53,36 +55,31 @@ namespace CharacterEditorWindows
 		int currentKeyFrame = 0;
         float currentFrame = 0;
 		bool playing = false;
-
-		public enum EditingMode
-		{
-			None,
-            Location,
-			Scale,
-            Rotation           
-		}
-
-        EditingMode editMode;
-
-		MouseState mouseState;
-		MouseState previousMouseState;
-		bool mouseClick = false;
-
+        
 		#endregion
 
 		#region Properties
 
-        public Image Head1Bitmap
+        public Image HeadBitmap
         {
-            get { return head1Bitmap; }
+            get { return headBitmap; }
         }
 
-        public EditingMode EditMode
+        public Image TorsoBitmap
         {
-            get { return editMode; }
-            set { editMode = value; }
+            get { return torsoBitmap; }
         }
 
+        public Image LegsBitmap
+        {
+            get { return legsBitmap; }
+        }
+
+        public Image WeaponsBitmap
+        {
+            get { return weaponsBitmap; }
+        }
+        
 		public CharacterDefinition charDef
 		{
 			get { return characterDefinition; }
@@ -124,6 +121,7 @@ namespace CharacterEditorWindows
             get { return playing; }
             set { playing = value; }
         }
+
 		#endregion
 
 		/// <summary>
@@ -135,8 +133,8 @@ namespace CharacterEditorWindows
 		protected override void Initialize()
 		{
 			Content = new ContentManager(Services, "CharacterEditorWindowsContent");
-
-			spriteBatch = new SpriteBatch(GraphicsDevice);
+            
+			spriteBatch = new SpriteBatch(GraphicsDevice);            
 
 			timer = Stopwatch.StartNew();           
 
@@ -145,7 +143,10 @@ namespace CharacterEditorWindows
 			LoadTextures(torsoTexture, @"gfx/torso");
             LoadTextures(weaponTexture, @"gfx/weapon");
                         
-            head1Bitmap = Bitmap.FromFile(@"CharacterEditorWindowsContent/gfx/source/head1.png");
+            headBitmap = Bitmap.FromFile(@"CharacterEditorWindowsContent/gfx/source/head1.png");
+            torsoBitmap = Bitmap.FromFile(@"CharacterEditorWindowsContent/gfx/source/torso1.png");
+            legsBitmap = Bitmap.FromFile(@"CharacterEditorWindowsContent/gfx/source/legs1.png");
+            weaponsBitmap = Bitmap.FromFile(@"CharacterEditorWindowsContent/gfx/source/weapon1.png");
 			
 			nullTexture = Content.Load<Texture2D>(@"gfx/1x1");
 
@@ -153,7 +154,17 @@ namespace CharacterEditorWindows
 
 			// Hook the idle event to constantly redraw our animation.
 			Application.Idle += delegate { Invalidate(); };						
-		}        
+		}
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Content.Unload();
+            }
+
+            base.Dispose(disposing);
+        }
 
 		private void LoadTextures(Texture2D[] textures, string path)
 		{
@@ -163,77 +174,11 @@ namespace CharacterEditorWindows
 			}
 		}
 
-
-		/// <summary>
-		/// Allows the game to run logic such as updating the world,
-		/// checking for collisions, gathering input, and playing audio.
-		/// </summary>
-		/// <param name="gameTime">Provides a snapshot of timing values.</param>
-		//protected override void Update()
-		//{
-		//    mouseState = Mouse.GetState();
-
-		//    int mouseDiffX = mouseState.X - previousMouseState.X;
-		//    int mouseDiffY = mouseState.Y - previousMouseState.Y;
-
-		//    if (mouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
-		//    {
-		//        if (previousMouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
-		//            characterDefinition.Frames[selectedFrame].Parts[selectedPart].Location +=
-		//                new Vector2((float)mouseDiffX / 2.0f, (float)mouseDiffY / 2.0f);
-		//    }
-		//    else
-		//    {
-		//        if (previousMouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
-		//        {
-		//            mouseClick = true;
-		//        }
-		//    }
-
-		//    if (mouseState.RightButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
-		//    {
-		//        if (previousMouseState.RightButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
-		//            characterDefinition.Frames[selectedFrame].Parts[selectedPart].Rotation +=
-		//                (float)mouseDiffY / 100.0f;
-		//    }
-
-		//    if (mouseState.MiddleButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
-		//    {
-		//        if (previousMouseState.MiddleButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
-		//            characterDefinition.Frames[selectedFrame].Parts[selectedPart].Scaling +=
-		//                new Vector2((float)mouseDiffX * 0.01f, (float)mouseDiffY * 0.01f);
-		//    }
-
-	
-
-		//    if (keyFrame.FrameReference < 0)
-		//        currentKeyFrame = 0;
-		//}
-
 		/// <summary>
 		/// This is called when the windows form should draw itself.
 		/// </summary>		
 		protected override void Draw()
-		{
-            mouseState = Mouse.GetState();
-
-            int mouseDiffX = mouseState.X - previousMouseState.X;
-            int mouseDiffY = mouseState.Y - previousMouseState.Y;
-
-            if (mouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
-            {
-                if (previousMouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
-                    characterDefinition.Frames[selectedFrame].Parts[selectedPart].Location +=
-                        new Vector2((float)mouseDiffX / 2.0f, (float)mouseDiffY / 2.0f);
-            }
-            else
-            {
-                if (previousMouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
-                {
-                    mouseClick = true;
-                }
-            }
-
+		{           
 			GraphicsDevice.Clear(Color.CornflowerBlue);
 
 			spriteBatch.Begin();
@@ -251,9 +196,7 @@ namespace CharacterEditorWindows
 				DrawCharacter(new Vector2(200f, 450f), 2f, FACE_RIGHT, selectedFrame - 1, false, 0.2f);
 			if (selectedFrame < characterDefinition.Frames.Length - 1)
 				DrawCharacter(new Vector2(200f, 450f), 2f, FACE_RIGHT, selectedFrame + 1, false, 0.2f);
-			DrawCharacter(new Vector2(200f, 450f), 2f, FACE_RIGHT, selectedFrame, false, 1.0f);
-
-			DrawPalette();
+			DrawCharacter(new Vector2(200f, 450f), 2f, FACE_RIGHT, selectedFrame, false, 1.0f);			
 		  	
             // Select keyFrame to draw for preview
 			int fref = characterDefinition.Animations[selectedAnimation].KeyFrames[currentKeyFrame].FrameReference;
@@ -291,13 +234,11 @@ namespace CharacterEditorWindows
             else
                 currentKeyFrame = selectedKeyFrame;
 
-            previousMouseState = mouseState;
-            mouseClick = false;
         }
 		#region Custom Draw Methods
 				
 		/// <summary>
-		/// Draws the character by iterating through all parts.
+		/// Draws the character by iterating through all parts - very important!.
 		/// </summary>
 		/// <param name="_location">The _location.</param>
 		/// <param name="_scale">The scale of the part.</param>
@@ -401,69 +342,7 @@ namespace CharacterEditorWindows
 			}
 			spriteBatch.End();             
 		}
-        		
-		// draw icon palette
-		// TODO: either modify this or our source spritesheet
-		private void DrawPalette()
-		{
-			spriteBatch.Begin();
-			// iterate over the 4 main spritesheets
-			for (int l = 0; l < 4; l++)
-			{
-				Texture2D texture = null;
-				switch (l)
-				{
-					case 0:
-						texture = headTexture[characterDefinition.HeadIndex];
-						break;
-					case 1:
-						texture = torsoTexture[characterDefinition.TorsoIndex];
-						break;
-					case 2:
-						texture = legsTexture[characterDefinition.LegsIndex];
-						break;
-					case 3:
-						texture = weaponTexture[characterDefinition.WeaponIndex];
-						break;
-					default:
-						break;
-				}
-
-				if (texture != null)
-				{
-					// iterate over sprites in sheet 
-					for (int i = 0; i < 25; i++)
-					{
-						Rectangle sourceRect = new Rectangle((i % 5) * 64, (i / 5) * 64, 64, 64);
-						Rectangle destinationRect = new Rectangle(i * 23, 467 + l * 32, 23, 32);
-						spriteBatch.Draw(nullTexture, destinationRect, new Color(0, 0, 0, 25));
-
-						// special case for weapon texture
-						if (l == 3)
-						{
-							sourceRect.X = (i % 4) * 80;
-							sourceRect.Y = (i / 4) * 64;
-							sourceRect.Width = 80;
-
-							if (i < 15)
-							{
-								destinationRect.X = i * 30;
-								destinationRect.Width = 30;
-							}
-						}
-
-						spriteBatch.Draw(texture, destinationRect, sourceRect, Color.White);
-
-						if (destinationRect.Contains(mouseState.X, mouseState.Y))
-						{
-							if (mouseClick)
-								characterDefinition.Frames[selectedFrame].Parts[selectedPart].Index = i + 64 * l;
-						}
-					}
-				}
-			}
-			spriteBatch.End();
-		}
+      		
 		#endregion
 
 		#region Helper Methods
@@ -502,105 +381,7 @@ namespace CharacterEditorWindows
 			}
 		}
 		#endregion
-
-		#region Input Methods
-        //private void UpdateKeys()
-        //{
-        //    keyBoardState = Keyboard.GetState();
-
-        //    Microsoft.Xna.Framework.Input.Keys[] currentKeys = keyBoardState.GetPressedKeys();
-        //    Microsoft.Xna.Framework.Input.Keys[] lastKeys = previousKeyBoardState.GetPressedKeys();
-
-        //    bool found = false;
-
-        //    for (int i = 0; i < currentKeys.Length; i++)
-        //    {
-        //        found = false;
-
-        //        for (int y = 0; y < lastKeys.Length; y++)
-        //        {
-        //            if (currentKeys[i] == lastKeys[y])
-        //            {
-        //                found = true;
-        //                break;
-        //            }
-        //        }
-
-        //        if (!found)
-        //            PressKey(currentKeys[i]);
-        //    }
-
-        //    previousKeyBoardState = keyBoardState;
-        //}
-
-        //private void PressKey(Microsoft.Xna.Framework.Input.Keys key)
-        //{
-        //    string t = String.Empty;
-        //    switch (editmode)
-        //    {
-        //        case EditingMode.None:
-        //            break;
-        //        case EditingMode.AnimationName:
-        //            t = characterDefinition.Animations[selectedAnimation].Name;
-        //            break;
-        //        case EditingMode.FrameName:
-        //            t = characterDefinition.Frames[selectedFrame].Name;
-        //            break;
-        //        case EditingMode.PathName:
-        //            t = characterDefinition.Path;
-        //            break;
-        //        case EditingMode.Script:
-        //            t = characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Scripts[selectedScriptLine];
-        //            break;
-        //        default:
-        //            break;
-        //    }
-
-        //    if (key == Microsoft.Xna.Framework.Input.Keys.Back)
-        //    {
-        //        if (t.Length > 0)
-        //            t = t.Substring(0, t.Length - 1);
-        //    }
-        //    else if (key == Microsoft.Xna.Framework.Input.Keys.Enter)
-        //    {
-        //        editmode = EditingMode.None;
-        //    }
-        //    else
-        //    {
-        //        t = (t + (char)key).ToLower();
-        //    }
-
-        //    switch (editmode)
-        //    {
-        //        case EditingMode.None:
-        //            break;
-        //        case EditingMode.AnimationName:
-        //            characterDefinition.Animations[selectedAnimation].Name = t;
-        //            break;
-        //        case EditingMode.FrameName:
-        //            characterDefinition.Frames[selectedFrame].Name = t;
-        //            break;
-        //        case EditingMode.PathName:
-        //            characterDefinition.Path = t;
-        //            break;
-        //        case EditingMode.Script:
-        //            characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Scripts[selectedScriptLine] = t;
-        //            break;
-        //        default:
-        //            break;
-        //    }
-        //}
-		#endregion       
-
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing)
-			{
-			   Content.Unload();
-			}
-
-			base.Dispose(disposing);
-		}
+        
 	}
 }
  
