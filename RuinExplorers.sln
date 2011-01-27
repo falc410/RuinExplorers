@@ -20,7 +20,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CharacterEditorWindows", "C
 		{290D43FB-52C8-4505-A8A0-6244568B05C6} = {290D43FB-52C8-4505-A8A0-6244568B05C6}
 	EndProjectSection
 EndProject
-Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "CharacterEditorWindowsContent", "CharacterEditorWindowsContent\CharacterEditorWindowsContent.contentproj", "{94FCCC89-B733-4190-9124-DC0F64C0927D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CharacterEditorWindowsContent", "CharacterEditorWindowsContent\CharacterEditorWindowsContent.contentproj", "{94FCCC89-B733-4190-9124-DC0F64C0927D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CharacterEditorWindowsContentBuilder", "CharacterEditorWindowsContentBuilder\CharacterEditorWindowsContentBuilder.csproj", "{290D43FB-52C8-4505-A8A0-6244568B05C6}"
 EndProject

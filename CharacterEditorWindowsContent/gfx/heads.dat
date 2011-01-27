@@ -1,0 +1,16 @@
+<Tileset>
+  <TextureElement TextureName="head1" />
+  <TilesetDefinitions TileWidth="64" TileHeight="64" />
+  <TilesetRectangles>
+    <Rectangle X="0" Y="0" Width="64" Height="64" />
+    <Rectangle X="64" Y="0" Width="64" Height="64" />
+    <Rectangle X="0" Y="64" Width="64" Height="64" />
+    <Rectangle X="64" Y="64" Width="64" Height="64" />
+    <Rectangle X="0" Y="128" Width="64" Height="64" />
+    <Rectangle X="64" Y="128" Width="64" Height="64" />
+    <Rectangle X="0" Y="192" Width="64" Height="64" />
+    <Rectangle X="64" Y="192" Width="64" Height="64" />
+    <Rectangle X="0" Y="256" Width="64" Height="64" />
+    <Rectangle X="64" Y="256" Width="64" Height="64" />
+  </TilesetRectangles>
+</Tileset>

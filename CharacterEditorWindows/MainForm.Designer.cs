@@ -37,6 +37,9 @@
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importTexturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.modeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rotateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -81,23 +84,44 @@
             this.scriptsEditButton = new System.Windows.Forms.Button();
             this.scriptsTextBox = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
+            this.headPreview = new System.Windows.Forms.PictureBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.weaponsPreview = new System.Windows.Forms.PictureBox();
+            this.availableWeaponsParts = new System.Windows.Forms.ListBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.addHeadButton = new System.Windows.Forms.Button();
+            this.addWeaponButton = new System.Windows.Forms.Button();
+            this.torsoPreview = new System.Windows.Forms.PictureBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.addTorsoButton = new System.Windows.Forms.Button();
+            this.legsPreview = new System.Windows.Forms.PictureBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.addLegsButton = new System.Windows.Forms.Button();
+            this.availableHeadParts = new System.Windows.Forms.ListBox();
+            this.availableTorsoParts = new System.Windows.Forms.ListBox();
+            this.availableLegsParts = new System.Windows.Forms.ListBox();
             this.characterEditorMain1 = new CharacterEditorWindows.CharacterEditorMain();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.partRotationUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.partScaleXUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.partScaleYUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.keyFrameDurationUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.headPreview)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.weaponsPreview)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.torsoPreview)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.legsPreview)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.editToolStripMenuItem,
             this.modeToolStripMenuItem,
             this.previewToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1140, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(983, 24);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -155,6 +179,27 @@
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // editToolStripMenuItem
+            // 
+            this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.undoToolStripMenuItem,
+            this.redoToolStripMenuItem});
+            this.editToolStripMenuItem.Name = "editToolStripMenuItem";
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+            this.editToolStripMenuItem.Text = "Edit";
+            // 
+            // undoToolStripMenuItem
+            // 
+            this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
+            this.undoToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.undoToolStripMenuItem.Text = "Undo";
+            // 
+            // redoToolStripMenuItem
+            // 
+            this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
+            this.redoToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.redoToolStripMenuItem.Text = "Redo";
             // 
             // modeToolStripMenuItem
             // 
@@ -240,7 +285,7 @@
             // animationsDeletebutton
             // 
             this.animationsDeletebutton.Image = ((System.Drawing.Image)(resources.GetObject("animationsDeletebutton.Image")));
-            this.animationsDeletebutton.Location = new System.Drawing.Point(1078, 27);
+            this.animationsDeletebutton.Location = new System.Drawing.Point(952, 128);
             this.animationsDeletebutton.Name = "animationsDeletebutton";
             this.animationsDeletebutton.Size = new System.Drawing.Size(20, 20);
             this.animationsDeletebutton.TabIndex = 6;
@@ -250,7 +295,7 @@
             // animationsEditbutton
             // 
             this.animationsEditbutton.Image = ((System.Drawing.Image)(resources.GetObject("animationsEditbutton.Image")));
-            this.animationsEditbutton.Location = new System.Drawing.Point(1052, 27);
+            this.animationsEditbutton.Location = new System.Drawing.Point(926, 128);
             this.animationsEditbutton.Name = "animationsEditbutton";
             this.animationsEditbutton.Size = new System.Drawing.Size(20, 20);
             this.animationsEditbutton.TabIndex = 8;
@@ -259,7 +304,7 @@
             // 
             // animationsNametextBox
             // 
-            this.animationsNametextBox.Location = new System.Drawing.Point(946, 28);
+            this.animationsNametextBox.Location = new System.Drawing.Point(820, 129);
             this.animationsNametextBox.Name = "animationsNametextBox";
             this.animationsNametextBox.Size = new System.Drawing.Size(100, 20);
             this.animationsNametextBox.TabIndex = 9;
@@ -268,7 +313,7 @@
             // partListBox
             // 
             this.partListBox.FormattingEnabled = true;
-            this.partListBox.Location = new System.Drawing.Point(820, 149);
+            this.partListBox.Location = new System.Drawing.Point(518, 28);
             this.partListBox.Name = "partListBox";
             this.partListBox.Size = new System.Drawing.Size(120, 121);
             this.partListBox.TabIndex = 11;
@@ -276,7 +321,7 @@
             // 
             // partMoveUpButton
             // 
-            this.partMoveUpButton.Location = new System.Drawing.Point(946, 149);
+            this.partMoveUpButton.Location = new System.Drawing.Point(644, 28);
             this.partMoveUpButton.Name = "partMoveUpButton";
             this.partMoveUpButton.Size = new System.Drawing.Size(75, 23);
             this.partMoveUpButton.TabIndex = 12;
@@ -286,7 +331,7 @@
             // 
             // partMoveDownButton
             // 
-            this.partMoveDownButton.Location = new System.Drawing.Point(1027, 149);
+            this.partMoveDownButton.Location = new System.Drawing.Point(725, 28);
             this.partMoveDownButton.Name = "partMoveDownButton";
             this.partMoveDownButton.Size = new System.Drawing.Size(75, 23);
             this.partMoveDownButton.TabIndex = 12;
@@ -296,7 +341,7 @@
             // 
             // partRotationUpDown
             // 
-            this.partRotationUpDown.Location = new System.Drawing.Point(946, 188);
+            this.partRotationUpDown.Location = new System.Drawing.Point(644, 67);
             this.partRotationUpDown.Maximum = new decimal(new int[] {
             360,
             0,
@@ -310,7 +355,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(991, 190);
+            this.label1.Location = new System.Drawing.Point(689, 69);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(47, 13);
             this.label1.TabIndex = 14;
@@ -319,7 +364,7 @@
             // partResetRotationButton
             // 
             this.partResetRotationButton.Image = ((System.Drawing.Image)(resources.GetObject("partResetRotationButton.Image")));
-            this.partResetRotationButton.Location = new System.Drawing.Point(1052, 186);
+            this.partResetRotationButton.Location = new System.Drawing.Point(750, 65);
             this.partResetRotationButton.Name = "partResetRotationButton";
             this.partResetRotationButton.Size = new System.Drawing.Size(20, 20);
             this.partResetRotationButton.TabIndex = 15;
@@ -328,7 +373,7 @@
             // 
             // partScaleXUpDown
             // 
-            this.partScaleXUpDown.Location = new System.Drawing.Point(946, 217);
+            this.partScaleXUpDown.Location = new System.Drawing.Point(644, 96);
             this.partScaleXUpDown.Minimum = new decimal(new int[] {
             100,
             0,
@@ -342,7 +387,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(991, 219);
+            this.label2.Location = new System.Drawing.Point(689, 98);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(42, 13);
             this.label2.TabIndex = 14;
@@ -351,7 +396,7 @@
             // partResetXScaleButton
             // 
             this.partResetXScaleButton.Image = ((System.Drawing.Image)(resources.GetObject("partResetXScaleButton.Image")));
-            this.partResetXScaleButton.Location = new System.Drawing.Point(1052, 215);
+            this.partResetXScaleButton.Location = new System.Drawing.Point(750, 94);
             this.partResetXScaleButton.Name = "partResetXScaleButton";
             this.partResetXScaleButton.Size = new System.Drawing.Size(20, 20);
             this.partResetXScaleButton.TabIndex = 15;
@@ -360,7 +405,7 @@
             // 
             // partDeleteButton
             // 
-            this.partDeleteButton.Location = new System.Drawing.Point(1027, 267);
+            this.partDeleteButton.Location = new System.Drawing.Point(725, 146);
             this.partDeleteButton.Name = "partDeleteButton";
             this.partDeleteButton.Size = new System.Drawing.Size(75, 23);
             this.partDeleteButton.TabIndex = 16;
@@ -371,7 +416,7 @@
             // partFlipCheckBox
             // 
             this.partFlipCheckBox.AutoSize = true;
-            this.partFlipCheckBox.Location = new System.Drawing.Point(946, 267);
+            this.partFlipCheckBox.Location = new System.Drawing.Point(644, 146);
             this.partFlipCheckBox.Name = "partFlipCheckBox";
             this.partFlipCheckBox.Size = new System.Drawing.Size(64, 17);
             this.partFlipCheckBox.TabIndex = 17;
@@ -381,7 +426,7 @@
             // 
             // partScaleYUpDown
             // 
-            this.partScaleYUpDown.Location = new System.Drawing.Point(946, 243);
+            this.partScaleYUpDown.Location = new System.Drawing.Point(644, 122);
             this.partScaleYUpDown.Minimum = new decimal(new int[] {
             100,
             0,
@@ -395,7 +440,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(991, 245);
+            this.label3.Location = new System.Drawing.Point(689, 124);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(42, 13);
             this.label3.TabIndex = 14;
@@ -404,7 +449,7 @@
             // partResetYScaleButton
             // 
             this.partResetYScaleButton.Image = ((System.Drawing.Image)(resources.GetObject("partResetYScaleButton.Image")));
-            this.partResetYScaleButton.Location = new System.Drawing.Point(1052, 241);
+            this.partResetYScaleButton.Location = new System.Drawing.Point(750, 120);
             this.partResetYScaleButton.Name = "partResetYScaleButton";
             this.partResetYScaleButton.Size = new System.Drawing.Size(20, 20);
             this.partResetYScaleButton.TabIndex = 15;
@@ -423,16 +468,16 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(820, 130);
+            this.label5.Location = new System.Drawing.Point(518, 9);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(31, 13);
+            this.label5.Size = new System.Drawing.Size(62, 13);
             this.label5.TabIndex = 20;
-            this.label5.Text = "Parts";
+            this.label5.Text = "Select Part:";
             // 
             // framesListBox
             // 
             this.framesListBox.FormattingEnabled = true;
-            this.framesListBox.Location = new System.Drawing.Point(820, 302);
+            this.framesListBox.Location = new System.Drawing.Point(518, 178);
             this.framesListBox.Name = "framesListBox";
             this.framesListBox.Size = new System.Drawing.Size(120, 186);
             this.framesListBox.TabIndex = 21;
@@ -441,7 +486,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(820, 283);
+            this.label6.Location = new System.Drawing.Point(518, 162);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(41, 13);
             this.label6.TabIndex = 22;
@@ -449,7 +494,7 @@
             // 
             // framesAddReferenceButton
             // 
-            this.framesAddReferenceButton.Location = new System.Drawing.Point(946, 338);
+            this.framesAddReferenceButton.Location = new System.Drawing.Point(644, 214);
             this.framesAddReferenceButton.Name = "framesAddReferenceButton";
             this.framesAddReferenceButton.Size = new System.Drawing.Size(102, 23);
             this.framesAddReferenceButton.TabIndex = 23;
@@ -460,7 +505,7 @@
             // framesDeleteButton
             // 
             this.framesDeleteButton.Image = ((System.Drawing.Image)(resources.GetObject("framesDeleteButton.Image")));
-            this.framesDeleteButton.Location = new System.Drawing.Point(1078, 302);
+            this.framesDeleteButton.Location = new System.Drawing.Point(776, 179);
             this.framesDeleteButton.Name = "framesDeleteButton";
             this.framesDeleteButton.Size = new System.Drawing.Size(20, 20);
             this.framesDeleteButton.TabIndex = 6;
@@ -470,7 +515,7 @@
             // framesEditButton
             // 
             this.framesEditButton.Image = ((System.Drawing.Image)(resources.GetObject("framesEditButton.Image")));
-            this.framesEditButton.Location = new System.Drawing.Point(1052, 302);
+            this.framesEditButton.Location = new System.Drawing.Point(750, 179);
             this.framesEditButton.Name = "framesEditButton";
             this.framesEditButton.Size = new System.Drawing.Size(20, 20);
             this.framesEditButton.TabIndex = 8;
@@ -479,7 +524,7 @@
             // 
             // framesTextBox
             // 
-            this.framesTextBox.Location = new System.Drawing.Point(946, 303);
+            this.framesTextBox.Location = new System.Drawing.Point(644, 179);
             this.framesTextBox.Name = "framesTextBox";
             this.framesTextBox.Size = new System.Drawing.Size(100, 20);
             this.framesTextBox.TabIndex = 9;
@@ -488,7 +533,7 @@
             // keyFrameListBox
             // 
             this.keyFrameListBox.FormattingEnabled = true;
-            this.keyFrameListBox.Location = new System.Drawing.Point(1008, 386);
+            this.keyFrameListBox.Location = new System.Drawing.Point(650, 269);
             this.keyFrameListBox.Name = "keyFrameListBox";
             this.keyFrameListBox.Size = new System.Drawing.Size(120, 95);
             this.keyFrameListBox.TabIndex = 24;
@@ -497,7 +542,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(1069, 370);
+            this.label7.Location = new System.Drawing.Point(648, 253);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(59, 13);
             this.label7.TabIndex = 25;
@@ -505,7 +550,7 @@
             // 
             // keyFrameDurationUpDown
             // 
-            this.keyFrameDurationUpDown.Location = new System.Drawing.Point(1027, 487);
+            this.keyFrameDurationUpDown.Location = new System.Drawing.Point(669, 370);
             this.keyFrameDurationUpDown.Name = "keyFrameDurationUpDown";
             this.keyFrameDurationUpDown.Size = new System.Drawing.Size(38, 20);
             this.keyFrameDurationUpDown.TabIndex = 26;
@@ -514,7 +559,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(1071, 489);
+            this.label8.Location = new System.Drawing.Point(713, 372);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(47, 13);
             this.label8.TabIndex = 27;
@@ -523,7 +568,7 @@
             // scriptsListBox
             // 
             this.scriptsListBox.FormattingEnabled = true;
-            this.scriptsListBox.Location = new System.Drawing.Point(820, 532);
+            this.scriptsListBox.Location = new System.Drawing.Point(776, 269);
             this.scriptsListBox.Name = "scriptsListBox";
             this.scriptsListBox.Size = new System.Drawing.Size(120, 95);
             this.scriptsListBox.TabIndex = 28;
@@ -532,7 +577,7 @@
             // scriptsDeleteButton
             // 
             this.scriptsDeleteButton.Image = ((System.Drawing.Image)(resources.GetObject("scriptsDeleteButton.Image")));
-            this.scriptsDeleteButton.Location = new System.Drawing.Point(1080, 531);
+            this.scriptsDeleteButton.Location = new System.Drawing.Point(908, 369);
             this.scriptsDeleteButton.Name = "scriptsDeleteButton";
             this.scriptsDeleteButton.Size = new System.Drawing.Size(20, 20);
             this.scriptsDeleteButton.TabIndex = 6;
@@ -542,7 +587,7 @@
             // scriptsEditButton
             // 
             this.scriptsEditButton.Image = ((System.Drawing.Image)(resources.GetObject("scriptsEditButton.Image")));
-            this.scriptsEditButton.Location = new System.Drawing.Point(1054, 531);
+            this.scriptsEditButton.Location = new System.Drawing.Point(882, 369);
             this.scriptsEditButton.Name = "scriptsEditButton";
             this.scriptsEditButton.Size = new System.Drawing.Size(20, 20);
             this.scriptsEditButton.TabIndex = 8;
@@ -551,7 +596,7 @@
             // 
             // scriptsTextBox
             // 
-            this.scriptsTextBox.Location = new System.Drawing.Point(948, 532);
+            this.scriptsTextBox.Location = new System.Drawing.Point(776, 370);
             this.scriptsTextBox.Name = "scriptsTextBox";
             this.scriptsTextBox.Size = new System.Drawing.Size(100, 20);
             this.scriptsTextBox.TabIndex = 9;
@@ -560,17 +605,159 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(820, 513);
+            this.label9.Location = new System.Drawing.Point(776, 250);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(39, 13);
             this.label9.TabIndex = 29;
             this.label9.Text = "Scripts";
             // 
+            // headPreview
+            // 
+            this.headPreview.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.headPreview.Location = new System.Drawing.Point(12, 553);
+            this.headPreview.Name = "headPreview";
+            this.headPreview.Size = new System.Drawing.Size(64, 64);
+            this.headPreview.TabIndex = 31;
+            this.headPreview.TabStop = false;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(79, 535);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(106, 13);
+            this.label11.TabIndex = 34;
+            this.label11.Text = "Available Head Parts";
+            // 
+            // weaponsPreview
+            // 
+            this.weaponsPreview.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.weaponsPreview.Location = new System.Drawing.Point(619, 553);
+            this.weaponsPreview.Name = "weaponsPreview";
+            this.weaponsPreview.Size = new System.Drawing.Size(80, 64);
+            this.weaponsPreview.TabIndex = 35;
+            this.weaponsPreview.TabStop = false;
+            // 
+            // availableWeaponsParts
+            // 
+            this.availableWeaponsParts.FormattingEnabled = true;
+            this.availableWeaponsParts.Location = new System.Drawing.Point(705, 555);
+            this.availableWeaponsParts.Name = "availableWeaponsParts";
+            this.availableWeaponsParts.Size = new System.Drawing.Size(120, 95);
+            this.availableWeaponsParts.TabIndex = 37;
+            this.availableWeaponsParts.SelectedIndexChanged += new System.EventHandler(this.availableWeaponsListBox_SelectedIndexChanged);
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(706, 539);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(99, 13);
+            this.label13.TabIndex = 38;
+            this.label13.Text = "Available Weapons";
+            // 
+            // addHeadButton
+            // 
+            this.addHeadButton.Location = new System.Drawing.Point(12, 627);
+            this.addHeadButton.Name = "addHeadButton";
+            this.addHeadButton.Size = new System.Drawing.Size(65, 23);
+            this.addHeadButton.TabIndex = 40;
+            this.addHeadButton.Text = "Add";
+            this.addHeadButton.UseVisualStyleBackColor = true;
+            // 
+            // addWeaponButton
+            // 
+            this.addWeaponButton.Location = new System.Drawing.Point(619, 627);
+            this.addWeaponButton.Name = "addWeaponButton";
+            this.addWeaponButton.Size = new System.Drawing.Size(65, 23);
+            this.addWeaponButton.TabIndex = 40;
+            this.addWeaponButton.Text = "Add";
+            this.addWeaponButton.UseVisualStyleBackColor = true;
+            // 
+            // torsoPreview
+            // 
+            this.torsoPreview.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.torsoPreview.Location = new System.Drawing.Point(215, 553);
+            this.torsoPreview.Name = "torsoPreview";
+            this.torsoPreview.Size = new System.Drawing.Size(64, 64);
+            this.torsoPreview.TabIndex = 31;
+            this.torsoPreview.TabStop = false;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(282, 535);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(107, 13);
+            this.label15.TabIndex = 34;
+            this.label15.Text = "Available Torso Parts";
+            // 
+            // addTorsoButton
+            // 
+            this.addTorsoButton.Location = new System.Drawing.Point(215, 627);
+            this.addTorsoButton.Name = "addTorsoButton";
+            this.addTorsoButton.Size = new System.Drawing.Size(65, 23);
+            this.addTorsoButton.TabIndex = 40;
+            this.addTorsoButton.Text = "Add";
+            this.addTorsoButton.UseVisualStyleBackColor = true;
+            // 
+            // legsPreview
+            // 
+            this.legsPreview.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.legsPreview.Location = new System.Drawing.Point(418, 553);
+            this.legsPreview.Name = "legsPreview";
+            this.legsPreview.Size = new System.Drawing.Size(64, 64);
+            this.legsPreview.TabIndex = 31;
+            this.legsPreview.TabStop = false;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(485, 535);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(103, 13);
+            this.label17.TabIndex = 34;
+            this.label17.Text = "Available Legs Parts";
+            // 
+            // addLegsButton
+            // 
+            this.addLegsButton.Location = new System.Drawing.Point(418, 627);
+            this.addLegsButton.Name = "addLegsButton";
+            this.addLegsButton.Size = new System.Drawing.Size(65, 23);
+            this.addLegsButton.TabIndex = 40;
+            this.addLegsButton.Text = "Add";
+            this.addLegsButton.UseVisualStyleBackColor = true;
+            // 
+            // availableHeadParts
+            // 
+            this.availableHeadParts.FormattingEnabled = true;
+            this.availableHeadParts.Location = new System.Drawing.Point(82, 555);
+            this.availableHeadParts.Name = "availableHeadParts";
+            this.availableHeadParts.Size = new System.Drawing.Size(120, 95);
+            this.availableHeadParts.TabIndex = 41;
+            this.availableHeadParts.SelectedIndexChanged += new System.EventHandler(this.availableHeadParts_SelectedIndexChanged);
+            // 
+            // availableTorsoParts
+            // 
+            this.availableTorsoParts.FormattingEnabled = true;
+            this.availableTorsoParts.Location = new System.Drawing.Point(285, 555);
+            this.availableTorsoParts.Name = "availableTorsoParts";
+            this.availableTorsoParts.Size = new System.Drawing.Size(120, 95);
+            this.availableTorsoParts.TabIndex = 41;
+            // 
+            // availableLegsParts
+            // 
+            this.availableLegsParts.FormattingEnabled = true;
+            this.availableLegsParts.Location = new System.Drawing.Point(488, 555);
+            this.availableLegsParts.Name = "availableLegsParts";
+            this.availableLegsParts.Size = new System.Drawing.Size(120, 95);
+            this.availableLegsParts.TabIndex = 41;
+            // 
             // characterEditorMain1
             // 
             this.characterEditorMain1.charDef = null;
             this.characterEditorMain1.EditMode = CharacterEditorWindows.CharacterEditorMain.EditingMode.None;
-            this.characterEditorMain1.Location = new System.Drawing.Point(13, 27);
+            this.characterEditorMain1.Location = new System.Drawing.Point(13, 28);
             this.characterEditorMain1.Name = "characterEditorMain1";
             this.characterEditorMain1.Playing = false;
             this.characterEditorMain1.SelectedAnimation = 0;
@@ -578,20 +765,32 @@
             this.characterEditorMain1.SelectedKeyFrame = 0;
             this.characterEditorMain1.SelectedPart = 0;
             this.characterEditorMain1.SelectedScriptLine = 0;
-            this.characterEditorMain1.Size = new System.Drawing.Size(800, 600);
-            this.characterEditorMain1.TabIndex = 30;
+            this.characterEditorMain1.Size = new System.Drawing.Size(500, 500);
+            this.characterEditorMain1.TabIndex = 42;
             this.characterEditorMain1.Text = "characterEditorMain1";
-            this.characterEditorMain1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.onMouseClick);
-            this.characterEditorMain1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.onMouseDown);
-            this.characterEditorMain1.MouseHover += new System.EventHandler(this.onMouseHover);
-            this.characterEditorMain1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.onMouseMove);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1140, 662);
+            this.ClientSize = new System.Drawing.Size(983, 662);
             this.Controls.Add(this.characterEditorMain1);
+            this.Controls.Add(this.availableLegsParts);
+            this.Controls.Add(this.availableTorsoParts);
+            this.Controls.Add(this.availableHeadParts);
+            this.Controls.Add(this.addWeaponButton);
+            this.Controls.Add(this.addLegsButton);
+            this.Controls.Add(this.addTorsoButton);
+            this.Controls.Add(this.addHeadButton);
+            this.Controls.Add(this.label13);
+            this.Controls.Add(this.availableWeaponsParts);
+            this.Controls.Add(this.weaponsPreview);
+            this.Controls.Add(this.label17);
+            this.Controls.Add(this.label15);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.legsPreview);
+            this.Controls.Add(this.torsoPreview);
+            this.Controls.Add(this.headPreview);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.scriptsListBox);
             this.Controls.Add(this.label8);
@@ -637,6 +836,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.partScaleXUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.partScaleYUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.keyFrameDurationUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.headPreview)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.weaponsPreview)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.torsoPreview)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.legsPreview)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -700,7 +903,28 @@
         private System.Windows.Forms.ToolStripMenuItem moveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem rotateToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem scaleToolStripMenuItem;
+        private System.Windows.Forms.PictureBox headPreview;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.PictureBox weaponsPreview;
+        private System.Windows.Forms.ListBox availableWeaponsParts;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
+        
+        private System.Windows.Forms.Button addHeadButton;
+        private System.Windows.Forms.Button addWeaponButton;
+        private System.Windows.Forms.PictureBox torsoPreview;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Button addTorsoButton;
+        private System.Windows.Forms.PictureBox legsPreview;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Button addLegsButton;
+        private System.Windows.Forms.ListBox availableHeadParts;
+        private System.Windows.Forms.ListBox availableTorsoParts;
+        private System.Windows.Forms.ListBox availableLegsParts;
         private CharacterEditorMain characterEditorMain1;
+        
         
     }
 }

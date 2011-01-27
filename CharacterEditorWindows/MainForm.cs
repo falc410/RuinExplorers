@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using CharacterEditorWindows.Character;
 using System;
+using System.Drawing;
 
 
 namespace CharacterEditorWindows
@@ -9,10 +10,12 @@ namespace CharacterEditorWindows
     public partial class MainForm : Form
     {
         bool initialize;
+        int mouseX;
+        int mouseY;       
 
         public MainForm()
         {
-            InitializeComponent();
+            InitializeComponent();            
         }
 
         #region MenuStrip1
@@ -41,23 +44,7 @@ namespace CharacterEditorWindows
             partListBox.Items.Clear();
             for (int i = 0; i < characterEditorMain1.charDef.Frames[characterEditorMain1.SelectedFrame].Parts.Length; i++)
             {
-                string line = "";
-                int index = characterEditorMain1.charDef.Frames[characterEditorMain1.SelectedFrame].Parts[i].Index;
-
-                if (index < 0)
-                    line = "";
-                else if (index < 64)
-                    line = "head" + index.ToString();
-                else if (index < 74)
-                    line = "torso" + index.ToString();
-                else if (index < 128)
-                    line = "arms" + index.ToString();
-                else if (index < 192)
-                    line = "legs" + index.ToString();
-                else
-                    line = "weapons" + index.ToString();
-
-                partListBox.Items.Add(i.ToString() + ": " + line);
+                partListBox.Items.Add(i.ToString() + ": ");
             }
 
             // initialize frame information
@@ -86,6 +73,9 @@ namespace CharacterEditorWindows
             partListBox.SelectedIndex = characterEditorMain1.SelectedPart;
             keyFrameListBox.SelectedIndex = characterEditorMain1.SelectedKeyFrame;
             scriptsListBox.SelectedIndex = characterEditorMain1.SelectedScriptLine;
+
+            //load picture boxes with textures
+            FillPictureBox(headPreview, 0);
 
             initialize = false;
         }
@@ -615,10 +605,12 @@ namespace CharacterEditorWindows
         }
         #endregion
 
-  
-        private void onMouseMove(object sender, MouseEventArgs e)
+        #region Mouse Events
+
+        private void characterEditorMain1_onMouseMove(object sender, MouseEventArgs e)
         {
-            Console.WriteLine("Mouse Position: " + e.X.ToString() + ", " + e.Y.ToString());
+            mouseX = e.X;
+            mouseY = e.Y;
         }
 
         private void onMouseClick(object sender, MouseEventArgs e)
@@ -636,6 +628,43 @@ namespace CharacterEditorWindows
             Console.WriteLine("Mouse Button down");
         }
 
+        private void availableWeaponsListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }       
+        #endregion
+
+        private void FillPictureBox(PictureBox targetPictureBox , int index)
+        {            
+            Image image = (Image)new Bitmap(64, 64);
+
+            Rectangle destRectangle = new Rectangle(0, 0, 64, 64);
+            //Rectangle sourceRectangle = new Rectangle(
+            //        characterEditorMain1.HeadTiles.tiles[index].X,
+            //        characterEditorMain1.HeadTiles.tiles[index].Y,
+            //        characterEditorMain1.HeadTiles.tiles[index].Width,
+            //        characterEditorMain1.HeadTiles.tiles[index].Height);
+
+            Rectangle sourceRect = new Rectangle();
+            sourceRect.X = ((index % 64) % 5) * 64;
+            sourceRect.Y = ((index % 64) / 5) * 64;
+            sourceRect.Width = 64;
+            sourceRect.Height = 64;
+
+            Graphics gi = Graphics.FromImage(image);
+            gi.DrawImage(characterEditorMain1.HeadBitmap,
+                destRectangle,
+                sourceRect,
+                GraphicsUnit.Pixel);
+
+            targetPictureBox.Image = image;         
+            //this.Invalidate();
+        }
+
+        private void availableHeadParts_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            FillPictureBox(headPreview, availableHeadParts.SelectedIndex);
+        }
 
     }
 }

@@ -10,6 +10,10 @@ using System;
 using System.Windows.Forms;
 using System.Diagnostics;
 
+using Image = System.Drawing.Image;
+using Bitmap = System.Drawing.Bitmap;
+
+
 
 namespace CharacterEditorWindows
 {
@@ -23,9 +27,10 @@ namespace CharacterEditorWindows
 				
 		ContentManager Content;		
 		SpriteBatch spriteBatch;
-		SpriteFont font;
-		Text text;
 		Stopwatch timer;
+      
+        Texture2D headsTexture;
+        Image headBitmap;   
 
 		CharacterDefinition characterDefinition;
 
@@ -34,11 +39,7 @@ namespace CharacterEditorWindows
 		Texture2D[] legsTexture = new Texture2D[1];
 		Texture2D[] weaponTexture = new Texture2D[1];
 
-		Texture2D nullTexture;
-		Texture2D upArrowTexture;
-		Texture2D downArrowTexture;
-		Texture2D saveIcon;
-		Texture2D openFolderIcon;
+        Texture2D nullTexture;
 
 		const int FACE_LEFT = 0;
 		const int FACE_RIGHT = 1;
@@ -70,6 +71,11 @@ namespace CharacterEditorWindows
 		#endregion
 
 		#region Properties
+
+        public Image HeadBitmap
+        {
+            get { return headBitmap; }
+        }
 
         public EditingMode EditMode
         {
@@ -132,28 +138,23 @@ namespace CharacterEditorWindows
 
 			spriteBatch = new SpriteBatch(GraphicsDevice);
 
-			timer = Stopwatch.StartNew();
-
-			font = Content.Load<SpriteFont>(@"Fonts/Arial");
-			text = new Text(spriteBatch, font);
-			text.size = 0.75f;
+			timer = Stopwatch.StartNew();           
 
 			LoadTextures(legsTexture, @"gfx/legs");
 			LoadTextures(headTexture, @"gfx/head");
 			LoadTextures(torsoTexture, @"gfx/torso");
-			LoadTextures(weaponTexture, @"gfx/weapon");
-
-			saveIcon = Content.Load<Texture2D>(@"gfx/save_icon");
-			openFolderIcon = Content.Load<Texture2D>(@"gfx/folder_open_icon");
-			upArrowTexture = Content.Load<Texture2D>(@"gfx/upArrow");
-			downArrowTexture = Content.Load<Texture2D>(@"gfx/downArrow");
+            LoadTextures(weaponTexture, @"gfx/weapon");
+            
+            headsTexture = Content.Load<Texture2D>(@"gfx/heads");
+            headBitmap = Bitmap.FromFile(@"CharacterEditorWindowsContent/gfx/heads.png");
+			
 			nullTexture = Content.Load<Texture2D>(@"gfx/1x1");
 
             characterDefinition = new CharacterDefinition();           
 
 			// Hook the idle event to constantly redraw our animation.
 			Application.Idle += delegate { Invalidate(); };						
-		}
+		}        
 
 		private void LoadTextures(Texture2D[] textures, string path)
 		{
@@ -239,7 +240,7 @@ namespace CharacterEditorWindows
 			spriteBatch.Begin();
 
 			// red bar at the bottom
-			spriteBatch.Draw(nullTexture, new Rectangle(300, 450, 200, 5), new Color(new
+			spriteBatch.Draw(nullTexture, new Rectangle(100, 450, 200, 5), new Color(new
 	 Vector4(1.0f, 0.0f, 0.0f, 0.5f)));
 
 
@@ -248,10 +249,10 @@ namespace CharacterEditorWindows
 			// draw onionskin effect - previews frame next to currently selected frame
 			// so we draw our character thrice on the screen (twice with low alpha)
 			if (selectedFrame > 0)
-				DrawCharacter(new Vector2(400f, 450f), 2f, FACE_RIGHT, selectedFrame - 1, false, 0.2f);
+				DrawCharacter(new Vector2(200f, 450f), 2f, FACE_RIGHT, selectedFrame - 1, false, 0.2f);
 			if (selectedFrame < characterDefinition.Frames.Length - 1)
-				DrawCharacter(new Vector2(400f, 450f), 2f, FACE_RIGHT, selectedFrame + 1, false, 0.2f);
-			DrawCharacter(new Vector2(400f, 450f), 2f, FACE_RIGHT, selectedFrame, false, 1.0f);
+				DrawCharacter(new Vector2(200f, 450f), 2f, FACE_RIGHT, selectedFrame + 1, false, 0.2f);
+			DrawCharacter(new Vector2(200f, 450f), 2f, FACE_RIGHT, selectedFrame, false, 1.0f);
 
 			DrawPalette();
 		  	
@@ -260,7 +261,7 @@ namespace CharacterEditorWindows
 			if (fref < 0)
 				fref = 0;
             // draw preview
-			DrawCharacter(new Vector2(500f, 100f), 0.5f, FACE_RIGHT, fref, true, 1.0f);		
+			DrawCharacter(new Vector2(300f, 100f), 0.5f, FACE_RIGHT, fref, true, 1.0f);		
 
             // update preview animation
             // TODO: NOT WORKING!
@@ -320,6 +321,7 @@ namespace CharacterEditorWindows
 				{
 					// TODO: modify according to texture!!
 					// spritesheet thinks that every sprite is 64x64
+                    // except weapons which are 80x64
 					/* index 0-63 for head texture
 					 * 64-127 for torso texture
 					 * 128-191 for legs texture
