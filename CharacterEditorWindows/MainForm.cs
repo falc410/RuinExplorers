@@ -75,6 +75,10 @@ namespace CharacterEditorWindows
             scriptsListBox.SelectedIndex = characterEditorMain1.SelectedScriptLine;
 
             //load picture boxes with textures
+            for (int i = 0; i < 25; i++)
+            {
+                availableHeadParts.Items.Add(i.ToString() + ": " + "head" + (i + 64 * 1).ToString());
+            }
             FillPictureBox(headPreview, 0);
 
             initialize = false;
@@ -639,11 +643,6 @@ namespace CharacterEditorWindows
             Image image = (Image)new Bitmap(64, 64);
 
             Rectangle destRectangle = new Rectangle(0, 0, 64, 64);
-            //Rectangle sourceRectangle = new Rectangle(
-            //        characterEditorMain1.HeadTiles.tiles[index].X,
-            //        characterEditorMain1.HeadTiles.tiles[index].Y,
-            //        characterEditorMain1.HeadTiles.tiles[index].Width,
-            //        characterEditorMain1.HeadTiles.tiles[index].Height);
 
             Rectangle sourceRect = new Rectangle();
             sourceRect.X = ((index % 64) % 5) * 64;
@@ -652,7 +651,7 @@ namespace CharacterEditorWindows
             sourceRect.Height = 64;
 
             Graphics gi = Graphics.FromImage(image);
-            gi.DrawImage(characterEditorMain1.HeadBitmap,
+            gi.DrawImage(characterEditorMain1.Head1Bitmap,
                 destRectangle,
                 sourceRect,
                 GraphicsUnit.Pixel);

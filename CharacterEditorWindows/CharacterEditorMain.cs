@@ -29,8 +29,8 @@ namespace CharacterEditorWindows
 		SpriteBatch spriteBatch;
 		Stopwatch timer;
       
-        Texture2D headsTexture;
-        Image headBitmap;   
+        
+        Image head1Bitmap;   
 
 		CharacterDefinition characterDefinition;
 
@@ -72,9 +72,9 @@ namespace CharacterEditorWindows
 
 		#region Properties
 
-        public Image HeadBitmap
+        public Image Head1Bitmap
         {
-            get { return headBitmap; }
+            get { return head1Bitmap; }
         }
 
         public EditingMode EditMode
@@ -144,9 +144,8 @@ namespace CharacterEditorWindows
 			LoadTextures(headTexture, @"gfx/head");
 			LoadTextures(torsoTexture, @"gfx/torso");
             LoadTextures(weaponTexture, @"gfx/weapon");
-            
-            headsTexture = Content.Load<Texture2D>(@"gfx/heads");
-            headBitmap = Bitmap.FromFile(@"CharacterEditorWindowsContent/gfx/heads.png");
+                        
+            head1Bitmap = Bitmap.FromFile(@"CharacterEditorWindowsContent/gfx/source/head1.png");
 			
 			nullTexture = Content.Load<Texture2D>(@"gfx/1x1");
 

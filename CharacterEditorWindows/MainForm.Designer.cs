@@ -276,7 +276,7 @@
             // animationsListBox
             // 
             this.animationsListBox.FormattingEnabled = true;
-            this.animationsListBox.Location = new System.Drawing.Point(820, 28);
+            this.animationsListBox.Location = new System.Drawing.Point(821, 52);
             this.animationsListBox.Name = "animationsListBox";
             this.animationsListBox.Size = new System.Drawing.Size(120, 95);
             this.animationsListBox.TabIndex = 3;
@@ -285,7 +285,7 @@
             // animationsDeletebutton
             // 
             this.animationsDeletebutton.Image = ((System.Drawing.Image)(resources.GetObject("animationsDeletebutton.Image")));
-            this.animationsDeletebutton.Location = new System.Drawing.Point(952, 128);
+            this.animationsDeletebutton.Location = new System.Drawing.Point(953, 152);
             this.animationsDeletebutton.Name = "animationsDeletebutton";
             this.animationsDeletebutton.Size = new System.Drawing.Size(20, 20);
             this.animationsDeletebutton.TabIndex = 6;
@@ -295,7 +295,7 @@
             // animationsEditbutton
             // 
             this.animationsEditbutton.Image = ((System.Drawing.Image)(resources.GetObject("animationsEditbutton.Image")));
-            this.animationsEditbutton.Location = new System.Drawing.Point(926, 128);
+            this.animationsEditbutton.Location = new System.Drawing.Point(927, 152);
             this.animationsEditbutton.Name = "animationsEditbutton";
             this.animationsEditbutton.Size = new System.Drawing.Size(20, 20);
             this.animationsEditbutton.TabIndex = 8;
@@ -304,7 +304,7 @@
             // 
             // animationsNametextBox
             // 
-            this.animationsNametextBox.Location = new System.Drawing.Point(820, 129);
+            this.animationsNametextBox.Location = new System.Drawing.Point(821, 153);
             this.animationsNametextBox.Name = "animationsNametextBox";
             this.animationsNametextBox.Size = new System.Drawing.Size(100, 20);
             this.animationsNametextBox.TabIndex = 9;
@@ -313,7 +313,7 @@
             // partListBox
             // 
             this.partListBox.FormattingEnabled = true;
-            this.partListBox.Location = new System.Drawing.Point(518, 28);
+            this.partListBox.Location = new System.Drawing.Point(519, 52);
             this.partListBox.Name = "partListBox";
             this.partListBox.Size = new System.Drawing.Size(120, 121);
             this.partListBox.TabIndex = 11;
@@ -321,7 +321,7 @@
             // 
             // partMoveUpButton
             // 
-            this.partMoveUpButton.Location = new System.Drawing.Point(644, 28);
+            this.partMoveUpButton.Location = new System.Drawing.Point(645, 52);
             this.partMoveUpButton.Name = "partMoveUpButton";
             this.partMoveUpButton.Size = new System.Drawing.Size(75, 23);
             this.partMoveUpButton.TabIndex = 12;
@@ -331,7 +331,7 @@
             // 
             // partMoveDownButton
             // 
-            this.partMoveDownButton.Location = new System.Drawing.Point(725, 28);
+            this.partMoveDownButton.Location = new System.Drawing.Point(726, 52);
             this.partMoveDownButton.Name = "partMoveDownButton";
             this.partMoveDownButton.Size = new System.Drawing.Size(75, 23);
             this.partMoveDownButton.TabIndex = 12;
@@ -341,7 +341,7 @@
             // 
             // partRotationUpDown
             // 
-            this.partRotationUpDown.Location = new System.Drawing.Point(644, 67);
+            this.partRotationUpDown.Location = new System.Drawing.Point(645, 91);
             this.partRotationUpDown.Maximum = new decimal(new int[] {
             360,
             0,
@@ -355,7 +355,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(689, 69);
+            this.label1.Location = new System.Drawing.Point(690, 93);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(47, 13);
             this.label1.TabIndex = 14;
@@ -364,7 +364,7 @@
             // partResetRotationButton
             // 
             this.partResetRotationButton.Image = ((System.Drawing.Image)(resources.GetObject("partResetRotationButton.Image")));
-            this.partResetRotationButton.Location = new System.Drawing.Point(750, 65);
+            this.partResetRotationButton.Location = new System.Drawing.Point(751, 89);
             this.partResetRotationButton.Name = "partResetRotationButton";
             this.partResetRotationButton.Size = new System.Drawing.Size(20, 20);
             this.partResetRotationButton.TabIndex = 15;
@@ -373,7 +373,7 @@
             // 
             // partScaleXUpDown
             // 
-            this.partScaleXUpDown.Location = new System.Drawing.Point(644, 96);
+            this.partScaleXUpDown.Location = new System.Drawing.Point(645, 120);
             this.partScaleXUpDown.Minimum = new decimal(new int[] {
             100,
             0,
@@ -387,7 +387,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(689, 98);
+            this.label2.Location = new System.Drawing.Point(690, 122);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(42, 13);
             this.label2.TabIndex = 14;
@@ -396,7 +396,7 @@
             // partResetXScaleButton
             // 
             this.partResetXScaleButton.Image = ((System.Drawing.Image)(resources.GetObject("partResetXScaleButton.Image")));
-            this.partResetXScaleButton.Location = new System.Drawing.Point(750, 94);
+            this.partResetXScaleButton.Location = new System.Drawing.Point(751, 118);
             this.partResetXScaleButton.Name = "partResetXScaleButton";
             this.partResetXScaleButton.Size = new System.Drawing.Size(20, 20);
             this.partResetXScaleButton.TabIndex = 15;
@@ -405,7 +405,7 @@
             // 
             // partDeleteButton
             // 
-            this.partDeleteButton.Location = new System.Drawing.Point(725, 146);
+            this.partDeleteButton.Location = new System.Drawing.Point(726, 170);
             this.partDeleteButton.Name = "partDeleteButton";
             this.partDeleteButton.Size = new System.Drawing.Size(75, 23);
             this.partDeleteButton.TabIndex = 16;
@@ -416,7 +416,7 @@
             // partFlipCheckBox
             // 
             this.partFlipCheckBox.AutoSize = true;
-            this.partFlipCheckBox.Location = new System.Drawing.Point(644, 146);
+            this.partFlipCheckBox.Location = new System.Drawing.Point(645, 170);
             this.partFlipCheckBox.Name = "partFlipCheckBox";
             this.partFlipCheckBox.Size = new System.Drawing.Size(64, 17);
             this.partFlipCheckBox.TabIndex = 17;
@@ -426,7 +426,7 @@
             // 
             // partScaleYUpDown
             // 
-            this.partScaleYUpDown.Location = new System.Drawing.Point(644, 122);
+            this.partScaleYUpDown.Location = new System.Drawing.Point(645, 146);
             this.partScaleYUpDown.Minimum = new decimal(new int[] {
             100,
             0,
@@ -440,7 +440,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(689, 124);
+            this.label3.Location = new System.Drawing.Point(690, 148);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(42, 13);
             this.label3.TabIndex = 14;
@@ -449,7 +449,7 @@
             // partResetYScaleButton
             // 
             this.partResetYScaleButton.Image = ((System.Drawing.Image)(resources.GetObject("partResetYScaleButton.Image")));
-            this.partResetYScaleButton.Location = new System.Drawing.Point(750, 120);
+            this.partResetYScaleButton.Location = new System.Drawing.Point(751, 144);
             this.partResetYScaleButton.Name = "partResetYScaleButton";
             this.partResetYScaleButton.Size = new System.Drawing.Size(20, 20);
             this.partResetYScaleButton.TabIndex = 15;
@@ -459,7 +459,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(820, 10);
+            this.label4.Location = new System.Drawing.Point(821, 34);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(58, 13);
             this.label4.TabIndex = 19;
@@ -468,7 +468,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(518, 9);
+            this.label5.Location = new System.Drawing.Point(519, 33);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(62, 13);
             this.label5.TabIndex = 20;
@@ -477,7 +477,7 @@
             // framesListBox
             // 
             this.framesListBox.FormattingEnabled = true;
-            this.framesListBox.Location = new System.Drawing.Point(518, 178);
+            this.framesListBox.Location = new System.Drawing.Point(519, 202);
             this.framesListBox.Name = "framesListBox";
             this.framesListBox.Size = new System.Drawing.Size(120, 186);
             this.framesListBox.TabIndex = 21;
@@ -486,7 +486,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(518, 162);
+            this.label6.Location = new System.Drawing.Point(519, 186);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(41, 13);
             this.label6.TabIndex = 22;
@@ -494,7 +494,7 @@
             // 
             // framesAddReferenceButton
             // 
-            this.framesAddReferenceButton.Location = new System.Drawing.Point(644, 214);
+            this.framesAddReferenceButton.Location = new System.Drawing.Point(645, 238);
             this.framesAddReferenceButton.Name = "framesAddReferenceButton";
             this.framesAddReferenceButton.Size = new System.Drawing.Size(102, 23);
             this.framesAddReferenceButton.TabIndex = 23;
@@ -505,7 +505,7 @@
             // framesDeleteButton
             // 
             this.framesDeleteButton.Image = ((System.Drawing.Image)(resources.GetObject("framesDeleteButton.Image")));
-            this.framesDeleteButton.Location = new System.Drawing.Point(776, 179);
+            this.framesDeleteButton.Location = new System.Drawing.Point(777, 203);
             this.framesDeleteButton.Name = "framesDeleteButton";
             this.framesDeleteButton.Size = new System.Drawing.Size(20, 20);
             this.framesDeleteButton.TabIndex = 6;
@@ -515,7 +515,7 @@
             // framesEditButton
             // 
             this.framesEditButton.Image = ((System.Drawing.Image)(resources.GetObject("framesEditButton.Image")));
-            this.framesEditButton.Location = new System.Drawing.Point(750, 179);
+            this.framesEditButton.Location = new System.Drawing.Point(751, 203);
             this.framesEditButton.Name = "framesEditButton";
             this.framesEditButton.Size = new System.Drawing.Size(20, 20);
             this.framesEditButton.TabIndex = 8;
@@ -524,7 +524,7 @@
             // 
             // framesTextBox
             // 
-            this.framesTextBox.Location = new System.Drawing.Point(644, 179);
+            this.framesTextBox.Location = new System.Drawing.Point(645, 203);
             this.framesTextBox.Name = "framesTextBox";
             this.framesTextBox.Size = new System.Drawing.Size(100, 20);
             this.framesTextBox.TabIndex = 9;
@@ -533,7 +533,7 @@
             // keyFrameListBox
             // 
             this.keyFrameListBox.FormattingEnabled = true;
-            this.keyFrameListBox.Location = new System.Drawing.Point(650, 269);
+            this.keyFrameListBox.Location = new System.Drawing.Point(651, 293);
             this.keyFrameListBox.Name = "keyFrameListBox";
             this.keyFrameListBox.Size = new System.Drawing.Size(120, 95);
             this.keyFrameListBox.TabIndex = 24;
@@ -542,7 +542,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(648, 253);
+            this.label7.Location = new System.Drawing.Point(649, 277);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(59, 13);
             this.label7.TabIndex = 25;
@@ -550,7 +550,7 @@
             // 
             // keyFrameDurationUpDown
             // 
-            this.keyFrameDurationUpDown.Location = new System.Drawing.Point(669, 370);
+            this.keyFrameDurationUpDown.Location = new System.Drawing.Point(670, 394);
             this.keyFrameDurationUpDown.Name = "keyFrameDurationUpDown";
             this.keyFrameDurationUpDown.Size = new System.Drawing.Size(38, 20);
             this.keyFrameDurationUpDown.TabIndex = 26;
@@ -559,7 +559,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(713, 372);
+            this.label8.Location = new System.Drawing.Point(714, 396);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(47, 13);
             this.label8.TabIndex = 27;
@@ -568,7 +568,7 @@
             // scriptsListBox
             // 
             this.scriptsListBox.FormattingEnabled = true;
-            this.scriptsListBox.Location = new System.Drawing.Point(776, 269);
+            this.scriptsListBox.Location = new System.Drawing.Point(777, 293);
             this.scriptsListBox.Name = "scriptsListBox";
             this.scriptsListBox.Size = new System.Drawing.Size(120, 95);
             this.scriptsListBox.TabIndex = 28;
@@ -577,7 +577,7 @@
             // scriptsDeleteButton
             // 
             this.scriptsDeleteButton.Image = ((System.Drawing.Image)(resources.GetObject("scriptsDeleteButton.Image")));
-            this.scriptsDeleteButton.Location = new System.Drawing.Point(908, 369);
+            this.scriptsDeleteButton.Location = new System.Drawing.Point(909, 393);
             this.scriptsDeleteButton.Name = "scriptsDeleteButton";
             this.scriptsDeleteButton.Size = new System.Drawing.Size(20, 20);
             this.scriptsDeleteButton.TabIndex = 6;
@@ -587,7 +587,7 @@
             // scriptsEditButton
             // 
             this.scriptsEditButton.Image = ((System.Drawing.Image)(resources.GetObject("scriptsEditButton.Image")));
-            this.scriptsEditButton.Location = new System.Drawing.Point(882, 369);
+            this.scriptsEditButton.Location = new System.Drawing.Point(883, 393);
             this.scriptsEditButton.Name = "scriptsEditButton";
             this.scriptsEditButton.Size = new System.Drawing.Size(20, 20);
             this.scriptsEditButton.TabIndex = 8;
@@ -596,7 +596,7 @@
             // 
             // scriptsTextBox
             // 
-            this.scriptsTextBox.Location = new System.Drawing.Point(776, 370);
+            this.scriptsTextBox.Location = new System.Drawing.Point(777, 394);
             this.scriptsTextBox.Name = "scriptsTextBox";
             this.scriptsTextBox.Size = new System.Drawing.Size(100, 20);
             this.scriptsTextBox.TabIndex = 9;
@@ -605,7 +605,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(776, 250);
+            this.label9.Location = new System.Drawing.Point(777, 274);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(39, 13);
             this.label9.TabIndex = 29;
