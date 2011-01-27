@@ -1,12 +1,15 @@
 ﻿
 using System.Windows.Forms;
 using CharacterEditorWindows.Character;
+using System;
 
 
 namespace CharacterEditorWindows
 {
     public partial class MainForm : Form
     {
+        bool initialize;
+
         public MainForm()
         {
             InitializeComponent();
@@ -17,7 +20,75 @@ namespace CharacterEditorWindows
         private void exitToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
             this.Close();
-        }       
+        }
+
+        private void newCharacterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (characterEditorMain1.charDef != null)
+                characterEditorMain1.charDef = new CharacterDefinition();
+
+            initialize = true;
+            //need to set the first frameName for compatibility reasons
+            characterEditorMain1.charDef.Frames[0].Name = "newFrame";
+            //initialize animationsbox
+            animationsListBox.Items.Clear();
+            for (int i = 0; i < characterEditorMain1.charDef.Animations.Length; i++)
+            {
+                animationsListBox.Items.Add(i.ToString() + ": ");
+            }
+
+            // initialize part listbox
+            partListBox.Items.Clear();
+            for (int i = 0; i < characterEditorMain1.charDef.Frames[characterEditorMain1.SelectedFrame].Parts.Length; i++)
+            {
+                string line = "";
+                int index = characterEditorMain1.charDef.Frames[characterEditorMain1.SelectedFrame].Parts[i].Index;
+
+                if (index < 0)
+                    line = "";
+                else if (index < 64)
+                    line = "head" + index.ToString();
+                else if (index < 74)
+                    line = "torso" + index.ToString();
+                else if (index < 128)
+                    line = "arms" + index.ToString();
+                else if (index < 192)
+                    line = "legs" + index.ToString();
+                else
+                    line = "weapons" + index.ToString();
+
+                partListBox.Items.Add(i.ToString() + ": " + line);
+            }
+
+            // initialize frame information
+            framesListBox.Items.Clear();            
+            for (int i = 0; i < characterEditorMain1.charDef.Frames.Length; i++)
+            {
+                framesListBox.Items.Add(i.ToString() + ": " + characterEditorMain1.charDef.Frames[i].Name);
+            }
+
+            // initialize key frame information
+            keyFrameListBox.Items.Clear();
+            for (int i = 0; i < characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames.Length; i++)
+            {                
+                    keyFrameListBox.Items.Add(i.ToString() + ": ");
+            }
+
+            // initialize script information
+            scriptsListBox.Items.Clear();
+            for (int i = 0; i < characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[characterEditorMain1.SelectedKeyFrame].Scripts.Length; i++)
+            {
+                scriptsListBox.Items.Add(i.ToString() + ": ");
+            }
+            // initially select some stuff - or maybe not
+            animationsListBox.SelectedIndex = characterEditorMain1.SelectedAnimation;
+            framesListBox.SelectedIndex = characterEditorMain1.SelectedFrame;
+            partListBox.SelectedIndex = characterEditorMain1.SelectedPart;
+            keyFrameListBox.SelectedIndex = characterEditorMain1.SelectedKeyFrame;
+            scriptsListBox.SelectedIndex = characterEditorMain1.SelectedScriptLine;
+
+            initialize = false;
+        }
 
         private void openCharacterToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
@@ -27,12 +98,14 @@ namespace CharacterEditorWindows
                 characterEditorMain1.charDef.Read();                
 
                 //fill box with animation names
+                animationsListBox.Items.Clear();
                 for (int i = 0; i < characterEditorMain1.charDef.Animations.Length; i++)
                 {
                     animationsListBox.Items.Add(i.ToString() + ": " + characterEditorMain1.charDef.Animations[i].Name);                   
                 }
 
                 // load part listbox
+                partListBox.Items.Clear();
                 for (int i = 0; i < characterEditorMain1.charDef.Frames[characterEditorMain1.SelectedFrame].Parts.Length; i++)
                 {
                     string line = "";
@@ -55,12 +128,14 @@ namespace CharacterEditorWindows
                 }
 
                 // load frame information
+                framesListBox.Items.Clear();
                 for (int i = 0; i < characterEditorMain1.charDef.Frames.Length; i++)
                 {
                     framesListBox.Items.Add(i.ToString() + ": " + characterEditorMain1.charDef.Frames[i].Name);
                 }
 
                 // load key frame information
+                keyFrameListBox.Items.Clear();
                 for (int i = 0; i < characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames.Length; i++)
                 {
                     if (characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[i].FrameReference > -1)
@@ -70,6 +145,7 @@ namespace CharacterEditorWindows
                 }
 
                 // load script information
+                scriptsListBox.Items.Clear();
                 for (int i = 0; i < characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[characterEditorMain1.SelectedKeyFrame].Scripts.Length; i++)
                 {
                     scriptsListBox.Items.Add(i.ToString() + ": " + characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[characterEditorMain1.SelectedKeyFrame].Scripts[i]);
@@ -85,7 +161,11 @@ namespace CharacterEditorWindows
 
         private void saveCharacterToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
-
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                characterEditorMain1.charDef.Path = saveFileDialog1.FileName;
+                characterEditorMain1.charDef.Write();
+            }
         }
 
         private void saveAsToolStripMenuItem_Click(object sender, System.EventArgs e)
@@ -107,6 +187,41 @@ namespace CharacterEditorWindows
         {
 
         }
+
+        private void startToolStripMenuItem_Click(object sender, System.EventArgs e)
+        {
+            characterEditorMain1.Playing = true;
+            startToolStripMenuItem.Checked = true;
+            stopToolStripMenuItem.Checked = false;
+        }
+
+        private void stopToolStripMenuItem_Click(object sender, System.EventArgs e)
+        {
+            characterEditorMain1.Playing = false;
+            startToolStripMenuItem.Checked = false;
+            stopToolStripMenuItem.Checked = true;
+        }
+
+        private void moveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            moveToolStripMenuItem.Checked = true;
+            rotateToolStripMenuItem.Checked = false;
+            scaleToolStripMenuItem.Checked = false;
+        }
+
+        private void rotateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            moveToolStripMenuItem.Checked = false;
+            rotateToolStripMenuItem.Checked = true;
+            scaleToolStripMenuItem.Checked = false;
+        }
+
+        private void scaleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            moveToolStripMenuItem.Checked = false;
+            rotateToolStripMenuItem.Checked = false;
+            scaleToolStripMenuItem.Checked = true;            
+        }
         #endregion
 
         #region Animation Related Forms
@@ -125,6 +240,7 @@ namespace CharacterEditorWindows
             {
                 animationsListBox.Items.Add(i.ToString() + ": " + characterEditorMain1.charDef.Animations[i].Name);
             }
+            animationsNametextBox.Text = "";
 
         }
 
@@ -356,12 +472,75 @@ namespace CharacterEditorWindows
         
         private void framesListBox_SelectedIndexChanged(object sender, System.EventArgs e)
         {
+            if (!initialize)
+            {
+                if (String.IsNullOrEmpty(characterEditorMain1.charDef.Frames[framesListBox.SelectedIndex].Name))
+                {
+                    characterEditorMain1.CopyFrame(characterEditorMain1.SelectedFrame, framesListBox.SelectedIndex);
+                    int saveSelectedIndex = framesListBox.SelectedIndex;
+                    // reload frames list box
+                    framesListBox.Items.Clear();
+                    // load frame information
+                    for (int i = 0; i < characterEditorMain1.charDef.Frames.Length; i++)
+                    {
+                        framesListBox.Items.Add(i.ToString() + ": " + characterEditorMain1.charDef.Frames[i].Name);
+                    }
+                    framesListBox.SelectedIndex = saveSelectedIndex;
+                }
 
+                characterEditorMain1.SelectedFrame = framesListBox.SelectedIndex;
+                framesTextBox.Text = characterEditorMain1.charDef.Frames[framesListBox.SelectedIndex].Name;
+
+                //update part list
+                partListBox.Items.Clear();
+                for (int i = 0; i < characterEditorMain1.charDef.Frames[characterEditorMain1.SelectedFrame].Parts.Length; i++)
+                {
+                    string line = "";
+                    int index = characterEditorMain1.charDef.Frames[characterEditorMain1.SelectedFrame].Parts[i].Index;
+
+                    if (index < 0)
+                        line = "";
+                    else if (index < 64)
+                        line = "head" + index.ToString();
+                    else if (index < 74)
+                        line = "torso" + index.ToString();
+                    else if (index < 128)
+                        line = "arms" + index.ToString();
+                    else if (index < 192)
+                        line = "legs" + index.ToString();
+                    else
+                        line = "weapons" + index.ToString();
+
+                    partListBox.Items.Add(i.ToString() + ": " + line);
+                }
+            }
         }
 
         private void framesAddReferenceButton_Click(object sender, System.EventArgs e)
         {
+            
+            for (int i = 0; i < characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames.Length; i++)
+            {
+                if (characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[i].FrameReference == -1)
+                {
+                    characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[i].FrameReference = framesListBox.SelectedIndex;
+                    characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[i].Duration = 1;
 
+                    //reload keyframes
+                    keyFrameListBox.Items.Clear();
+                    // load key frame information
+                    for (int j = 0; j < characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames.Length; j++)
+                    {
+                        if (characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[j].FrameReference > -1)
+                            keyFrameListBox.Items.Add(j.ToString() + ": " + characterEditorMain1.charDef.Frames[characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[j].FrameReference].Name);
+                        else
+                            keyFrameListBox.Items.Add(j.ToString() + ": ");
+                    }
+                    keyFrameListBox.SelectedIndex = i;
+
+                    break;
+                }
+            }
         }
 
         private void framesNametextBox_TextChanged(object sender, System.EventArgs e)
@@ -371,7 +550,25 @@ namespace CharacterEditorWindows
 
         private void framesEditbutton_Click(object sender, System.EventArgs e)
         {
+            characterEditorMain1.charDef.Frames[framesListBox.SelectedIndex].Name = framesTextBox.Text;
+            // reload frame listbox
+            framesListBox.Items.Clear();
+            // load frame information
+            for (int i = 0; i < characterEditorMain1.charDef.Frames.Length; i++)
+            {
+                framesListBox.Items.Add(i.ToString() + ": " + characterEditorMain1.charDef.Frames[i].Name);
+            }
 
+            keyFrameListBox.Items.Clear();
+            // load key frame information
+            for (int i = 0; i < characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames.Length; i++)
+            {
+                if (characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[i].FrameReference > -1)
+                    keyFrameListBox.Items.Add(i.ToString() + ": " + characterEditorMain1.charDef.Frames[characterEditorMain1.charDef.Animations[characterEditorMain1.SelectedAnimation].KeyFrames[i].FrameReference].Name);
+                else
+                    keyFrameListBox.Items.Add(i.ToString() + ": ");
+            }
+            framesListBox.SelectedIndex = characterEditorMain1.SelectedFrame;
         }
 
         private void framesDeletebutton_Click(object sender, System.EventArgs e)
@@ -417,6 +614,28 @@ namespace CharacterEditorWindows
             }
         }
         #endregion
-       
+
+  
+        private void onMouseMove(object sender, MouseEventArgs e)
+        {
+            Console.WriteLine("Mouse Position: " + e.X.ToString() + ", " + e.Y.ToString());
+        }
+
+        private void onMouseClick(object sender, MouseEventArgs e)
+        {
+            Console.WriteLine("Mouse Click!");
+        }
+
+        private void onMouseHover(object sender, EventArgs e)
+        {
+            Console.WriteLine("Mouse Hover");
+        }
+
+        private void onMouseDown(object sender, MouseEventArgs e)
+        {
+            Console.WriteLine("Mouse Button down");
+        }
+
+
     }
 }

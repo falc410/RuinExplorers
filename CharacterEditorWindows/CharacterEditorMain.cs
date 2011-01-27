@@ -50,66 +50,73 @@ namespace CharacterEditorWindows
 		int selectedScriptLine = 0;
 
 		int currentKeyFrame = 0;
-		float currentFrame = 0;
-		int frameScroll;
-		int animScroll;
-		int keyFrameScroll;
+        float currentFrame = 0;
 		bool playing = false;
 
-		enum EditingMode
+		public enum EditingMode
 		{
 			None,
-			FrameName,
-			AnimationName,
-			PathName,
-			Script
+            Location,
+			Scale,
+            Rotation           
 		}
 
-		EditingMode editmode = EditingMode.None;
+        EditingMode editMode;
 
 		MouseState mouseState;
 		MouseState previousMouseState;
 		bool mouseClick = false;
 
-		KeyboardState keyBoardState;
-		KeyboardState previousKeyBoardState;
-
 		#endregion
 
 		#region Properties
+
+        public EditingMode EditMode
+        {
+            get { return editMode; }
+            set { editMode = value; }
+        }
+
 		public CharacterDefinition charDef
 		{
-			get { return characterDefinition; }            
+			get { return characterDefinition; }
+            set { characterDefinition = value; }
 		}
 
-        public int SelectedAnimation
-        {
-            get { return selectedAnimation; }
-            set { selectedAnimation = value; }
-        }
+		public int SelectedAnimation
+		{
+			get { return selectedAnimation; }
+			set { selectedAnimation = value; }
+		}
 
-        public int SelectedFrame
-        {
-            get { return selectedFrame; }
-            set { selectedFrame = value; }
-        }
+		public int SelectedFrame
+		{
+			get { return selectedFrame; }
+			set { selectedFrame = value; }
+		}
 
-        public int SelectedPart
-        {
-            get { return selectedPart; }
-            set { selectedPart = value; }
-        }
+		public int SelectedPart
+		{
+			get { return selectedPart; }
+			set { selectedPart = value; }
+		}
 
-        public int SelectedKeyFrame
-        {
-            get { return selectedKeyFrame; }
-            set { selectedKeyFrame = value; }
-        }
+		public int SelectedKeyFrame
+		{
+			get { return selectedKeyFrame; }
+			set { selectedKeyFrame = value; }
+		}
 
-        public int SelectedScriptLine
+		public int SelectedScriptLine
+		{
+			get { return selectedScriptLine; }
+			set { selectedScriptLine = value; }
+		}
+
+        public bool Playing
         {
-            get { return selectedScriptLine; }
-            set { selectedScriptLine = value; }
+            get { return playing; }
+            set { playing = value; }
         }
 		#endregion
 
@@ -129,7 +136,7 @@ namespace CharacterEditorWindows
 
 			font = Content.Load<SpriteFont>(@"Fonts/Arial");
 			text = new Text(spriteBatch, font);
-            text.size = 0.75f;
+			text.size = 0.75f;
 
 			LoadTextures(legsTexture, @"gfx/legs");
 			LoadTextures(headTexture, @"gfx/head");
@@ -142,7 +149,7 @@ namespace CharacterEditorWindows
 			downArrowTexture = Content.Load<Texture2D>(@"gfx/downArrow");
 			nullTexture = Content.Load<Texture2D>(@"gfx/1x1");
 
-            characterDefinition = new CharacterDefinition();
+            characterDefinition = new CharacterDefinition();           
 
 			// Hook the idle event to constantly redraw our animation.
 			Application.Idle += delegate { Invalidate(); };						
@@ -197,29 +204,7 @@ namespace CharacterEditorWindows
 		//                new Vector2((float)mouseDiffX * 0.01f, (float)mouseDiffY * 0.01f);
 		//    }
 
-		//    previousMouseState = mouseState;
-
-		//    UpdateKeys();
-
-		//    Animation animation = characterDefinition.Animations[selectedAnimation];
-		//    KeyFrame keyFrame = animation.KeyFrames[currentKeyFrame];
-
-		//    if (playing)
-		//    {
-		//        currentFrame += (float)timer.Elapsed.TotalSeconds * 30.0f;
-
-		//        if (currentFrame > keyFrame.Duration)
-		//        {
-		//            currentFrame -= keyFrame.Duration;
-		//            currentKeyFrame++;
-
-		//            if (currentKeyFrame >= animation.KeyFrames.Length)
-		//                currentKeyFrame = 0;
-		//            keyFrame = animation.KeyFrames[currentKeyFrame];
-		//        }
-		//    }
-		//    else
-		//        currentKeyFrame = selectedKeyFrame;
+	
 
 		//    if (keyFrame.FrameReference < 0)
 		//        currentKeyFrame = 0;
@@ -230,10 +215,28 @@ namespace CharacterEditorWindows
 		/// </summary>		
 		protected override void Draw()
 		{
+            mouseState = Mouse.GetState();
+
+            int mouseDiffX = mouseState.X - previousMouseState.X;
+            int mouseDiffY = mouseState.Y - previousMouseState.Y;
+
+            if (mouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
+            {
+                if (previousMouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
+                    characterDefinition.Frames[selectedFrame].Parts[selectedPart].Location +=
+                        new Vector2((float)mouseDiffX / 2.0f, (float)mouseDiffY / 2.0f);
+            }
+            else
+            {
+                if (previousMouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
+                {
+                    mouseClick = true;
+                }
+            }
+
 			GraphicsDevice.Clear(Color.CornflowerBlue);
 
 			spriteBatch.Begin();
-
 
 			// red bar at the bottom
 			spriteBatch.Draw(nullTexture, new Rectangle(300, 450, 200, 5), new Color(new
@@ -244,33 +247,53 @@ namespace CharacterEditorWindows
 
 			// draw onionskin effect - previews frame next to currently selected frame
 			// so we draw our character thrice on the screen (twice with low alpha)
-            if (selectedFrame > 0)
-                DrawCharacter(new Vector2(400f, 450f), 2f, FACE_RIGHT, selectedFrame - 1, false, 0.2f);
-            if (selectedFrame < characterDefinition.Frames.Length - 1)
-                DrawCharacter(new Vector2(400f, 450f), 2f, FACE_RIGHT, selectedFrame + 1, false, 0.2f);
-            DrawCharacter(new Vector2(400f, 450f), 2f, FACE_RIGHT, selectedFrame, false, 1.0f);
+			if (selectedFrame > 0)
+				DrawCharacter(new Vector2(400f, 450f), 2f, FACE_RIGHT, selectedFrame - 1, false, 0.2f);
+			if (selectedFrame < characterDefinition.Frames.Length - 1)
+				DrawCharacter(new Vector2(400f, 450f), 2f, FACE_RIGHT, selectedFrame + 1, false, 0.2f);
+			DrawCharacter(new Vector2(400f, 450f), 2f, FACE_RIGHT, selectedFrame, false, 1.0f);
 
 			DrawPalette();
-          
-			DrawFramesList();			
-
+		  	
+            // Select keyFrame to draw for preview
 			int fref = characterDefinition.Animations[selectedAnimation].KeyFrames[currentKeyFrame].FrameReference;
 			if (fref < 0)
 				fref = 0;
+            // draw preview
+			DrawCharacter(new Vector2(500f, 100f), 0.5f, FACE_RIGHT, fref, true, 1.0f);		
 
-			DrawCharacter(new Vector2(500f, 100f), 0.5f, FACE_LEFT, fref, true, 1.0f);
-			if (playing)
-			{
-				if (text.DrawClickText(480, 100, "stop", mouseState.X, mouseState.Y, mouseClick))
-					playing = false;
-			}
-			else
-			{
-				if (text.DrawClickText(480, 100, "play", mouseState.X, mouseState.Y, mouseClick))
-					playing = true;
-			}		
-			mouseClick = false;           
-		}
+            // update preview animation
+            // TODO: NOT WORKING!
+            if (playing)
+            {               
+                currentFrame += (float)timer.Elapsed.TotalSeconds;
+
+                // Switch to next KeyFrame if our Elapsed Time is higher then the Duration                   
+                if (currentFrame > characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Duration)
+                {
+                    // Reset our Timer
+                    currentFrame = 0;
+                    timer.Restart();
+                    // Draw next KeyFrame
+                    currentKeyFrame++;
+
+                    // Did we reach the end or our Animation? Then reset keyFrame and timer and start again
+                    if (currentKeyFrame >= characterDefinition.Animations[selectedAnimation].KeyFrames.Length)
+                    {                        
+                        currentFrame = 0;
+                        timer.Restart();
+
+                        currentKeyFrame = 0;
+                    }
+                        
+                }
+            }
+            else
+                currentKeyFrame = selectedKeyFrame;
+
+            previousMouseState = mouseState;
+            mouseClick = false;
+        }
 		#region Custom Draw Methods
 				
 		/// <summary>
@@ -377,133 +400,69 @@ namespace CharacterEditorWindows
 			}
 			spriteBatch.End();             
 		}
-
-
-
-       
-	
-
-		
+        		
 		// draw icon palette
 		// TODO: either modify this or our source spritesheet
-        private void DrawPalette()
-        {
-            spriteBatch.Begin();
-            // iterate over the 4 main spritesheets
-            for (int l = 0; l < 4; l++)
-            {
-                Texture2D texture = null;
-                switch (l)
-                {
-                    case 0:
-                        texture = headTexture[characterDefinition.HeadIndex];
-                        break;
-                    case 1:
-                        texture = torsoTexture[characterDefinition.TorsoIndex];
-                        break;
-                    case 2:
-                        texture = legsTexture[characterDefinition.LegsIndex];
-                        break;
-                    case 3:
-                        texture = weaponTexture[characterDefinition.WeaponIndex];
-                        break;
-                    default:
-                        break;
-                }
-
-                if (texture != null)
-                {
-                    // iterate over sprites in sheet 
-                    for (int i = 0; i < 25; i++)
-                    {
-                        Rectangle sourceRect = new Rectangle((i % 5) * 64, (i / 5) * 64, 64, 64);
-                        Rectangle destinationRect = new Rectangle(i * 23, 467 + l * 32, 23, 32);
-                        spriteBatch.Draw(nullTexture, destinationRect, new Color(0, 0, 0, 25));
-
-                        // special case for weapon texture
-                        if (l == 3)
-                        {
-                            sourceRect.X = (i % 4) * 80;
-                            sourceRect.Y = (i / 4) * 64;
-                            sourceRect.Width = 80;
-
-                            if (i < 15)
-                            {
-                                destinationRect.X = i * 30;
-                                destinationRect.Width = 30;
-                            }
-                        }
-
-                        spriteBatch.Draw(texture, destinationRect, sourceRect, Color.White);
-
-                        if (destinationRect.Contains(mouseState.X, mouseState.Y))
-                        {
-                            if (mouseClick)
-                                characterDefinition.Frames[selectedFrame].Parts[selectedPart].Index = i + 64 * l;
-                        }
-                    }
-                }
-            }
-            spriteBatch.End();
-        }
-		
-		
-		
-		
-		/// <summary>
-		/// Draws the frames list in the lower right corner of editor.
-		/// Pressing the (a) button next to a frame adds it as KeyFrame to the current Animation
-		/// Frames can be renamed
-		/// </summary>
-		private void DrawFramesList()
+		private void DrawPalette()
 		{
-			for (int i = frameScroll; i < frameScroll + 20; i++)
+			spriteBatch.Begin();
+			// iterate over the 4 main spritesheets
+			for (int l = 0; l < 4; l++)
 			{
-				if (i < characterDefinition.Frames.Length)
+				Texture2D texture = null;
+				switch (l)
 				{
-					int y = (i - frameScroll) * 15 + 280;
-					if (i == selectedFrame)
-					{
-						text.color = Color.Lime;
-						text.DrawText(600, y, i.ToString() + ": " + characterDefinition.Frames[i].Name + (editmode == EditingMode.FrameName ? "*" : ""));
-						
-						// clicking the (a) will add a reference of this frame to the selected animation
-						if (text.DrawClickText(720,y,"(a)",mouseState.X,mouseState.Y,mouseClick))
-						{
-							Animation animation = characterDefinition.Animations[selectedAnimation];
+					case 0:
+						texture = headTexture[characterDefinition.HeadIndex];
+						break;
+					case 1:
+						texture = torsoTexture[characterDefinition.TorsoIndex];
+						break;
+					case 2:
+						texture = legsTexture[characterDefinition.LegsIndex];
+						break;
+					case 3:
+						texture = weaponTexture[characterDefinition.WeaponIndex];
+						break;
+					default:
+						break;
+				}
 
-							for (int j = 0; j < animation.KeyFrames.Length; j++)
+				if (texture != null)
+				{
+					// iterate over sprites in sheet 
+					for (int i = 0; i < 25; i++)
+					{
+						Rectangle sourceRect = new Rectangle((i % 5) * 64, (i / 5) * 64, 64, 64);
+						Rectangle destinationRect = new Rectangle(i * 23, 467 + l * 32, 23, 32);
+						spriteBatch.Draw(nullTexture, destinationRect, new Color(0, 0, 0, 25));
+
+						// special case for weapon texture
+						if (l == 3)
+						{
+							sourceRect.X = (i % 4) * 80;
+							sourceRect.Y = (i / 4) * 64;
+							sourceRect.Width = 80;
+
+							if (i < 15)
 							{
-								KeyFrame keyFrame = animation.KeyFrames[j];
-								if (keyFrame.FrameReference == -1)
-								{
-									keyFrame.FrameReference = i;
-									keyFrame.Duration = 1;
-									break;
-								}
+								destinationRect.X = i * 30;
+								destinationRect.Width = 30;
 							}
 						}
-					}
-					else
-					{
-						// clicking a new frame will create a copy of the old frame
-						if (text.DrawClickText(600,y,i.ToString() + ": " + characterDefinition.Frames[i].Name,mouseState.X,mouseState.Y,mouseClick))
+
+						spriteBatch.Draw(texture, destinationRect, sourceRect, Color.White);
+
+						if (destinationRect.Contains(mouseState.X, mouseState.Y))
 						{
-							if (selectedFrame != i)
-							{
-								if (String.IsNullOrEmpty(characterDefinition.Frames[i].Name))
-									CopyFrame(selectedFrame, i);
-								
-								selectedFrame = i;
-								editmode = EditingMode.FrameName;
-							}
+							if (mouseClick)
+								characterDefinition.Frames[selectedFrame].Parts[selectedPart].Index = i + 64 * l;
 						}
 					}
 				}
-			}			
+			}
+			spriteBatch.End();
 		}
-	   
-		
 		#endregion
 
 		#region Helper Methods
@@ -512,7 +471,7 @@ namespace CharacterEditorWindows
 		{
 			if (index1 < 0 || index2 < 0 || index1 >= characterDefinition.Frames[selectedFrame].Parts.Length ||
 				index2 >= characterDefinition.Frames[selectedFrame].Parts.Length)
-                return false;
+				return false;
 
 			Part i = characterDefinition.Frames[selectedFrame].Parts[index1];
 			Part j = characterDefinition.Frames[selectedFrame].Parts[index2];
@@ -520,10 +479,10 @@ namespace CharacterEditorWindows
 			characterDefinition.Frames[selectedFrame].Parts[index1] = j;
 			characterDefinition.Frames[selectedFrame].Parts[index2] = i;
 
-            return true;
+			return true;
 		}
 
-		private void CopyFrame(int src, int dest)
+		public void CopyFrame(int src, int dest)
 		{
 			Frame keySrc = characterDefinition.Frames[src];
 			Frame keyDest = characterDefinition.Frames[dest];
@@ -544,92 +503,92 @@ namespace CharacterEditorWindows
 		#endregion
 
 		#region Input Methods
-		private void UpdateKeys()
-		{
-			keyBoardState = Keyboard.GetState();
+        //private void UpdateKeys()
+        //{
+        //    keyBoardState = Keyboard.GetState();
 
-			Microsoft.Xna.Framework.Input.Keys[] currentKeys = keyBoardState.GetPressedKeys();
-			Microsoft.Xna.Framework.Input.Keys[] lastKeys = previousKeyBoardState.GetPressedKeys();
+        //    Microsoft.Xna.Framework.Input.Keys[] currentKeys = keyBoardState.GetPressedKeys();
+        //    Microsoft.Xna.Framework.Input.Keys[] lastKeys = previousKeyBoardState.GetPressedKeys();
 
-			bool found = false;
+        //    bool found = false;
 
-			for (int i = 0; i < currentKeys.Length; i++)
-			{
-				found = false;
+        //    for (int i = 0; i < currentKeys.Length; i++)
+        //    {
+        //        found = false;
 
-				for (int y = 0; y < lastKeys.Length; y++)
-				{
-					if (currentKeys[i] == lastKeys[y])
-					{
-						found = true;
-						break;
-					}
-				}
+        //        for (int y = 0; y < lastKeys.Length; y++)
+        //        {
+        //            if (currentKeys[i] == lastKeys[y])
+        //            {
+        //                found = true;
+        //                break;
+        //            }
+        //        }
 
-				if (!found)
-					PressKey(currentKeys[i]);
-			}
+        //        if (!found)
+        //            PressKey(currentKeys[i]);
+        //    }
 
-			previousKeyBoardState = keyBoardState;
-		}
+        //    previousKeyBoardState = keyBoardState;
+        //}
 
-		private void PressKey(Microsoft.Xna.Framework.Input.Keys key)
-		{
-			string t = String.Empty;
-			switch (editmode)
-			{
-				case EditingMode.None:
-					break;
-				case EditingMode.AnimationName:
-					t = characterDefinition.Animations[selectedAnimation].Name;
-					break;
-				case EditingMode.FrameName:
-					t = characterDefinition.Frames[selectedFrame].Name;
-					break;
-				case EditingMode.PathName:
-					t = characterDefinition.Path;
-					break;
-				case EditingMode.Script:
-					t = characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Scripts[selectedScriptLine];
-					break;
-				default:
-					break;
-			}
+        //private void PressKey(Microsoft.Xna.Framework.Input.Keys key)
+        //{
+        //    string t = String.Empty;
+        //    switch (editmode)
+        //    {
+        //        case EditingMode.None:
+        //            break;
+        //        case EditingMode.AnimationName:
+        //            t = characterDefinition.Animations[selectedAnimation].Name;
+        //            break;
+        //        case EditingMode.FrameName:
+        //            t = characterDefinition.Frames[selectedFrame].Name;
+        //            break;
+        //        case EditingMode.PathName:
+        //            t = characterDefinition.Path;
+        //            break;
+        //        case EditingMode.Script:
+        //            t = characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Scripts[selectedScriptLine];
+        //            break;
+        //        default:
+        //            break;
+        //    }
 
-			if (key == Microsoft.Xna.Framework.Input.Keys.Back)
-			{
-				if (t.Length > 0)
-					t = t.Substring(0, t.Length - 1);
-			}
-			else if (key == Microsoft.Xna.Framework.Input.Keys.Enter)
-			{
-				editmode = EditingMode.None;
-			}
-			else
-			{
-				t = (t + (char)key).ToLower();
-			}
+        //    if (key == Microsoft.Xna.Framework.Input.Keys.Back)
+        //    {
+        //        if (t.Length > 0)
+        //            t = t.Substring(0, t.Length - 1);
+        //    }
+        //    else if (key == Microsoft.Xna.Framework.Input.Keys.Enter)
+        //    {
+        //        editmode = EditingMode.None;
+        //    }
+        //    else
+        //    {
+        //        t = (t + (char)key).ToLower();
+        //    }
 
-			switch (editmode)
-			{
-				case EditingMode.None:
-					break;
-				case EditingMode.AnimationName:
-					characterDefinition.Animations[selectedAnimation].Name = t;
-					break;
-				case EditingMode.FrameName:
-					characterDefinition.Frames[selectedFrame].Name = t;
-					break;
-				case EditingMode.PathName:
-					characterDefinition.Path = t;
-					break;
-				case EditingMode.Script:
-					characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Scripts[selectedScriptLine] = t;
-					break;
-				default:
-					break;
-			}
-		}
+        //    switch (editmode)
+        //    {
+        //        case EditingMode.None:
+        //            break;
+        //        case EditingMode.AnimationName:
+        //            characterDefinition.Animations[selectedAnimation].Name = t;
+        //            break;
+        //        case EditingMode.FrameName:
+        //            characterDefinition.Frames[selectedFrame].Name = t;
+        //            break;
+        //        case EditingMode.PathName:
+        //            characterDefinition.Path = t;
+        //            break;
+        //        case EditingMode.Script:
+        //            characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Scripts[selectedScriptLine] = t;
+        //            break;
+        //        default:
+        //            break;
+        //    }
+        //}
 		#endregion       
 
 		protected override void Dispose(bool disposing)
