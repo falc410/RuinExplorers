@@ -23,18 +23,16 @@ WindowsContent\gfx\torso5.xnb
 WindowsContent\gfx\weapon2.xnb
 WindowsContent\gfx\weapon3.xnb
 WindowsContent\gfx\1x1.xnb
-WindowsContent\Fonts\Arial.xnb
 WindowsContent\gfx\arrows.xnb
 WindowsContent\gfx\segments1.xnb
 WindowsContent\gfx\save_icon.xnb
 WindowsContent\gfx\folder_open_icon.xnb
-WindowsContent\gfx\source\segments1.xnb
+WindowsContent\Fonts\Arial.xnb
 WindowsContent\gfx\head1.png
 WindowsContent\data\chars\carlos.zmx
 WindowsContent\data\chars\guy.zmx
 WindowsContent\data\chars\wraith.zmx
 WindowsContent\data\chars\zombie.zmx
-WindowsContent\data\maps.zdx
 WindowsContent\data\mapSegments.dat
 WindowsContent\data\maps\arena.zmx
 WindowsContent\data\maps\map.dat
@@ -46,3 +44,5 @@ WindowsContent\gfx\source\head1.png
 WindowsContent\gfx\source\legs1.png
 WindowsContent\gfx\source\torso1.png
 WindowsContent\gfx\source\weapon1.png
+WindowsContent\gfx\source\segments1.png
+WindowsContent\data\maps.zdx

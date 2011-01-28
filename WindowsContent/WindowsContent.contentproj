@@ -99,7 +99,7 @@
     </None>
     <None Include="data\maps.zdx">
       <Name>maps</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="data\mapSegments.dat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

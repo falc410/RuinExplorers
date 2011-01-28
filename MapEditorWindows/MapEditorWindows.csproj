@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MapClasses\DrawingMode.cs" />
     <Compile Include="MapEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
