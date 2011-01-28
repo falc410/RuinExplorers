@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MapEditorWindows.MapClasses
 {
-	class Map
+	public class Map
     {
         #region Variable Declaration
         
@@ -77,57 +77,7 @@ namespace MapEditorWindows.MapClasses
 			return -1;
 		}
 
-		private void ReadSegmentDefinitions()
-		{
-			StreamReader streamReader = new StreamReader(@"Content/data/mapSegments.dat");
-			string t = "";
-
-			int n;
-			int currentTex = 0;
-
-			int curDef = -1;
-			Rectangle tRect = new Rectangle();
-			string[] split;
-			t = streamReader.ReadLine();
-
-			while (!streamReader.EndOfStream)
-			{
-				t = streamReader.ReadLine();
-				if (t.StartsWith("#"))
-				{
-					if (t.StartsWith("#src"))
-					{
-						split = t.Split(' ');
-						if (split.Length > 1)
-						{
-							n = Convert.ToInt32(split[1]);
-							currentTex = n - 1;
-						}
-					}
-				}
-				else
-				{
-					curDef++;
-					string name = t;
-					t = streamReader.ReadLine();
-					split = t.Split(' ');
-					if (split.Length > 3)
-					{
-						tRect.X = Convert.ToInt32(split[0]);
-						tRect.Y = Convert.ToInt32(split[1]);
-						tRect.Width = Convert.ToInt32(split[2]);
-						tRect.Height = Convert.ToInt32(split[3]);
-					}
-				else
-					Console.WriteLine("read fail: " + name);
-
-				int tex = currentTex;
-				t = streamReader.ReadLine();
-				int flags = Convert.ToInt32(t);
-				segDef[curDef] = new SegmentDefinitions(name, tex, tRect, flags);
-				}
-			}
-		}//ReadSegmentDefinitions()
+		
 
 		public int GetHoveredSegment(int x, int y, int l, Vector2 scroll)
 		{
@@ -196,6 +146,59 @@ namespace MapEditorWindows.MapClasses
 			spriteBatch.End();
 		}
 
+        #region IO Methods
+        
+        private void ReadSegmentDefinitions()
+        {
+            StreamReader streamReader = new StreamReader(@"WindowsContent/data/maps.zdx");
+            string t = "";
+
+            int n;
+            int currentTex = 0;
+
+            int curDef = -1;
+            Rectangle tRect = new Rectangle();
+            string[] split;
+            t = streamReader.ReadLine();
+
+            while (!streamReader.EndOfStream)
+            {
+                t = streamReader.ReadLine();
+                if (t.StartsWith("#"))
+                {
+                    if (t.StartsWith("#src"))
+                    {
+                        split = t.Split(' ');
+                        if (split.Length > 1)
+                        {
+                            n = Convert.ToInt32(split[1]);
+                            currentTex = n - 1;
+                        }
+                    }
+                }
+                else
+                {
+                    curDef++;
+                    string name = t;
+                    t = streamReader.ReadLine();
+                    split = t.Split(' ');
+                    if (split.Length > 3)
+                    {
+                        tRect.X = Convert.ToInt32(split[0]);
+                        tRect.Y = Convert.ToInt32(split[1]);
+                        tRect.Width = Convert.ToInt32(split[2]);
+                        tRect.Height = Convert.ToInt32(split[3]);
+                    }
+                    else
+                        Console.WriteLine("read fail: " + name);
+
+                    int tex = currentTex;
+                    t = streamReader.ReadLine();
+                    int flags = Convert.ToInt32(t);
+                    segDef[curDef] = new SegmentDefinitions(name, tex, tRect, flags);
+                }
+            }
+        }//ReadSegmentDefinitions()
 
         public void Write()
         {
@@ -243,7 +246,7 @@ namespace MapEditorWindows.MapClasses
 
         public void Read()
         {
-            BinaryReader file = new BinaryReader(File.Open(@"Content/data/" + path + ".dat", FileMode.Open));
+            BinaryReader file = new BinaryReader(File.Open(path, FileMode.Open));
 
             // read ledge information first
             for (int i = 0; i < ledges.Length; i++)
@@ -285,5 +288,6 @@ namespace MapEditorWindows.MapClasses
             }
             file.Close();
         }
+        #endregion
     }
 }

@@ -48,17 +48,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MainForm.cs">
+    <Compile Include="MapEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <Compile Include="MapEditorForm.Designer.cs">
+      <DependentUpon>MapEditorForm.cs</DependentUpon>
     </Compile>
     <Compile Include="GraphicsDeviceControl.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="GraphicsDeviceService.cs" />
-    <Compile Include="MapClasses\DrawingMode.cs" />
     <Compile Include="MapClasses\Ledge.cs" />
     <Compile Include="MapClasses\Map.cs" />
     <Compile Include="MapClasses\MapSegment.cs" />
@@ -69,6 +68,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceContainer.cs" />
+    <EmbeddedResource Include="MapEditorForm.resx">
+      <DependentUpon>MapEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -92,6 +94,10 @@
     <ProjectReference Include="..\TextLibrary\TextLibrary.csproj">
       <Project>{B21FA8E9-3D89-46D2-92F1-AABB0FE42172}</Project>
       <Name>TextLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WindowsContentBuilder\WindowsContentBuilder.csproj">
+      <Project>{290D43FB-52C8-4505-A8A0-6244568B05C6}</Project>
+      <Name>WindowsContentBuilder</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

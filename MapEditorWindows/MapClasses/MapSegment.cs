@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace MapEditorWindows.MapClasses
 {
-    class MapSegment
+    public class MapSegment
     {
         public Vector2 location;
         int segmentIndex;

@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace MapEditorWindows.MapClasses
 {
-    class Ledge
+    public class Ledge
     {
         Vector2[] nodes = new Vector2[16];
         private int totalNodes = 0;

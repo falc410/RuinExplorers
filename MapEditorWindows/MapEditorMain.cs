@@ -10,6 +10,8 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using MapEditorWindows.MapClasses;
 using TextLibrary;
+using System.Windows.Forms;
+
 
 namespace MapEditorWindows
 {
@@ -18,6 +20,13 @@ namespace MapEditorWindows
 	/// </summary>
     public class MapEditorMain : GraphicsDeviceControl
 	{
+        enum DrawingMode
+        {
+            SegmentSelection,
+            CollisionMap,
+            Ledges
+        }
+
 		#region Variables Declaration
 
         ContentManager Content;
@@ -33,6 +42,7 @@ namespace MapEditorWindows
 		Texture2D openIcon;
 		Texture2D saveIcon;
 		DrawingMode drawingMode = DrawingMode.SegmentSelection;
+        System.Drawing.Image segmentImage;
 
 		int mouseX, mouseY;
 		bool LeftMouseButtonDown;
@@ -61,7 +71,23 @@ namespace MapEditorWindows
 
 		#endregion
 
-		/// <summary>
+        #region Properties
+
+        public Map Map
+        {
+            get { return map; }
+            set { map = value; }
+
+        }
+
+        public System.Drawing.Image SegmentImage
+        {
+            get { return segmentImage; }
+        }
+
+        #endregion
+
+        /// <summary>
 		/// Allows the game to perform any initialization it needs to before starting to run.
 		/// This is where it can query for any required services and load any non-graphic
 		/// related content.  Calling base.Initialize will enumerate through any components
@@ -87,16 +113,24 @@ namespace MapEditorWindows
             {
                 segmentTextures[i] = Content.Load<Texture2D>(@"gfx/segments" + (i + 1).ToString());
             }
+
+            segmentImage = System.Drawing.Bitmap.FromFile(@"WindowsContent/gfx/source/segments1.png");
+
             arrowsTexture = Content.Load<Texture2D>(@"gfx/arrows");
+
+            // Hook the idle event to constantly redraw our animation.
+            Application.Idle += delegate { Invalidate(); };
 		}
 
-		
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Content.Unload();
+            }
 
-		/// <summary>
-		/// UnloadContent will be called once per game and is the place to unload
-		/// all content.
-		/// </summary>
-	
+            base.Dispose(disposing);
+        }
 
 		/// <summary>
 		/// Allows the game to run logic such as updating the world,
@@ -320,78 +354,152 @@ namespace MapEditorWindows
 		}
 
 		// Draws the Segment List on the right hand side when in Segment Mode
-		private void DrawMapSegments()
-		{
-			Rectangle sourceRect = new Rectangle();
-			Rectangle destinationRect = new Rectangle();
+        private void DrawMapSegments()
+        {
+            Rectangle sRect = new Rectangle();
+            Rectangle dRect = new Rectangle();
 
-			text.size = 0.8f;
+            text.size = 0.8f;
 
-			spriteBatch.Begin();
-			// Draw Blue Background behind Map Segments
-			spriteBatch.Draw(nullTexture, new Rectangle(500, 20, 280, 550), new Color(0, 0, 0, 100));
-			spriteBatch.End();
+            spriteBatch.Begin();
+            spriteBatch.Draw(nullTexture, new Rectangle(500, 20, 280, 550), new Color(0, 0, 0, 100));
+            spriteBatch.End();
 
-			// TODO: if new shapes are added increase i in for loop
-			for (int i = 0; i < 9; i++)
-			{
-				SegmentDefinitions segDef = map.segDef[i];
-				if (segDef == null)
-					continue;
+            for (int i = 0; i < 11; i++)
+            {
+                SegmentDefinitions segDef = map.segDef[i];
 
-				spriteBatch.Begin();
+                if (segDef == null)
+                    continue;
 
-				destinationRect.X = 500;
-				destinationRect.Y = 50 + i * 60;
+                spriteBatch.Begin();
 
-				sourceRect = segDef.sourceRect;
+                dRect.X = 500;
+                dRect.Y = 50 + i * 60;
 
-				// Shapes are made smaller to fit into right hand side of editor
-				if (sourceRect.Width > sourceRect.Height)
-				{
-					destinationRect.Width = 45;
-					destinationRect.Height = (int)(((float)sourceRect.Height /
-					(float)sourceRect.Width) * 45.0f);
-				}
-				else
-				{
-					destinationRect.Height = 45;
-					destinationRect.Width = (int)(((float)sourceRect.Width /
-					(float)sourceRect.Height) * 45.0f);
-				}
-				spriteBatch.Draw(
-				segmentTextures[segDef.sourceIndex], destinationRect, sourceRect, Color.White);
-				spriteBatch.End();
+                sRect = segDef.sourceRect;
 
-				text.color = Color.White;
-				text.DrawText(destinationRect.X + 50, destinationRect.Y, segDef.name);
+                if (sRect.Width > sRect.Height)
+                {
+                    dRect.Width = 45;
+                    dRect.Height = (int)(((float)sRect.Height / (float)sRect.Width) * 45.0f);
+                }
+                else
+                {
+                    dRect.Height = 45;
+                    dRect.Width = (int)(((float)sRect.Width / (float)sRect.Height) * 45.0f);
+                }
 
-				if (LeftMouseButtonDown)
-				{
-					if (mouseX > destinationRect.X && mouseY < 780 && mouseY > destinationRect.Y && mouseY < destinationRect.Y + 45)
-					{
-						if (mouseDragSegment == -1)
-						{
-							int f = map.AddSeg(currentLayer, i);
-							if (f <= -1)
-								continue;
+                spriteBatch.Draw(segmentTextures[segDef.sourceIndex],
+                    dRect,
+                    sRect,
+                    Color.White
+                );
 
-							float layerScalar = 0.5f;
-							if (currentLayer == 0)
-								layerScalar = 0.375f;
-							else if (currentLayer == 2)
-								layerScalar = 0.625f;
+                spriteBatch.End();
 
-							map.Segments[currentLayer, f].location.X = (mouseX - sourceRect.Width / 4 + scroll.X * layerScalar);
-							map.Segments[currentLayer, f].location.Y = (mouseY - sourceRect.Height / 4 + scroll.Y * layerScalar);
-							mouseDragSegment = f;
-						}
-					}
-				}
+                text.color = Color.White;
+
+                text.DrawText(dRect.X + 50, dRect.Y, segDef.name);
+
+                if (RightMouseButtonDown)
+                {
+                    if (mouseX > dRect.X && mouseX < 780 && mouseY > dRect.Y && mouseY < dRect.Y + 45)
+                    {
+                        if (mouseDragSegment == -1)
+                        {
+                            int f = map.AddSeg(currentLayer, i);
+
+                            if (f <= -1)
+                                continue;
+
+                            float layerScalar = 0.5f;
+                            if (currentLayer == 0)
+                                layerScalar = 0.375f;
+                            else if (currentLayer == 2)
+                                layerScalar = 0.625f;
+
+                            map.Segments[currentLayer, f].location.X = (mouseX - sRect.Width / 4 + scroll.X * layerScalar);
+                            map.Segments[currentLayer, f].location.Y = (mouseY - sRect.Height / 4 + scroll.Y * layerScalar);
+
+                            mouseDragSegment = f;
+                        }
+                    }
+                }
+            }
+        }
+        //private void DrawMapSegments()
+        //{
+        //    Rectangle sourceRect = new Rectangle();
+        //    Rectangle destinationRect = new Rectangle();
+
+        //    text.size = 0.8f;
+
+        //    spriteBatch.Begin();
+        //    // Draw Blue Background behind Map Segments
+        //    spriteBatch.Draw(nullTexture, new Rectangle(500, 20, 280, 550), new Color(0, 0, 0, 100));
+        //    spriteBatch.End();
+
+        //    // TODO: if new shapes are added increase i in for loop
+        //    for (int i = 0; i < 9; i++)
+        //    {
+        //        SegmentDefinitions segDef = map.segDef[i];
+        //        if (segDef == null)
+        //            continue;
+
+        //        spriteBatch.Begin();
+
+        //        destinationRect.X = 500;
+        //        destinationRect.Y = 50 + i * 60;
+
+        //        sourceRect = segDef.sourceRect;
+
+        //        // Shapes are made smaller to fit into right hand side of editor
+        //        if (sourceRect.Width > sourceRect.Height)
+        //        {
+        //            destinationRect.Width = 45;
+        //            destinationRect.Height = (int)(((float)sourceRect.Height /
+        //            (float)sourceRect.Width) * 45.0f);
+        //        }
+        //        else
+        //        {
+        //            destinationRect.Height = 45;
+        //            destinationRect.Width = (int)(((float)sourceRect.Width /
+        //            (float)sourceRect.Height) * 45.0f);
+        //        }
+        //        spriteBatch.Draw(
+        //        segmentTextures[segDef.sourceIndex], destinationRect, sourceRect, Color.White);
+        //        spriteBatch.End();
+
+        //        text.color = Color.White;
+        //        text.DrawText(destinationRect.X + 50, destinationRect.Y, segDef.name);
+
+        //        if (LeftMouseButtonDown)
+        //        {
+        //            if (mouseX > destinationRect.X && mouseY < 780 && mouseY > destinationRect.Y && mouseY < destinationRect.Y + 45)
+        //            {
+        //                if (mouseDragSegment == -1)
+        //                {
+        //                    int f = map.AddSeg(currentLayer, i);
+        //                    if (f <= -1)
+        //                        continue;
+
+        //                    float layerScalar = 0.5f;
+        //                    if (currentLayer == 0)
+        //                        layerScalar = 0.375f;
+        //                    else if (currentLayer == 2)
+        //                        layerScalar = 0.625f;
+
+        //                    map.Segments[currentLayer, f].location.X = (mouseX - sourceRect.Width / 4 + scroll.X * layerScalar);
+        //                    map.Segments[currentLayer, f].location.Y = (mouseY - sourceRect.Height / 4 + scroll.Y * layerScalar);
+        //                    mouseDragSegment = f;
+        //                }
+        //            }
+        //        }
 
 
-			}
-		}
+        //    }
+        //}
 
 		// Draws the clickable Text in the upper left corner
 		private void DrawText()
@@ -512,8 +620,8 @@ namespace MapEditorWindows
 		{
 			keyboardState = Keyboard.GetState();
 
-			Keys[] currentKeys = keyboardState.GetPressedKeys();
-			Keys[] lastUsedKeys = oldKeyboardState.GetPressedKeys();
+			Microsoft.Xna.Framework.Input.Keys[] currentKeys = keyboardState.GetPressedKeys();
+			Microsoft.Xna.Framework.Input.Keys[] lastUsedKeys = oldKeyboardState.GetPressedKeys();
 
 			bool found = false;
 
@@ -535,7 +643,7 @@ namespace MapEditorWindows
 
 		// Adds Keypress to string
 		// TODO: very crude implementation
-		private void PressKey(Keys key)
+		private void PressKey(Microsoft.Xna.Framework.Input.Keys key)
 		{
 			string t = String.Empty;
 			switch (editmode)
@@ -549,12 +657,12 @@ namespace MapEditorWindows
 					break;
 			}
 
-			if (key == Keys.Back)
+			if (key == Microsoft.Xna.Framework.Input.Keys.Back)
 			{
 				if (t.Length > 0)
 					t = t.Substring(0, t.Length - 1);
 			}
-			else if (key == Keys.Enter)
+			else if (key == Microsoft.Xna.Framework.Input.Keys.Enter)
 			{
 				editmode = EditingMode.None;
 			}
