@@ -728,17 +728,26 @@ namespace CharacterEditorWindows
         #endregion
 
         #region Part Preview Area
-        
+
+        /// <summary>
+        /// Fills the preview picture box.
+        /// Requires a source Bitmap and adjusts it to fit a 64x64 picture box
+        /// or 80x64 (for weapons). Weapons are still bugged!
+        /// </summary>
+        /// <param name="targetPictureBox">The target picture box.</param>
+        /// <param name="sourceBitmap">The source bitmap.</param>
+        /// <param name="index">The index.</param>
         private void FillPictureBox(PictureBox targetPictureBox, Image sourceBitmap, int index)
         {
             // either we have a second method or this stupid if/else for weapons
             if (targetPictureBox == weaponsPreview)
             {
                 Image image = (Image)new Bitmap(80, 64);
+
                 Rect destRectangle = new Rect(0, 0, 80, 64);
                 Rect sourceRect = new Rect();
-                sourceRect.X = (index % 4) * 80;
-                sourceRect.Y = (index /4) * 64;
+                sourceRect.X = ((index % 64 ) % 4) * 80;
+                sourceRect.Y = (index / 4) * 64;
                 sourceRect.Width = 80;
                 sourceRect.Height = 64;
 
@@ -767,9 +776,7 @@ namespace CharacterEditorWindows
                     GraphicsUnit.Pixel);
 
                 targetPictureBox.Image = image;
-            }
-            // not needed I think        
-            //this.Invalidate();
+            }           
         }
 
         private void availableHeadParts_SelectedIndexChanged(object sender, EventArgs e)
@@ -779,17 +786,17 @@ namespace CharacterEditorWindows
 
         private void availableTorsoParts_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            FillPictureBox(torsoPreview, characterEditorMain1.TorsoBitmap, availableTorsoParts.SelectedIndex);
         }
 
         private void availableLegsParts_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            FillPictureBox(legsPreview, characterEditorMain1.LegsBitmap, availableLegsParts.SelectedIndex);
         }
 
         private void availableWeaponsListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            FillPictureBox(weaponsPreview, characterEditorMain1.WeaponsBitmap, availableWeaponsParts.SelectedIndex);
         }
         #endregion
 
@@ -799,7 +806,37 @@ namespace CharacterEditorWindows
         {
             int saveSelectedPartIndex = partListBox.SelectedIndex;
             characterEditorMain1.charDef.Frames[framesListBox.SelectedIndex].Parts[partListBox.SelectedIndex].Index = availableHeadParts.SelectedIndex;
-           // characterEditorMain1.charDef.Frames[framesListBox.SelectedIndex].Parts[partListBox.SelectedIndex].Location = new Microsoft.Xna.Framework.Vector2(characterEditorMain1.Height / 2, characterEditorMain1.Width / 2);
+          
+            //update part list
+            partListBox.Items.Clear();
+            for (int i = 0; i < characterEditorMain1.charDef.Frames[characterEditorMain1.SelectedFrame].Parts.Length; i++)
+            {
+                string line = "";
+                int index = characterEditorMain1.charDef.Frames[characterEditorMain1.SelectedFrame].Parts[i].Index;
+
+                if (index < 0)
+                    line = "";
+                else if (index < 64)
+                    line = "head" + index.ToString();
+                else if (index < 74)
+                    line = "torso" + index.ToString();
+                else if (index < 128)
+                    line = "arms" + index.ToString();
+                else if (index < 192)
+                    line = "legs" + index.ToString();
+                else
+                    line = "weapons" + index.ToString();
+
+                partListBox.Items.Add(i.ToString() + ": " + line);
+            }
+            partListBox.SelectedIndex = saveSelectedPartIndex;           
+        }
+
+        private void addTorsoButton_Click(object sender, EventArgs e)
+        {
+            int saveSelectedPartIndex = partListBox.SelectedIndex;
+            characterEditorMain1.charDef.Frames[framesListBox.SelectedIndex].Parts[partListBox.SelectedIndex].Index = availableTorsoParts.SelectedIndex + 64;
+
             //update part list
             partListBox.Items.Clear();
             for (int i = 0; i < characterEditorMain1.charDef.Frames[characterEditorMain1.SelectedFrame].Parts.Length; i++)
@@ -823,23 +860,66 @@ namespace CharacterEditorWindows
                 partListBox.Items.Add(i.ToString() + ": " + line);
             }
             partListBox.SelectedIndex = saveSelectedPartIndex;
-
-            //characterDefinition.Frames[selectedFrame].Parts[selectedPart].Index = i + 64 * l
-        }
-
-        private void addTorsoButton_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void addLegsButton_Click(object sender, EventArgs e)
         {
+            int saveSelectedPartIndex = partListBox.SelectedIndex;
+            characterEditorMain1.charDef.Frames[framesListBox.SelectedIndex].Parts[partListBox.SelectedIndex].Index = availableLegsParts.SelectedIndex + 128;
 
+            //update part list
+            partListBox.Items.Clear();
+            for (int i = 0; i < characterEditorMain1.charDef.Frames[characterEditorMain1.SelectedFrame].Parts.Length; i++)
+            {
+                string line = "";
+                int index = characterEditorMain1.charDef.Frames[characterEditorMain1.SelectedFrame].Parts[i].Index;
+
+                if (index < 0)
+                    line = "";
+                else if (index < 64)
+                    line = "head" + index.ToString();
+                else if (index < 74)
+                    line = "torso" + index.ToString();
+                else if (index < 128)
+                    line = "arms" + index.ToString();
+                else if (index < 192)
+                    line = "legs" + index.ToString();
+                else
+                    line = "weapons" + index.ToString();
+
+                partListBox.Items.Add(i.ToString() + ": " + line);
+            }
+            partListBox.SelectedIndex = saveSelectedPartIndex;
         }
 
         private void addWeaponButton_Click(object sender, EventArgs e)
         {
+            int saveSelectedPartIndex = partListBox.SelectedIndex;
+            characterEditorMain1.charDef.Frames[framesListBox.SelectedIndex].Parts[partListBox.SelectedIndex].Index = availableWeaponsParts.SelectedIndex + 192;
 
+            //update part list
+            partListBox.Items.Clear();
+            for (int i = 0; i < characterEditorMain1.charDef.Frames[characterEditorMain1.SelectedFrame].Parts.Length; i++)
+            {
+                string line = "";
+                int index = characterEditorMain1.charDef.Frames[characterEditorMain1.SelectedFrame].Parts[i].Index;
+
+                if (index < 0)
+                    line = "";
+                else if (index < 64)
+                    line = "head" + index.ToString();
+                else if (index < 74)
+                    line = "torso" + index.ToString();
+                else if (index < 128)
+                    line = "arms" + index.ToString();
+                else if (index < 192)
+                    line = "legs" + index.ToString();
+                else
+                    line = "weapons" + index.ToString();
+
+                partListBox.Items.Add(i.ToString() + ": " + line);
+            }
+            partListBox.SelectedIndex = saveSelectedPartIndex;
         }
         #endregion
 

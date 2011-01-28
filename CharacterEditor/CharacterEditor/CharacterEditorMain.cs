@@ -348,7 +348,11 @@ namespace CharacterEditor
 					if (part.Index >= 192)
 					{
 						// spritesheet for weapons is 64 x 80 per sprite
-						sourceRect.X = ((part.Index % 64) % 3) * 80;
+						// I commented the original line out and added another for Y coordinates
+                        // I think it should be correct now - maybe the book was wrong?
+                        //sourceRect.X = ((part.Index % 64) % 3) * 80;
+                        sourceRect.X = ((part.Index % 64) % 4) * 80;
+                        sourceRect.Y = ((part.Index % 64) / 4) * 64;
 						sourceRect.Width = 80;
 					}
 

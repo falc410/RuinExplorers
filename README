@@ -1,7 +1,6 @@
 RuinExplorers - MapEditor
 
-Windows Forms port started. All issues will be adressed in the Windows Forms solution!
-It's still not userfriendly nor functional!
+Being ported to Windows Forms Application in the future!
 
 Improvements planned for the future:
 - Code cleanup & documentation
@@ -19,20 +18,18 @@ Improvements planned for the future:
 
 RuinExplorers - CharacterEditor
 
-Improvements planned for the future:
+Now available as native Windows Forms Application.
+Mostly functional. Still needs to be implemented:
 
-- Code cleanup & documentation
-- Better Texture handling / loading
-- Add scripting (planned)
+- Better preview animation handling (draw at 60fps!)
+- Import / switching of Texture Sets
 - Undo Function
-- Better handling of saving and opening (file exists)
-- Better input handling
-- Move to Windows Forms / WPF project 
+- More Documentation
 
 RuinExplorers - MainEngine
 
 Current Bugs:
-- crashes when trying to do air-combo (reason is that the attack animation on keyframe 6 (attack 7) sets setanygoto 11, so the next time attack is pressed any animation should play frame 11. but in midair we are using the fly animation which does have a frame 11)
+- crashes when trying to do air-combo (reason is that the attack animation on keyframe 6 (attack 7) sets setanygoto 11, so the next time attack is pressed any animation should play frame 11. but in midair we are using the fly animation which does not have a frame 11)
 
 Improvements planned for the future:
 

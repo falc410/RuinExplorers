@@ -437,6 +437,9 @@ namespace RuinExplorers.CharacterClasses
 
                     if (part.Index >= 192)
                     {
+                        // I commented the original line out and added another for Y coordinates
+                        // I think it should be correct now - maybe the book was wrong?
+                        //sourceRect.X = ((part.Index % 64) % 3) * 80;                       
                         sRect.X = ((part.Index % 64) % 4) * 80;
                         sRect.Y = ((part.Index % 64) / 4) * 64;
                         sRect.Width = 80;
