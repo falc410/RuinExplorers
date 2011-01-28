@@ -136,8 +136,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RuinExplorersContent\RuinExplorersContent.contentproj">
-      <Name>RuinExplorersContent</Name>
+      <Name>RuinExplorersContent %28Content%29</Name>
       <XnaReferenceType>Content</XnaReferenceType>
+      <Project>{DEA3CCB9-B019-439A-A6DC-E76EE6929FAD}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

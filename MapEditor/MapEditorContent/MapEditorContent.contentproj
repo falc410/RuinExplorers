@@ -84,6 +84,10 @@
       <Name>mapSegments</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="data\maps\map.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>map</Name>
+    </None>
     <None Include="data\placeholder.txt">
       <Name>placeholder</Name>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

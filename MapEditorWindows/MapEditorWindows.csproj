@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{6749E820-CC5B-4913-8CA6-FF5345DAEEDF}</ProjectGuid>
+    <ProjectGuid>{F9AB3E88-6ADB-4890-A0D5-756E36671CE7}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CharacterEditorWindows</RootNamespace>
-    <AssemblyName>CharacterEditorWindows</AssemblyName>
+    <RootNamespace>MapEditorWindows</RootNamespace>
+    <AssemblyName>MapEditorWindows</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -48,14 +48,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CharacterEditorMain.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Character\Animation.cs" />
-    <Compile Include="Character\CharacterDefinition.cs" />
-    <Compile Include="Character\Frame.cs" />
-    <Compile Include="Character\KeyFrame.cs" />
-    <Compile Include="Character\Part.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -66,12 +58,17 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="GraphicsDeviceService.cs" />
+    <Compile Include="MapClasses\DrawingMode.cs" />
+    <Compile Include="MapClasses\Ledge.cs" />
+    <Compile Include="MapClasses\Map.cs" />
+    <Compile Include="MapClasses\MapSegment.cs" />
+    <Compile Include="MapClasses\SegmentDefinitions.cs" />
+    <Compile Include="MapEditorMain.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceContainer.cs" />
-    <EmbeddedResource Include="MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -92,9 +89,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WindowsContentBuilder\WindowsContentBuilder.csproj">
-      <Project>{290D43FB-52C8-4505-A8A0-6244568B05C6}</Project>
-      <Name>WindowsContentBuilder</Name>
+    <ProjectReference Include="..\TextLibrary\TextLibrary.csproj">
+      <Project>{B21FA8E9-3D89-46D2-92F1-AABB0FE42172}</Project>
+      <Name>TextLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

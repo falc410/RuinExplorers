@@ -95,9 +95,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CharacterEditorWindowsContent\CharacterEditorWindowsContent.contentproj">
+    <ProjectReference Include="..\WindowsContent\WindowsContent.contentproj">
       <Project>{94FCCC89-B733-4190-9124-DC0F64C0927D}</Project>
-      <Name>CharacterEditorWindowsContent</Name>
+      <Name>WindowsContent</Name>
       <XnaReferenceType>Content</XnaReferenceType>
     </ProjectReference>
   </ItemGroup>

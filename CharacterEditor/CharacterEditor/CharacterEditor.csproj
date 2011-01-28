@@ -126,8 +126,9 @@
       <Name>TextLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="..\CharacterEditorContent\CharacterEditorContent.contentproj">
-      <Name>CharacterEditorContent</Name>
+      <Name>CharacterEditorContent %28Content%29</Name>
       <XnaReferenceType>Content</XnaReferenceType>
+      <Project>{6DE5649D-A237-49E3-9BA0-B49239C568BF}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using TextLibrary;
 using CharacterEditorWindows.Character;
 using System;
 using System.Windows.Forms;
@@ -132,7 +131,7 @@ namespace CharacterEditorWindows
 		/// </summary>
 		protected override void Initialize()
 		{
-			Content = new ContentManager(Services, "CharacterEditorWindowsContent");
+			Content = new ContentManager(Services, "WindowsContent");
             
 			spriteBatch = new SpriteBatch(GraphicsDevice);            
 
@@ -143,10 +142,10 @@ namespace CharacterEditorWindows
 			LoadTextures(torsoTexture, @"gfx/torso");
             LoadTextures(weaponTexture, @"gfx/weapon");
                         
-            headBitmap = Bitmap.FromFile(@"CharacterEditorWindowsContent/gfx/source/head1.png");
-            torsoBitmap = Bitmap.FromFile(@"CharacterEditorWindowsContent/gfx/source/torso1.png");
-            legsBitmap = Bitmap.FromFile(@"CharacterEditorWindowsContent/gfx/source/legs1.png");
-            weaponsBitmap = Bitmap.FromFile(@"CharacterEditorWindowsContent/gfx/source/weapon1.png");
+            headBitmap = Bitmap.FromFile(@"WindowsContent/gfx/source/head1.png");
+            torsoBitmap = Bitmap.FromFile(@"WindowsContent/gfx/source/torso1.png");
+            legsBitmap = Bitmap.FromFile(@"WindowsContent/gfx/source/legs1.png");
+            weaponsBitmap = Bitmap.FromFile(@"WindowsContent/gfx/source/weapon1.png");
 			
 			nullTexture = Content.Load<Texture2D>(@"gfx/1x1");
 
