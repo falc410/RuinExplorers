@@ -5,6 +5,8 @@ using System.Text;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using RuinExplorers.Particles;
+using RuinExplorers.Helpers;
 
 namespace RuinExplorers.MapClasses
 {
@@ -28,6 +30,13 @@ namespace RuinExplorers.MapClasses
 		private string path = "mapname";
 
 		const int LAYER_BACK = 0;
+        const int LAYER_MAP = 1;
+
+        enum SegmentFlags
+        {
+            None = 0,
+            Torch
+        }
 
 		#endregion
 
@@ -283,6 +292,40 @@ namespace RuinExplorers.MapClasses
 			}
 			spriteBatch.End();
 		}
+
+        public void Update(ParticleManager particleManager)
+        {
+            for (int i = 0; i < 64; i++)
+            {
+                if (mapSegment[LAYER_MAP, i] != null)
+                {
+                    if (segDef[mapSegment[LAYER_MAP,i].Index].Flags == (int)SegmentFlags.Torch)
+                    {
+                        particleManager.AddParticle(new Smoke(
+                          mapSegment[LAYER_MAP,i].location * 2f + new Vector2(10f,13f),
+                          RandomGenerator.GetRandomVector2(-50.0f, 50.0f, -300.0f, -200.0f),
+                          1.0f,
+                          0.8f,
+                          0.6f,
+                          1.0f,
+                          RandomGenerator.GetRandomFloat(0.25f, 0.5f),
+                          RandomGenerator.GetRandomInt(0, 4)), true);
+
+                        particleManager.AddParticle(new Fire(
+                            mapSegment[LAYER_MAP, i].location * 2f + new Vector2(10f, 37f),
+                            RandomGenerator.GetRandomVector2(-30.0f, 30.0f, -250.0f, -200.0f),
+                            RandomGenerator.GetRandomFloat(0.25f, 0.75f),
+                            RandomGenerator.GetRandomInt(0, 4)), true);
+
+                        // apparently heat is not the glowing orb I was looking for
+                        //particleManager.AddParticle(new Heat(mapSegment[LAYER_MAP, i].location * 2f
+                        //     + new Vector2(10f, -50f),
+                        //     RandomGenerator.GetRandomVector2(-50f, 50f, -400f, -300f),
+                        //     RandomGenerator.GetRandomFloat(1f, 2f)));
+                    }
+                }
+            }
+        }
 
 		#region Map IO Methods
 

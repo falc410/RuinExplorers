@@ -360,21 +360,31 @@ namespace RuinExplorers.CharacterClasses
             #endregion
 
             #region Particle Test
-            for (int i = 0; i < 4; i++)
-            {
-                Vector2 tloc = (Location - previousLocation) * (float)i / 4.0f + previousLocation;
-                tloc.Y -= 100f;
+            // test for particles floating above the characters head
+            //for (int i = 0; i < 4; i++)
+            //{
+            //    Vector2 tloc = (Location - previousLocation) * (float)i / 4.0f + previousLocation;
+            //    tloc.Y -= 100f;
 
-                particleManager.AddParticle(new Smoke(
-                    tloc,
-                    RandomGenerator.GetRandomVector2(-50.0f, 50.0f, -300.0f, -200.0f),
-                    1.0f,
-                    0.8f,
-                    0.6f,
-                    1.0f,
-                    RandomGenerator.GetRandomFloat(0.25f, 0.5f),
-                    RandomGenerator.GetRandomInt(0, 4)));
-            }
+            //    particleManager.AddParticle(new Smoke(
+            //        tloc,
+            //        RandomGenerator.GetRandomVector2(-50.0f, 50.0f, -300.0f, -200.0f),
+            //        1.0f,
+            //        0.8f,
+            //        0.6f,
+            //        1.0f,
+            //        RandomGenerator.GetRandomFloat(0.25f, 0.5f),
+            //        RandomGenerator.GetRandomInt(0, 4)));
+
+            //    if (i % 2 == 0)
+            //    {
+            //        particleManager.AddParticle(new Fire(
+            //            tloc + RandomGenerator.GetRandomVector2(10.0f, 10.0f, -10.0f, 10.0f),
+            //            RandomGenerator.GetRandomVector2(-30.0f,30.0f,-250.0f,-200.0f),
+            //            RandomGenerator.GetRandomFloat(0.25f, 0.75f),
+            //            RandomGenerator.GetRandomInt(0, 4)));
+            //    }
+            //}
             #endregion
         }
 

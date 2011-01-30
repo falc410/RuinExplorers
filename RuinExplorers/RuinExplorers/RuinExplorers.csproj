@@ -124,6 +124,8 @@
     <Compile Include="MapClasses\Map.cs" />
     <Compile Include="MapClasses\MapSegment.cs" />
     <Compile Include="MapClasses\SegmentDefinitions.cs" />
+    <Compile Include="Particles\Fire.cs" />
+    <Compile Include="Particles\Heat.cs" />
     <Compile Include="Particles\Particle.cs" />
     <Compile Include="Particles\ParticleManager.cs" />
     <Compile Include="Particles\Smoke.cs" />

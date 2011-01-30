@@ -51,15 +51,28 @@ namespace RuinExplorers.Particles
 
         public void DrawParticles(Texture2D spritesTexture, bool background)
         {
+            //spritebatch for alphablend particles
             spriteBatch.Begin();
             foreach (Particle p in particles)
             {
                 if (p != null)
                 {
-                    if (p.Background == background)
+                    if (!p.Additive && p.Background == background)
                         p.Draw(spriteBatch, spritesTexture);                    
                 }
                 
+            }
+            spriteBatch.End();
+
+            //seperate spritebatch for additive mode
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
+            foreach (Particle p in particles)
+            {
+                if (p != null)
+                {
+                    if (p.Additive && p.Background == background)
+                        p.Draw(spriteBatch, spritesTexture);
+                }
             }
             spriteBatch.End();
         }

@@ -41,6 +41,15 @@ namespace CharacterEditor
 		const int FACE_LEFT = 0;
 		const int FACE_RIGHT = 1;
 
+        const int AUX_SCRIPT = 0;
+        const int AUX_TRIGS = 1;
+        int auxMode = AUX_SCRIPT;
+        int trigScroll = 0;
+
+        const int TRIG_PISTOL_ACROSS = 0;
+        const int TRIG_PISTOL_UP = 1;
+        const int TRIG_PISTOL_DOWN = 2;
+
 		int selectedPart = 0;
 		int selectedFrame = 0;
 		int selectedAnimation = 0;
@@ -287,28 +296,90 @@ namespace CharacterEditor
 			}
 
             #region Script
-            for (int i = 0; i < 4; i++)
+            if (auxMode == AUX_SCRIPT)
             {
-                if (editmode == EditingMode.Script && selectedScriptLine == i)
+                for (int i = 0; i < 4; i++)
                 {
-                    text.color = Color.Lime;
-                    text.DrawText(210, 42 + i * 16, i.ToString() + ": " + characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Scripts[i] + "*");
-                }
-                else
-                {
-                    if (text.DrawClickText(210, 42 + i * 16, i.ToString() + ": " + characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Scripts[i], mouseState.X, mouseState.Y, mouseClick))
+                    if (editmode == EditingMode.Script && selectedScriptLine == i)
                     {
-                        selectedScriptLine = i;
-                        editmode = EditingMode.Script;
+                        text.color = Color.Lime;
+                        text.DrawText(210, 42 + i * 16, i.ToString() + ": " + characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Scripts[i] + "*");
                     }
+                    else
+                    {
+                        if (text.DrawClickText(210, 42 + i * 16, i.ToString() + ": " + characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Scripts[i], mouseState.X, mouseState.Y, mouseClick))
+                        {
+                            selectedScriptLine = i;
+                            editmode = EditingMode.Script;
+                        }
+                    }
+                }
+            }            
+            #endregion
+
+            #region Triggers
+            if (auxMode == AUX_TRIGS)
+            {
+                if (DrawIconAsButton(330, 42, upArrowTexture, mouseState.X, mouseState.Y, mouseClick))
+                    if (trigScroll > 0)
+                        trigScroll--;
+                if (DrawIconAsButton(330, 92, downArrowTexture, mouseState.X, mouseState.Y, mouseClick))
+                    if (trigScroll < 100)
+                        trigScroll++;
+
+                for (int i = 0; i < 4; i++)
+                {
+                    int t = i + trigScroll;
+                    if (text.DrawClickText(210, 42 + i * 16, GetTrigName(t), mouseState.X, mouseState.Y, mouseClick))
+                        characterDefinition.Frames[selectedFrame].Parts[selectedPart].Index = t + 1000;
                 }
             }
             #endregion
 
-			mouseClick = false;
+            #region Script/Trigger Selector
+            if (auxMode == AUX_SCRIPT)
+            {
+                text.color = Color.Lime;
+                text.DrawText(210, 110, "script");
+            }
+            else
+            {
+                if (text.DrawClickText(210, 110, "script", mouseState.X, mouseState.Y, mouseClick))
+                    auxMode = AUX_SCRIPT;
+            }
+
+            if (auxMode == AUX_TRIGS)
+            {
+                text.color = Color.Lime;
+                text.DrawText(260, 110, "trigs");
+            }
+            else
+            {
+                if (text.DrawClickText(260, 110, "trigs", mouseState.X, mouseState.Y, mouseClick))
+                    auxMode = AUX_TRIGS;
+            }
+            #endregion
+
+            mouseClick = false;
 
 			base.Draw(gameTime);
 		}
+
+        private string GetTrigName(int index)
+        {
+            switch (index)
+            {
+                case TRIG_PISTOL_ACROSS:
+                    return "pistol across";
+                case TRIG_PISTOL_DOWN:
+                    return "pistol down";
+                case TRIG_PISTOL_UP:
+                    return "pistol up";
+                default:
+                    break;
+            }
+            return "";
+        }
 		#region Custom Draw Methods
 				
 		/// <summary>
@@ -369,6 +440,23 @@ namespace CharacterEditor
 						rotation = -rotation;
 						location.X -= part.Location.X * _scale * 2.0f;
 					}
+
+                    if (part.Index >= 1000 && _alpha >= 1f)
+                    {
+                        spriteBatch.End();
+                        text.color = Color.Lime;
+                        if (_preview)
+                        {
+                            text.size = 0.45f;
+                            text.DrawText((int)location.X, (int)location.Y, "*");
+                        }
+                        else
+                        {
+                            text.size = 1f;
+                            text.DrawText((int)location.X, (int)location.Y, "*" + GetTrigName(part.Index - 1000));
+                        }
+                        spriteBatch.Begin();
+                    }
 
 					  Texture2D texture = null;
 

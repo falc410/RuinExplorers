@@ -17,7 +17,7 @@ namespace RuinExplorers.MapClasses
         private string Name;
         private int SourceIndex;
         private Rectangle SourceRect;
-        private int Flags;
+        public int Flags;
        
         public Rectangle sourceRect
         {

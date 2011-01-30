@@ -163,6 +163,9 @@ namespace RuinExplorers
                     character[i].Update(gameTime);
             }
 
+            //call map.update() to update fire & smoke particles on torches
+            map.Update(particleManager);
+
             base.Update(gameTime);
         }
 
@@ -183,6 +186,14 @@ namespace RuinExplorers
             particleManager.DrawParticles(spritesTexture, true);
             character[0].Draw(spriteBatch);
             particleManager.DrawParticles(spritesTexture, false);
+
+            // glowing orb for inner fire above the characters head (for particle testing)
+            //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
+            //spriteBatch.Draw(spritesTexture,
+            //    character[0].Location - new Vector2(0f, 100f) - Scroll,
+            //    new Rectangle(0, 128, 64, 64), Color.White, 0.0f,
+            //    new Vector2(32.0f, 32.0f), RandomGenerator.GetRandomFloat(0.5f, 1.0f), SpriteEffects.None, 1.0f);
+            //spriteBatch.End();
 
             base.Draw(gameTime);
         }

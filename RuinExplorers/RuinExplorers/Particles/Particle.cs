@@ -24,6 +24,13 @@ namespace RuinExplorers.Particles
 
         public bool Exists;
         public bool Background;
+        private bool additive;
+
+        public bool Additive
+        {
+            get { return additive; }
+            set { additive = value; }
+        }
 
         public Vector2 GameLocation
         {
