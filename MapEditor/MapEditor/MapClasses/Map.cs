@@ -243,7 +243,7 @@ namespace MapEditor.MapClasses
 
         public void Read()
         {
-            BinaryReader file = new BinaryReader(File.Open(@"Content/data/" + path + ".dat", FileMode.Open));
+            BinaryReader file = new BinaryReader(File.Open(@"Content/data/maps/" + path + ".dat", FileMode.Open));
 
             // read ledge information first
             for (int i = 0; i < ledges.Length; i++)

@@ -326,6 +326,7 @@
             // mapEditorMain1
             // 
             this.mapEditorMain1.CurrentLayer = 1;
+            this.mapEditorMain1.CurrentLedge = 0;
             this.mapEditorMain1.Location = new System.Drawing.Point(12, 27);
             this.mapEditorMain1.Map = null;
             this.mapEditorMain1.Mode = MapEditorWindows.MapClasses.DrawingMode.SegmentSelection;
@@ -334,6 +335,9 @@
             this.mapEditorMain1.Size = new System.Drawing.Size(800, 600);
             this.mapEditorMain1.TabIndex = 10;
             this.mapEditorMain1.Text = "mapEditorMain1";
+            this.mapEditorMain1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.onMouseDown);
+            this.mapEditorMain1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.onMouseMove);
+            this.mapEditorMain1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.onMouseUp);
             // 
             // ledgeCheckBox
             // 

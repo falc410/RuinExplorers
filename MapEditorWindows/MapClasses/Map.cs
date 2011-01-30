@@ -202,7 +202,7 @@ namespace MapEditorWindows.MapClasses
 
         public void Write()
         {
-            BinaryWriter file = new BinaryWriter(File.Open(@"Content/data/" + path + ".dat", FileMode.Create));
+            BinaryWriter file = new BinaryWriter(File.Open(path, FileMode.Create));
 
             //Write all information about our map in binary to file
             // start with ledges information

@@ -36,31 +36,10 @@ namespace MapEditorWindows
 		DrawingMode drawingMode = DrawingMode.SegmentSelection;
         System.Drawing.Image segmentImage;
 
-		int mouseX, mouseY;
-		bool LeftMouseButtonDown;
-		bool RightMouseButtonDown;
-		bool mouseClick;
-
-		int mouseDragSegment = -1;
 		int currentLayer = 1;
 		Vector2 scroll;
 		int currentLedge = 0;
-		int currentNode = 0;
-
-		int previousMouseX, previousMouseY;
-
-		MouseState mouseState;
-
-		enum EditingMode
-		{
-			None,
-			Path
-		}
-
-		KeyboardState keyboardState;
-		KeyboardState oldKeyboardState;
-		EditingMode editmode = EditingMode.None;
-
+		
 		#endregion
 
         #region Properties        
@@ -142,96 +121,6 @@ namespace MapEditorWindows
         }
 
 		/// <summary>
-		/// Allows the game to run logic such as updating the world,
-		/// checking for collisions, gathering input, and playing audio.
-		/// </summary>
-		/// <param name="gameTime">Provides a snapshot of timing values.</param>
-        //protected override void Update()
-        //{
-        //    // Allows the game to exit
-        //    if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-        //        this.Exit();
-
-        //    UpdateKeys();
-
-        //    mouseState = Mouse.GetState();
-        //    mouseX = mouseState.X;
-        //    mouseY = mouseState.Y;
-        //    bool previousMouseDown = LeftMouseButtonDown;
-
-        //    if (mouseState.LeftButton == ButtonState.Pressed)
-        //    {
-        //        if (!LeftMouseButtonDown && GetCanEdit())
-        //        {
-        //            if (drawingMode == DrawingMode.SegmentSelection)
-        //            {
-        //                int f = map.GetHoveredSegment(mouseX, mouseY, currentLayer, scroll);
-
-        //                if (f != -1)
-        //                    mouseDragSegment = f;                        
-        //            }
-        //            else if (drawingMode == DrawingMode.CollisionMap)
-        //            {
-        //                int x = (mouseX + (int)(scroll.X / 2)) / 32;
-        //                int y = (mouseY + (int)(scroll.Y / 2)) / 32;
-
-        //                if (x >= 0 && y >= 0 && x < 20 && y < 20)
-        //                {
-        //                    if (mouseState.LeftButton == ButtonState.Pressed)
-        //                        if (map.Grid[x, y] == 0)
-        //                            map.Grid[x, y] = 1;
-        //                        else
-        //                            map.Grid[x, y] = 0;
-        //                    // did not really work with right button already assigned to scrolling
-        //                    //else if (mouseState.RightButton == ButtonState.Pressed)
-        //                    //	map.Grid[x, y] = 0;
-        //                }
-        //            }
-        //            else if (drawingMode == DrawingMode.Ledges)
-        //            {
-        //                if (map.Legdes[currentLedge] == null)
-        //                    map.Legdes[currentLedge] = new Ledge();
-
-        //                if (map.Legdes[currentLedge].TotalNodes < 15)
-        //                {
-        //                    map.Legdes[currentLedge].Nodes[map.Legdes[currentLedge].TotalNodes] = new Vector2(mouseX, mouseY) + scroll / 2.0f;
-        //                    map.Legdes[currentLedge].TotalNodes++;
-        //                }
-        //            }
-        //        }
-        //        LeftMouseButtonDown = true;
-        //    }                
-        //    else
-        //        LeftMouseButtonDown = false;
-        //    if (previousMouseDown && !LeftMouseButtonDown) mouseClick = true;
-
-        //    if (mouseDragSegment > -1)
-        //    {
-        //        if (!LeftMouseButtonDown)
-        //            mouseDragSegment = -1;
-        //        else
-        //        {
-        //            Vector2 location = map.Segments[currentLayer, mouseDragSegment].location;
-        //            location.X += (mouseX - previousMouseX);
-        //            location.Y += (mouseY - previousMouseY);
-        //            map.Segments[currentLayer, mouseDragSegment].location = location;
-        //        }
-        //    }
-
-        //    RightMouseButtonDown = (mouseState.RightButton == ButtonState.Pressed);
-
-        //    if (RightMouseButtonDown)
-        //    {
-        //        scroll.X -= (mouseX - previousMouseX) * 2.0f;
-        //        scroll.Y -= (mouseY - previousMouseY) * 2.0f;
-        //    }
-			
-        //    previousMouseX = mouseX;
-        //    previousMouseY = mouseY;
-        //    base.Update(gameTime);
-        //}
-
-		/// <summary>
 		/// This is called when the game should draw itself.
 		/// </summary>
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
@@ -241,61 +130,17 @@ namespace MapEditorWindows
 
 			map.Draw(spriteBatch, segmentTextures, scroll);
 
-			switch (drawingMode)
-			{
-				case DrawingMode.SegmentSelection:					
-					break;
-				case DrawingMode.CollisionMap:
-                    DrawCollisionGrid();
-					break;
-				case DrawingMode.Ledges:
-					DrawLedgeList();
-					break;
-				default:
-					break;
-			}
-
+            if (drawingMode == DrawingMode.CollisionMap)
+                DrawCollisionGrid();
 			
 			DrawLedges();
 
-			//DrawText();
-
 		}
 
-		
-
-		#region Custom Draw Methods
-
-		// Draws the List of Ledges and lets edit the flag for hard ledge
-		private void DrawLedgeList()
-		{
-			for (int i = 0; i < 16; i++)
-			{
-				if (map.Legdes[i] == null)
-					continue;
-
-				int y = 50 + i * 20;
-				if (currentLedge == i)
-				{
-					text.color = Color.Lime;
-					text.DrawText(520, y, "ledge " + i.ToString());
-				}
-				else
-				{
-					if (text.DrawClickText(520, y, "ledge " + i.ToString(), mouseX, mouseY, mouseClick))
-						currentLedge = i;
-				}
-
-				text.color = Color.White;
-				text.DrawText(620, y, "n" + map.Legdes[i].TotalNodes.ToString());
-
-				if (text.DrawClickText(680, y, "f" + map.Legdes[i].isHardLedge.ToString(), mouseX, mouseY, mouseClick))
-					map.Legdes[i].isHardLedge = (map.Legdes[i].isHardLedge + 1) % 2;
-			}
-		}
+		#region Custom Draw Methods	
 
 		// Draws the CollisionGrid (small Squares) for easy Collision settings
-		// TODO: does not scroll with the view? maybe increase from 20x20 to higher setting?
+		// TODO: does not scroll with the view? maybe increase from 20x20 to bigger array?
 		private void DrawCollisionGrid()
 		{
 			spriteBatch.Begin();
@@ -323,13 +168,6 @@ namespace MapEditorWindows
 					}
 				}
 			}
-
-			// Draw a Rectangle, each Rectangle coresponds to one side
-			Color oColor = new Color(255, 255, 255, 100);
-			spriteBatch.Draw(nullTexture, new Rectangle(100, 50, 400, 1), oColor);
-			spriteBatch.Draw(nullTexture, new Rectangle(100, 50, 1, 500), oColor);
-			spriteBatch.Draw(nullTexture, new Rectangle(500, 50, 1, 500), oColor);
-			spriteBatch.Draw(nullTexture, new Rectangle(100, 550, 400, 1), oColor);
 
 			spriteBatch.End();
 		}	
@@ -390,14 +228,6 @@ namespace MapEditorWindows
 			spriteBatch.End();
 		}
 
-		#endregion
-
-	
-		private bool GetCanEdit()
-		{
-			if (mouseX > 100 && mouseX < 500 & mouseY > 100 && mouseY < 550)
-				return true;
-			return false;
-		}
+		#endregion	
 	}
 }
