@@ -17,6 +17,7 @@ namespace MapEditorWindows.MapClasses
 		int[,] colisionGrid;
 		Ledge[] ledges;
 		private string path = "mapname";
+        
 
 
         #endregion
@@ -38,7 +39,7 @@ namespace MapEditorWindows.MapClasses
         #endregion
 
         #region Properties
-
+        
         public string Path
         {
             get { return path; }
@@ -77,7 +78,13 @@ namespace MapEditorWindows.MapClasses
 			return -1;
 		}
 
-		
+		public void DeleteSegment(int layer, int index)
+        {
+            if (index != -1 && mapSegment[layer,index] != null)
+            {
+                mapSegment[layer, index] = null;
+            }
+        }
 
 		public int GetHoveredSegment(int x, int y, int l, Vector2 scroll)
 		{
@@ -96,10 +103,10 @@ namespace MapEditorWindows.MapClasses
 					Rectangle destinationRect = new Rectangle((int)(mapSegment[l, i].location.X - scroll.X * scale),
 						(int)(mapSegment[l, i].location.Y - scroll.Y * scale),
 						(int)(sourceRect.Width * scale), (int)(sourceRect.Height * scale));
-					if (destinationRect.Contains(x, y))
-						return i;
+                    if (destinationRect.Contains(x, y))
+                        return i;
 				}
-			}
+			}            
 			return -1;
 		}
 

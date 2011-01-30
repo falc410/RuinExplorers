@@ -63,6 +63,9 @@
             this.ledgeCheckBox = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
             this.ledgeNodeLabel = new System.Windows.Forms.Label();
+            this.nodeDeleteButton = new System.Windows.Forms.Button();
+            this.ledgeDeleteButton = new System.Windows.Forms.Button();
+            this.deleteSegmentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.segmentPictureBox)).BeginInit();
             this.SuspendLayout();
@@ -138,7 +141,8 @@
             this.modeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.drawingToolStripMenuItem,
             this.collisionMapToolStripMenuItem,
-            this.editLedgesToolStripMenuItem});
+            this.editLedgesToolStripMenuItem,
+            this.deleteSegmentsToolStripMenuItem});
             this.modeToolStripMenuItem.Name = "modeToolStripMenuItem";
             this.modeToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
             this.modeToolStripMenuItem.Text = "Mode";
@@ -146,21 +150,21 @@
             // drawingToolStripMenuItem
             // 
             this.drawingToolStripMenuItem.Name = "drawingToolStripMenuItem";
-            this.drawingToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.drawingToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.drawingToolStripMenuItem.Text = "Drawing";
             this.drawingToolStripMenuItem.Click += new System.EventHandler(this.drawingToolStripMenuItem_Click);
             // 
             // collisionMapToolStripMenuItem
             // 
             this.collisionMapToolStripMenuItem.Name = "collisionMapToolStripMenuItem";
-            this.collisionMapToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.collisionMapToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.collisionMapToolStripMenuItem.Text = "Collision Map";
             this.collisionMapToolStripMenuItem.Click += new System.EventHandler(this.collisionMapToolStripMenuItem_Click);
             // 
             // editLedgesToolStripMenuItem
             // 
             this.editLedgesToolStripMenuItem.Name = "editLedgesToolStripMenuItem";
-            this.editLedgesToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.editLedgesToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.editLedgesToolStripMenuItem.Text = "Edit Ledges";
             this.editLedgesToolStripMenuItem.Click += new System.EventHandler(this.editLedgesToolStripMenuItem_Click);
             // 
@@ -229,7 +233,8 @@
             this.modeSelectComboBox.Items.AddRange(new object[] {
             "Drawing",
             "Collision Map",
-            "Edit Ledges"});
+            "Edit Ledges",
+            "Delete Segments"});
             this.modeSelectComboBox.Location = new System.Drawing.Point(822, 44);
             this.modeSelectComboBox.Name = "modeSelectComboBox";
             this.modeSelectComboBox.Size = new System.Drawing.Size(121, 21);
@@ -285,7 +290,7 @@
             // ledgeListBox
             // 
             this.ledgeListBox.FormattingEnabled = true;
-            this.ledgeListBox.Location = new System.Drawing.Point(825, 479);
+            this.ledgeListBox.Location = new System.Drawing.Point(825, 459);
             this.ledgeListBox.Name = "ledgeListBox";
             this.ledgeListBox.Size = new System.Drawing.Size(147, 95);
             this.ledgeListBox.TabIndex = 8;
@@ -294,7 +299,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(822, 463);
+            this.label3.Location = new System.Drawing.Point(822, 443);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(73, 13);
             this.label3.TabIndex = 9;
@@ -342,7 +347,7 @@
             // ledgeCheckBox
             // 
             this.ledgeCheckBox.AutoSize = true;
-            this.ledgeCheckBox.Location = new System.Drawing.Point(825, 580);
+            this.ledgeCheckBox.Location = new System.Drawing.Point(825, 560);
             this.ledgeCheckBox.Name = "ledgeCheckBox";
             this.ledgeCheckBox.Size = new System.Drawing.Size(96, 17);
             this.ledgeCheckBox.TabIndex = 11;
@@ -353,7 +358,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(825, 613);
+            this.label5.Location = new System.Drawing.Point(822, 580);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(85, 13);
             this.label5.TabIndex = 12;
@@ -362,17 +367,46 @@
             // ledgeNodeLabel
             // 
             this.ledgeNodeLabel.AutoSize = true;
-            this.ledgeNodeLabel.Location = new System.Drawing.Point(908, 614);
+            this.ledgeNodeLabel.Location = new System.Drawing.Point(908, 580);
             this.ledgeNodeLabel.Name = "ledgeNodeLabel";
             this.ledgeNodeLabel.Size = new System.Drawing.Size(13, 13);
             this.ledgeNodeLabel.TabIndex = 13;
             this.ledgeNodeLabel.Text = "0";
+            // 
+            // nodeDeleteButton
+            // 
+            this.nodeDeleteButton.Location = new System.Drawing.Point(846, 596);
+            this.nodeDeleteButton.Name = "nodeDeleteButton";
+            this.nodeDeleteButton.Size = new System.Drawing.Size(100, 23);
+            this.nodeDeleteButton.TabIndex = 14;
+            this.nodeDeleteButton.Text = "Delete Last Node";
+            this.nodeDeleteButton.UseVisualStyleBackColor = true;
+            this.nodeDeleteButton.Click += new System.EventHandler(this.nodeDeleteButton_Click);
+            // 
+            // ledgeDeleteButton
+            // 
+            this.ledgeDeleteButton.Location = new System.Drawing.Point(846, 627);
+            this.ledgeDeleteButton.Name = "ledgeDeleteButton";
+            this.ledgeDeleteButton.Size = new System.Drawing.Size(100, 23);
+            this.ledgeDeleteButton.TabIndex = 15;
+            this.ledgeDeleteButton.Text = "Delete Ledge";
+            this.ledgeDeleteButton.UseVisualStyleBackColor = true;
+            this.ledgeDeleteButton.Click += new System.EventHandler(this.ledgeDeleteButton_Click);
+            // 
+            // deleteSegmentsToolStripMenuItem
+            // 
+            this.deleteSegmentsToolStripMenuItem.Name = "deleteSegmentsToolStripMenuItem";
+            this.deleteSegmentsToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.deleteSegmentsToolStripMenuItem.Text = "Delete Segments";
+            this.deleteSegmentsToolStripMenuItem.Click += new System.EventHandler(this.deleteSegmentsToolStripMenuItem_Click);
             // 
             // MapEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(984, 662);
+            this.Controls.Add(this.ledgeDeleteButton);
+            this.Controls.Add(this.nodeDeleteButton);
             this.Controls.Add(this.ledgeNodeLabel);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.ledgeCheckBox);
@@ -437,6 +471,9 @@
         private System.Windows.Forms.CheckBox ledgeCheckBox;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label ledgeNodeLabel;
+        private System.Windows.Forms.ToolStripMenuItem deleteSegmentsToolStripMenuItem;
+        private System.Windows.Forms.Button nodeDeleteButton;
+        private System.Windows.Forms.Button ledgeDeleteButton;
         
     }
 }

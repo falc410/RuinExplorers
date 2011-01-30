@@ -44,15 +44,15 @@
   <ItemGroup>
     <None Include="data\characters\player.dat">
       <Name>player</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="data\mapSegments.dat">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <Name>mapSegments</Name>
     </None>
     <None Include="data\maps\map.dat">
       <Name>map</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="data\placeholder.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -90,6 +90,7 @@
       <Name>head1</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
   </ItemGroup>
   <ItemGroup>

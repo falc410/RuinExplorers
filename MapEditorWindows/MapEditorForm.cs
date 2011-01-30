@@ -50,7 +50,7 @@ namespace MapEditorWindows
             segmentListBox.SelectedIndex = 0;
             modeSelectComboBox.SelectedIndex = 0;
             layerSelectComboBox.SelectedIndex = 0;
-            foregroundToolStripMenuItem.Checked = true;
+            backgroundToolStripMenuItem.Checked = true;            
             drawingToolStripMenuItem.Checked = true;            
         }
 
@@ -80,7 +80,7 @@ namespace MapEditorWindows
             ledgeNodeLabel.Text = mapEditorMain1.Map.Legdes[mapEditorMain1.CurrentLedge].TotalNodes.ToString();            
             modeSelectComboBox.SelectedIndex = 0;
             layerSelectComboBox.SelectedIndex = 0;
-            foregroundToolStripMenuItem.Checked = true;
+            backgroundToolStripMenuItem.Checked = true;
             drawingToolStripMenuItem.Checked = true;
             ledgeListBox.SelectedIndex = 0;
             segmentListBox.SelectedIndex = 0;
@@ -98,31 +98,62 @@ namespace MapEditorWindows
 
         private void foregroundToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            backgroundToolStripMenuItem.Checked = false;
+            middleToolStripMenuItem.Checked = false;
+            foregroundToolStripMenuItem.Checked = true;
+            layerSelectComboBox.SelectedIndex = 2;
         }
 
         private void middleToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            backgroundToolStripMenuItem.Checked = false;
+            middleToolStripMenuItem.Checked = true;
+            foregroundToolStripMenuItem.Checked = false;
+            layerSelectComboBox.SelectedIndex = 1;
         }
 
         private void backgroundToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            backgroundToolStripMenuItem.Checked = true;
+            middleToolStripMenuItem.Checked = false;
+            foregroundToolStripMenuItem.Checked = false;
+            layerSelectComboBox.SelectedIndex = 0;
         }
 
         private void drawingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            drawingToolStripMenuItem.Checked = true;
+            collisionMapToolStripMenuItem.Checked = false;
+            editLedgesToolStripMenuItem.Checked = false;
+            deleteSegmentsToolStripMenuItem.Checked = false;
+            modeSelectComboBox.SelectedIndex = 0;
         }
 
         private void collisionMapToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            drawingToolStripMenuItem.Checked = false;
+            collisionMapToolStripMenuItem.Checked = true;
+            editLedgesToolStripMenuItem.Checked = false;
+            deleteSegmentsToolStripMenuItem.Checked = false;
+            modeSelectComboBox.SelectedIndex = 1;
         }
 
         private void editLedgesToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            drawingToolStripMenuItem.Checked = false;
+            collisionMapToolStripMenuItem.Checked = false;
+            editLedgesToolStripMenuItem.Checked = true;
+            deleteSegmentsToolStripMenuItem.Checked = false;
+            modeSelectComboBox.SelectedIndex = 2;
+        }
+
+        private void deleteSegmentsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            drawingToolStripMenuItem.Checked = false;
+            collisionMapToolStripMenuItem.Checked = false;
+            editLedgesToolStripMenuItem.Checked = false;
+            deleteSegmentsToolStripMenuItem.Checked = true;
+            modeSelectComboBox.SelectedIndex = 3;
 
         }
 
@@ -181,26 +212,65 @@ namespace MapEditorWindows
         }
 
         private void ledgeCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
+        {            
             if (ledgeCheckBox.Checked == true)
-                mapEditorMain1.Map.Legdes[mapEditorMain1.CurrentLedge].isHardLedge = 1;            
+                mapEditorMain1.Map.Legdes[mapEditorMain1.CurrentLedge].isHardLedge = 1;
             else
-                mapEditorMain1.Map.Legdes[ledgeListBox.SelectedIndex].isHardLedge = 0;
+                mapEditorMain1.Map.Legdes[ledgeListBox.SelectedIndex].isHardLedge = 0;                    
+        }
+
+        private void nodeDeleteButton_Click(object sender, EventArgs e)
+        {
+            if (mapEditorMain1.Map.Legdes[mapEditorMain1.CurrentLedge].TotalNodes > 0)
+            {
+                int index = mapEditorMain1.Map.Legdes[mapEditorMain1.CurrentLedge].TotalNodes;
+                Array.Clear(mapEditorMain1.Map.Legdes[mapEditorMain1.CurrentLedge].Nodes, index - 1, 1);
+                mapEditorMain1.Map.Legdes[mapEditorMain1.CurrentLedge].TotalNodes--;
+                ledgeNodeLabel.Text = mapEditorMain1.Map.Legdes[mapEditorMain1.CurrentLedge].TotalNodes.ToString();
+            }
+        }
+
+        private void ledgeDeleteButton_Click(object sender, EventArgs e)
+        {
+            mapEditorMain1.Map.Legdes[mapEditorMain1.CurrentLedge] = null;
+            mapEditorMain1.Map.Legdes[mapEditorMain1.CurrentLedge] = new Ledge();
+            ledgeCheckBox.Checked = false;
+            ledgeNodeLabel.Text = "0";
         }
 
         #endregion
+
         private void modeSelectComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             switch (modeSelectComboBox.SelectedIndex)
             {
                 case 0:
                     mapEditorMain1.Mode = DrawingMode.SegmentSelection;
+                    drawingToolStripMenuItem.Checked = true;
+                collisionMapToolStripMenuItem.Checked = false;
+                editLedgesToolStripMenuItem.Checked = false;
+                deleteSegmentsToolStripMenuItem.Checked = false;
                     break;
                 case 1:
                     mapEditorMain1.Mode = DrawingMode.CollisionMap;
+                     drawingToolStripMenuItem.Checked = false;
+                     collisionMapToolStripMenuItem.Checked = true;
+                editLedgesToolStripMenuItem.Checked = false;
+                deleteSegmentsToolStripMenuItem.Checked = false;
                     break;
                 case 2:
                     mapEditorMain1.Mode = DrawingMode.Ledges;
+                     drawingToolStripMenuItem.Checked = false;
+                collisionMapToolStripMenuItem.Checked = false;
+                editLedgesToolStripMenuItem.Checked = true;
+                deleteSegmentsToolStripMenuItem.Checked = false;
+                    break;
+                case 3:
+                    mapEditorMain1.Mode = DrawingMode.DeleteSegment;
+                     drawingToolStripMenuItem.Checked = false;
+                collisionMapToolStripMenuItem.Checked = false;
+                editLedgesToolStripMenuItem.Checked = false;
+                deleteSegmentsToolStripMenuItem.Checked = true;
                     break;
                 default:
                     break;
@@ -238,8 +308,31 @@ namespace MapEditorWindows
         private void layerSelectComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             mapEditorMain1.CurrentLayer = layerSelectComboBox.SelectedIndex;
+            switch (layerSelectComboBox.SelectedIndex)
+            {
+                case 0:
+                    backgroundToolStripMenuItem.Checked = true;
+                    middleToolStripMenuItem.Checked = false;
+                    foregroundToolStripMenuItem.Checked = false;
+                    break;
+                case 1:
+                    backgroundToolStripMenuItem.Checked = false;
+                    middleToolStripMenuItem.Checked = true;
+                    foregroundToolStripMenuItem.Checked = false;
+                    break;
+                case 2:
+                    backgroundToolStripMenuItem.Checked = false;
+                    middleToolStripMenuItem.Checked = false;
+                    foregroundToolStripMenuItem.Checked = true;
+                    break;
+
+                default:
+                    break;
+            }
         }
 
+        #region Mouse Events
+        
         private void onMouseMove(object sender, MouseEventArgs e)
         {
             int mouseDiffX = e.X - mouseX;
@@ -248,9 +341,7 @@ namespace MapEditorWindows
             if (isRightMouseDown)
             {
                 Vector2 mouseDiff = new Vector2(mouseDiffX * 2.0f, mouseDiffY * 2.0f);
-                mapEditorMain1.Scroll -= mouseDiff;
-                //mapEditorMain1.Scroll.X -= mouseDiffX * 2.0f;
-                //mapEditorMain1.Scroll.Y -= mouseDiffY * 2.0f;
+                mapEditorMain1.Scroll -= mouseDiff;  
             }
 
             switch (mapEditorMain1.Mode)
@@ -317,6 +408,15 @@ namespace MapEditorWindows
                             mapEditorMain1.Map.Grid[x, y] = 0;                    
                 }
             }
+
+            if (mapEditorMain1.Mode == DrawingMode.DeleteSegment)
+            {
+                if (isLeftMouseDown)
+                {
+                    int selectedSegment = mapEditorMain1.Map.GetHoveredSegment(e.X, e.Y, mapEditorMain1.CurrentLayer, mapEditorMain1.Scroll);
+                    mapEditorMain1.Map.DeleteSegment(mapEditorMain1.CurrentLayer, selectedSegment);
+                }                                       
+            }
         }
 
         private void onMouseUp(object sender, MouseEventArgs e)
@@ -326,6 +426,10 @@ namespace MapEditorWindows
             if (e.Button == MouseButtons.Right)
                 isRightMouseDown = false;      
         }
+        #endregion
+        
+
+   
 
       
     }

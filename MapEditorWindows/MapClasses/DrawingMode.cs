@@ -9,6 +9,7 @@ namespace MapEditorWindows.MapClasses
     {
         SegmentSelection,
         CollisionMap,
-        Ledges
+        Ledges,
+        DeleteSegment
     }
 }

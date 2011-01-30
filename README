@@ -1,20 +1,16 @@
 RuinExplorers - MapEditor
 
-Being ported to Windows Forms Application in the future!
+Currently being ported to Windows Forms Application!
 
 Improvements planned for the future:
 - Code cleanup & documentation
 - Better Texture handling / loading
-- Scale / Rotate segments
-- Segment ordering
 - Segment deleting
 - Ledge deleting
 - Script editor (planned)
 - Map script definition (planned)
 - Undo Function
-- Better input handling
-- Better handling of saving and opening (file exists and so on)
-- Move to Windows Forms / WPF project
+
 
 RuinExplorers - CharacterEditor
 
@@ -25,6 +21,7 @@ Mostly functional. Still needs to be implemented:
 - Import / switching of Texture Sets
 - Undo Function
 - More Documentation
+
 
 RuinExplorers - MainEngine
 
