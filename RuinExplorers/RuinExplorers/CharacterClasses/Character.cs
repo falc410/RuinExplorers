@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using RuinExplorers.MapClasses;
 using Microsoft.Xna.Framework.Content;
 using RuinExplorers.Helpers;
+using RuinExplorers.Particles;
 
 namespace RuinExplorers.CharacterClasses
 {
@@ -74,6 +75,8 @@ namespace RuinExplorers.CharacterClasses
         GamePadState currentGamepadState = new GamePadState();
         GamePadState previousGamepadState = new GamePadState();
         KeyboardState currentKeyboardState = new KeyboardState();
+
+        public ParticleManager particleManager;
         
         #endregion
 
@@ -354,6 +357,24 @@ namespace RuinExplorers.CharacterClasses
                 }
             }
 
+            #endregion
+
+            #region Particle Test
+            for (int i = 0; i < 4; i++)
+            {
+                Vector2 tloc = (Location - previousLocation) * (float)i / 4.0f + previousLocation;
+                tloc.Y -= 100f;
+
+                particleManager.AddParticle(new Smoke(
+                    tloc,
+                    RandomGenerator.GetRandomVector2(-50.0f, 50.0f, -300.0f, -200.0f),
+                    1.0f,
+                    0.8f,
+                    0.6f,
+                    1.0f,
+                    RandomGenerator.GetRandomFloat(0.25f, 0.5f),
+                    RandomGenerator.GetRandomInt(0, 4)));
+            }
             #endregion
         }
 

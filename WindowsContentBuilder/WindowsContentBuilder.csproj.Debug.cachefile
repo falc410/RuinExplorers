@@ -4,7 +4,6 @@ WindowsContent\gfx\weapon1.xnb
 WindowsContent\gfx\head1.xnb
 WindowsContent\gfx\arial.xnb
 WindowsContent\gfx\icons.xnb
-WindowsContent\gfx\sprites.xnb
 WindowsContent\gfx\back1.xnb
 WindowsContent\gfx\head2.xnb
 WindowsContent\gfx\head3.xnb
@@ -28,6 +27,7 @@ WindowsContent\gfx\segments1.xnb
 WindowsContent\gfx\save_icon.xnb
 WindowsContent\gfx\folder_open_icon.xnb
 WindowsContent\Fonts\Arial.xnb
+WindowsContent\gfx\sprites.xnb
 WindowsContent\gfx\head1.png
 WindowsContent\data\chars\carlos.zmx
 WindowsContent\data\chars\guy.zmx

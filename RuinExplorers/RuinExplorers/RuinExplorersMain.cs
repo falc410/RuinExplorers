@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Media;
 using RuinExplorers.MapClasses;
 using RuinExplorers.CharacterClasses;
 using RuinExplorers.Helpers;
+using RuinExplorers.Particles;
 
 namespace RuinExplorers
 {
@@ -36,6 +37,9 @@ namespace RuinExplorers
         Texture2D[] mapBackgroundTexture = new Texture2D[1];
         Character[] character = new Character[16];
         CharacterDefinition[] characterDefinition = new CharacterDefinition[16];
+
+        Texture2D spritesTexture;
+        ParticleManager particleManager;
 
         #endregion
         #region Properties
@@ -102,6 +106,10 @@ namespace RuinExplorers
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            particleManager = new ParticleManager(spriteBatch);
+            spritesTexture = Content.Load<Texture2D>(@"gfx/sprites");
+
+            character[0].particleManager = particleManager;
 
             for (int i = 0; i < mapTexture.Length; i++)
                 mapTexture[i] = Content.Load<Texture2D>(@"gfx/segments" + (i + 1).ToString());
@@ -132,6 +140,8 @@ namespace RuinExplorers
                 this.Exit();
 
             frameTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            particleManager.UpdateParticles(frameTime, map, character);
 
             if (character[0] != null)
             {
@@ -169,6 +179,10 @@ namespace RuinExplorers
            character[0].Draw(spriteBatch);
             // finally draw the foreground layer
             map.Draw(spriteBatch, mapTexture, mapBackgroundTexture, 2, 3);
+
+            particleManager.DrawParticles(spritesTexture, true);
+            character[0].Draw(spriteBatch);
+            particleManager.DrawParticles(spritesTexture, false);
 
             base.Draw(gameTime);
         }
