@@ -434,5 +434,27 @@ namespace RuinExplorers.MapClasses
 		{
 			return 1280 - RuinExplorersMain.ScreenSize.Y;
 		}
+
+        public bool CheckParticleCollision(Vector2 location)
+        {
+            if (CheckCollision(location))
+                return true;
+
+            for (int i = 0; i < 16; i++)
+            {
+                if (ledges[i].TotalNodes > 1)
+                {
+                    if (ledges[i].isHardLedge == 1)
+                    {
+                        int s = GetLedgeSection(i, location.X);
+
+                        if (s > 1)
+                            if (GetLedgeYLocation(i, s, location.X) < location.Y)
+                                return true;
+                    }
+                }
+            }
+            return false; 
+        }
 	}
 }

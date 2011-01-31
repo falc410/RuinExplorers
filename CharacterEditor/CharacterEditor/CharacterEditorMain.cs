@@ -457,52 +457,55 @@ namespace CharacterEditor
                         }
                         spriteBatch.Begin();
                     }
+                    else
+                    {
+                        Texture2D texture = null;
 
-					  Texture2D texture = null;
+                        int t = part.Index / 64;
+                        switch (t)
+                        {
+                            case 0:
+                                texture = headTexture[characterDefinition.HeadIndex];
+                                break;
+                            case 1:
+                                texture = torsoTexture[characterDefinition.TorsoIndex];
+                                break;
+                            case 2:
+                                texture = legsTexture[characterDefinition.LegsIndex];
+                                break;
+                            case 3:
+                                texture = weaponTexture[characterDefinition.WeaponIndex];
+                                break;
+                        }
 
-					int t = part.Index / 64;
-					switch (t)
-					{
-						case 0:
-							texture = headTexture[characterDefinition.HeadIndex];
-							break;
-						case 1:
-							texture = torsoTexture[characterDefinition.TorsoIndex];
-							break;
-						case 2:
-							texture = legsTexture[characterDefinition.LegsIndex];
-							break;
-						case 3:
-							texture = weaponTexture[characterDefinition.WeaponIndex];
-							break;
-					}
+                        Color color = new Color(255, 255, 255, (byte)(_alpha * 255));
 
-					Color color = new Color(255, 255, 255, (byte)(_alpha * 255));
+                        // highlight selected part in red on editable character
+                        if (!_preview && selectedPart == i)
+                            color = new Color(255, 0, 0, (byte)(_alpha * 255));
 
-					// highlight selected part in red on editable character
-					if (!_preview && selectedPart == i)
-						color = new Color(255, 0, 0, (byte)(_alpha * 255));
+                        bool flip = false;
 
-					bool flip = false;
+                        if ((_face == FACE_RIGHT && part.Flip == 0) ||
+                            (_face == FACE_LEFT && part.Flip == 1))
+                            flip = true;
 
-					if ((_face == FACE_RIGHT && part.Flip == 0) ||
-						(_face == FACE_LEFT && part.Flip == 1))
-						flip = true;
-
-					if (texture != null)
-					{
-						spriteBatch.Draw(
-							texture,
-							location,
-							sourceRect,
-							color,
-							rotation,
-							new Vector2((float)sourceRect.Width / 2f, 32f),
-							scaling,
-							(flip ? SpriteEffects.None : SpriteEffects.FlipHorizontally),
-							1.0f
-							);
-					}
+                        if (texture != null)
+                        {
+                            spriteBatch.Draw(
+                                texture,
+                                location,
+                                sourceRect,
+                                color,
+                                rotation,
+                                new Vector2((float)sourceRect.Width / 2f, 32f),
+                                scaling,
+                                (flip ? SpriteEffects.None : SpriteEffects.FlipHorizontally),
+                                1.0f
+                                );
+                        }
+                    }
+					 
 				}
 			}
 			spriteBatch.End();             

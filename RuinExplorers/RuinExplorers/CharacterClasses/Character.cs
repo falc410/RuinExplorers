@@ -68,6 +68,7 @@ namespace RuinExplorers.CharacterClasses
         public int[] GotoGoal = { -1, -1, -1, -1, -1, -1, -1, -1 };
         private Script script;
         private CharacterDefinition characterDefinition;
+        public int ID;
 
         float frame = 0f;
         int ledgeAttach = -1;
@@ -78,6 +79,14 @@ namespace RuinExplorers.CharacterClasses
 
         public ParticleManager particleManager;
         
+        #endregion
+
+        #region Constants (Triggers mostly)
+
+        public const int TRIG_PISTOL_ACROSS = 0;
+        public const int TRIG_PISTOL_UP = 1;
+        public const int TRIG_PISTOL_DOWN = 2;
+
         #endregion
 
         public CharacterDefinition Definition
@@ -95,6 +104,8 @@ namespace RuinExplorers.CharacterClasses
             Face = CharacterDirection.Right;
             Scale = 0.5f;
             characterDefinition = newCharDef;
+
+            ID = 0;
 
             SetAnim("fly");
 
@@ -127,7 +138,7 @@ namespace RuinExplorers.CharacterClasses
         /// Updates the Character, checks for collision and handles input.
         /// </summary>
         /// <param name="gameTime">The game time.</param>
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, ParticleManager particleManager, Character[] character)
         {
             float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -140,6 +151,8 @@ namespace RuinExplorers.CharacterClasses
             {
                 int previousFrame = AnimationFrame;
                 script.DoScript(Animation, AnimationFrame);
+
+                CheckTrigger(particleManager);                   
 
                 frame -= (float)keyFrame.Duration;
                 if (AnimationFrame == previousFrame)
@@ -388,6 +401,45 @@ namespace RuinExplorers.CharacterClasses
             #endregion
         }
 
+        private void CheckTrigger(ParticleManager particleManager)
+        {
+            int frameIndex = characterDefinition.Animations[Animation].KeyFrames[AnimationFrame].FrameReference;
+
+            Frame frame = characterDefinition.Frames[frameIndex];
+
+            for (int i = 0; i < frame.Parts.Length; i++)
+            {
+                Part part = frame.Parts[i];
+                if (part.Index >= 1000)
+                {
+                    Vector2 location = part.Location * Scale + Location;
+
+                    if (Face == CharacterDirection.Left)
+                        location.X -= part.Location.X * Scale * 2.0f;
+
+                    FireTrigger(part.Index - 1000, location, particleManager);
+                }
+            }
+        }
+
+        private void FireTrigger(int trigger, Vector2 location, ParticleManager particleManager)
+        {
+            switch (trigger)
+            {
+                case TRIG_PISTOL_ACROSS:
+                    particleManager.MakeBullet(location, new Vector2(2000f, 0f), Face, ID);
+                    break;
+                case TRIG_PISTOL_DOWN:
+                    particleManager.MakeBullet(location, new Vector2(1400f, 1400f), Face, ID);
+                    break;
+                case TRIG_PISTOL_UP:
+                    particleManager.MakeBullet(location, new Vector2(1400f, -1400f), Face, ID);
+                    break;                    
+                default:
+                    break;
+            }
+        }
+
 
         /// <summary>
         /// Checks for x-based collisions.
@@ -459,7 +511,7 @@ namespace RuinExplorers.CharacterClasses
             {
                 Part part = frame.Parts[i];
 
-                if (part.Index > -1)
+                if (part.Index > -1 && part.Index < 1000)
                 {
                     sRect.X = ((part.Index % 64) % 5) * 64;
                     sRect.Y = ((part.Index % 64) / 5) * 64;
