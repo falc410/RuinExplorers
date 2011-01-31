@@ -83,6 +83,16 @@ namespace RuinExplorers.Particles
             }
         }
 
+        public void MakeBulletBlood(Vector2 location, Vector2 trajectory)
+        {
+            for (int i = 0; i < 32; i++)
+            {
+                AddParticle(new Blood(location, trajectory * -1f * RandomGenerator.GetRandomFloat(0.01f, 0.1f) +
+                    RandomGenerator.GetRandomVector2(-50f, 50f, -50f, 50f), 1f, 0f, 0f, 1f, RandomGenerator.GetRandomFloat(0.1f, 0.3f),
+                    RandomGenerator.GetRandomInt(0, 4)));
+            }
+        }
+
         /// <summary>
         /// Creates 16 MuzzleFlash Particles trailing off in a direction defined
         /// by trajectory, with particle size decreasing the farther the particles are

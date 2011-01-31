@@ -32,6 +32,9 @@ namespace RuinExplorers.Particles
 
         public override void Update(float gameTime, Map map, ParticleManager particleManager, Character[] characters)
         {
+            if (HitManager.CheckHit(this, characters, particleManager))
+                frame = 0f;
+
             if (map.CheckParticleCollision(location))
             {
                 frame = 0f;

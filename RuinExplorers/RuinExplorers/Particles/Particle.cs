@@ -11,16 +11,16 @@ namespace RuinExplorers.Particles
 {
     class Particle
     {
-        protected Vector2 location;
-        protected Vector2 trajectory;
-
+        public Vector2 location;
+        public Vector2 trajectory;
+       
         protected float frame;
         protected float r, g, b, a;
         protected float size;
         protected float rotation;
 
         protected int flag;
-        protected int owner;
+        public int owner;
 
         public bool Exists;
         public bool Background;

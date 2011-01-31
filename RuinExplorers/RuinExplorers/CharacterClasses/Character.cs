@@ -461,6 +461,17 @@ namespace RuinExplorers.CharacterClasses
                     Location.X = pLocation.X;            
         }
 
+        public bool InHitBounds(Vector2 hitLocation)
+        {
+            if (hitLocation.X > Location.X - 50f * Scale &&
+                hitLocation.X < Location.X + 50f * Scale &&
+                hitLocation.Y > Location.Y - 190f * Scale &&
+                hitLocation.Y < Location.Y + 10f * Scale)
+                return true;
+
+            return false;
+        }
+
         /// <summary>
         /// When no ledges or collision cells are beneath the character
         /// set anim to fly and reset his trajectory.Y.
