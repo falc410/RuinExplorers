@@ -92,6 +92,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TextLibrary\TextLibrary.csproj">
+      <Project>{B21FA8E9-3D89-46D2-92F1-AABB0FE42172}</Project>
+      <Name>TextLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WindowsContentBuilder\WindowsContentBuilder.csproj">
       <Project>{290D43FB-52C8-4505-A8A0-6244568B05C6}</Project>
       <Name>WindowsContentBuilder</Name>

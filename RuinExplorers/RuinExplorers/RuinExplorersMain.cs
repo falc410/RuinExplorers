@@ -91,9 +91,17 @@ namespace RuinExplorers
             map.Read();
 
             characterDefinition[(int)CharacterType.Player1] = new CharacterDefinition("player");
+            characterDefinition[(int)CharacterType.Enemy] = new CharacterDefinition("zombie");
 
-            character[0] = new Character(new Vector2(100f, 100f), characterDefinition[(int)CharacterType.Player1]);
+            character[0] = new Character(new Vector2(100f, 100f), characterDefinition[(int)CharacterType.Player1],0,Character.TEAM_PLAYERS);
             character[0].map = map;
+
+            for (int i = 1; i < 9; i++)
+            {
+                character[i] = new Character(new Vector2((float)i * 100f, 100f),
+                    characterDefinition[(int)CharacterType.Enemy], i, Character.TEAM_NPC);
+                character[i].map = map;
+            }
 
             base.Initialize();
         }
@@ -179,7 +187,12 @@ namespace RuinExplorers
             // draw the background and back layers first
             map.Draw(spriteBatch, mapTexture, mapBackgroundTexture, 0, 2);
             // next draw the character(s)
-           character[0].Draw(spriteBatch);
+           //character[0].Draw(spriteBatch);
+            for (int i = 0; i < character.Length; i++)
+            {
+                if (character[i] != null)
+                    character[i].Draw(spriteBatch);
+            }
             // finally draw the foreground layer
             map.Draw(spriteBatch, mapTexture, mapBackgroundTexture, 2, 3);
 

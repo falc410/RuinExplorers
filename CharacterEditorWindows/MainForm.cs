@@ -104,15 +104,33 @@ namespace CharacterEditorWindows
                 availableLegsParts.Items.Add(i.ToString() + ": " + "legs" + (i + 64 * 2).ToString());
                 availableWeaponsParts.Items.Add(i.ToString() + ": " + "weapons" + (i + 64 * 3).ToString());
             }
-            FillPictureBox(headPreview,characterEditorMain1.HeadBitmap, 0);
-            FillPictureBox(torsoPreview, characterEditorMain1.TorsoBitmap, 0);
-            FillPictureBox(legsPreview, characterEditorMain1.LegsBitmap, 0);
-            FillPictureBox(weaponsPreview, characterEditorMain1.WeaponsBitmap, 0);
+            FillPictureBox(headPreview,characterEditorMain1.HeadBitmap[0], 0);
+            FillPictureBox(torsoPreview, characterEditorMain1.TorsoBitmap[0], 0);
+            FillPictureBox(legsPreview, characterEditorMain1.LegsBitmap[0], 0);
+            FillPictureBox(weaponsPreview, characterEditorMain1.WeaponsBitmap[0], 0);
 
             availableHeadParts.SelectedIndex = 0;
             availableTorsoParts.SelectedIndex = 0;
             availableLegsParts.SelectedIndex = 0;
             availableWeaponsParts.SelectedIndex = 0;
+
+            // initialize triggers
+            triggersListBox.Items.Clear();
+            for (int i = 0; i < 4; i++)
+            {
+                triggersListBox.Items.Add(characterEditorMain1.GetTrigName(i));
+            }
+            triggersListBox.SelectedIndex = 0;
+
+            //initialize texture selection
+            headTextureUpDown.Maximum = characterEditorMain1.HeadTextures.Length - 1;
+            headTextureUpDown.Minimum = 0;
+            torsoTextureUpDown.Maximum = characterEditorMain1.TorsoTextures.Length - 1;
+            torsoTextureUpDown.Minimum = 0;
+            legsTextureUpDown.Maximum = characterEditorMain1.LegsTextures.Length - 1;
+            legsTextureUpDown.Minimum = 0;
+            weaponTextureUpDown.Maximum = characterEditorMain1.WeaponTextures.Length - 1;
+            weaponTextureUpDown.Minimum = 0;
 
             initialize = false;
         }
@@ -200,15 +218,39 @@ namespace CharacterEditorWindows
                     availableLegsParts.Items.Add(i.ToString() + ": " + "legs" + (i + 64 * 2).ToString());
                     availableWeaponsParts.Items.Add(i.ToString() + ": " + "weapons" + (i + 64 * 3).ToString());
                 }
-                FillPictureBox(headPreview, characterEditorMain1.HeadBitmap, 0);
-                FillPictureBox(torsoPreview, characterEditorMain1.TorsoBitmap, 0);
-                FillPictureBox(legsPreview, characterEditorMain1.LegsBitmap, 0);
-                FillPictureBox(weaponsPreview, characterEditorMain1.WeaponsBitmap, 0);
+
+                //initialize texture selection
+                headTextureUpDown.Maximum = characterEditorMain1.HeadTextures.Length - 1;
+                headTextureUpDown.Minimum = 0;
+                headTextureUpDown.Value = (decimal)characterEditorMain1.charDef.HeadIndex;
+                torsoTextureUpDown.Maximum = characterEditorMain1.TorsoTextures.Length - 1;
+                torsoTextureUpDown.Minimum = 0;
+                torsoTextureUpDown.Value = (decimal)characterEditorMain1.charDef.TorsoIndex;
+                legsTextureUpDown.Maximum = characterEditorMain1.LegsTextures.Length - 1;
+                legsTextureUpDown.Minimum = 0;
+                legsTextureUpDown.Value = (decimal)characterEditorMain1.charDef.LegsIndex;
+                weaponTextureUpDown.Maximum = characterEditorMain1.WeaponTextures.Length - 1;
+                weaponTextureUpDown.Minimum = 0;
+                weaponTextureUpDown.Value = (decimal)characterEditorMain1.charDef.WeaponIndex;
+
+                FillPictureBox(headPreview, characterEditorMain1.HeadBitmap[characterEditorMain1.charDef.HeadIndex], 0);
+                FillPictureBox(torsoPreview, characterEditorMain1.TorsoBitmap[characterEditorMain1.charDef.TorsoIndex], 0);
+                FillPictureBox(legsPreview, characterEditorMain1.LegsBitmap[characterEditorMain1.charDef.LegsIndex], 0);
+                FillPictureBox(weaponsPreview, characterEditorMain1.WeaponsBitmap[characterEditorMain1.charDef.WeaponIndex], 0);
 
                 availableHeadParts.SelectedIndex = 0;
                 availableTorsoParts.SelectedIndex = 0;
                 availableLegsParts.SelectedIndex = 0;
                 availableWeaponsParts.SelectedIndex = 0;
+
+                // initiliaze triggers
+                triggersListBox.Items.Clear();
+
+                for (int i = 0; i < 4; i++)
+                {
+                    triggersListBox.Items.Add(characterEditorMain1.GetTrigName(i));
+                }
+                triggersListBox.SelectedIndex = 0;
             }
         }
 
@@ -781,22 +823,50 @@ namespace CharacterEditorWindows
 
         private void availableHeadParts_SelectedIndexChanged(object sender, EventArgs e)
         {
-            FillPictureBox(headPreview, characterEditorMain1.HeadBitmap, availableHeadParts.SelectedIndex);
+            FillPictureBox(headPreview, characterEditorMain1.HeadBitmap[(int)headTextureUpDown.Value], availableHeadParts.SelectedIndex);
         }
 
         private void availableTorsoParts_SelectedIndexChanged(object sender, EventArgs e)
         {
-            FillPictureBox(torsoPreview, characterEditorMain1.TorsoBitmap, availableTorsoParts.SelectedIndex);
+            FillPictureBox(torsoPreview, characterEditorMain1.TorsoBitmap[(int)torsoTextureUpDown.Value], availableTorsoParts.SelectedIndex);
         }
 
         private void availableLegsParts_SelectedIndexChanged(object sender, EventArgs e)
         {
-            FillPictureBox(legsPreview, characterEditorMain1.LegsBitmap, availableLegsParts.SelectedIndex);
+            FillPictureBox(legsPreview, characterEditorMain1.LegsBitmap[(int)legsTextureUpDown.Value], availableLegsParts.SelectedIndex);
         }
 
         private void availableWeaponsListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            FillPictureBox(weaponsPreview, characterEditorMain1.WeaponsBitmap, availableWeaponsParts.SelectedIndex);
+            FillPictureBox(weaponsPreview, characterEditorMain1.WeaponsBitmap[(int)weaponTextureUpDown.Value], availableWeaponsParts.SelectedIndex);
+        }
+
+        private void weaponTextureUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            characterEditorMain1.charDef.WeaponIndex = (int)weaponTextureUpDown.Value;
+            // update picture box
+            FillPictureBox(weaponsPreview, characterEditorMain1.WeaponsBitmap[(int)weaponTextureUpDown.Value], availableWeaponsParts.SelectedIndex);
+        }
+
+        private void legsTextureUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            characterEditorMain1.charDef.LegsIndex = (int)legsTextureUpDown.Value;
+            // update picture box
+            FillPictureBox(legsPreview, characterEditorMain1.LegsBitmap[(int)legsTextureUpDown.Value], availableLegsParts.SelectedIndex);
+        }
+
+        private void torsoTextureUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            characterEditorMain1.charDef.TorsoIndex = (int)torsoTextureUpDown.Value;
+            // update picture box
+            FillPictureBox(torsoPreview, characterEditorMain1.TorsoBitmap[(int)torsoTextureUpDown.Value], availableTorsoParts.SelectedIndex);
+        }
+
+        private void headTextureUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            characterEditorMain1.charDef.HeadIndex = (int)headTextureUpDown.Value;
+            // update picture box
+            FillPictureBox(headPreview, characterEditorMain1.HeadBitmap[(int)headTextureUpDown.Value], availableHeadParts.SelectedIndex);
         }
         #endregion
 
@@ -950,6 +1020,45 @@ namespace CharacterEditorWindows
                     break;
             }
         }
+
+        private void triggersListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void addTriggerButton_Click(object sender, EventArgs e)
+        {
+            int saveSelectedPartIndex = partListBox.SelectedIndex;
+
+            characterEditorMain1.charDef.Frames[characterEditorMain1.SelectedFrame].Parts[characterEditorMain1.SelectedPart].Index = 
+                triggersListBox.SelectedIndex + 1000;
+
+            //update part list
+            partListBox.Items.Clear();
+            for (int i = 0; i < characterEditorMain1.charDef.Frames[characterEditorMain1.SelectedFrame].Parts.Length; i++)
+            {
+                string line = "";
+                int index = characterEditorMain1.charDef.Frames[characterEditorMain1.SelectedFrame].Parts[i].Index;
+
+                if (index < 0)
+                    line = "";
+                else if (index < 64)
+                    line = "head" + index.ToString();
+                else if (index < 74)
+                    line = "torso" + index.ToString();
+                else if (index < 128)
+                    line = "arms" + index.ToString();
+                else if (index < 192)
+                    line = "legs" + index.ToString();
+                else
+                    line = "weapons" + index.ToString();
+
+                partListBox.Items.Add(i.ToString() + ": " + line);
+            }
+            partListBox.SelectedIndex = saveSelectedPartIndex;       
+        }
+
+     
 
     }
 }

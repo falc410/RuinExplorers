@@ -103,6 +103,13 @@
             this.characterEditorMain1 = new CharacterEditorWindows.CharacterEditorMain();
             this.editModeComboBox = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
+            this.headTextureUpDown = new System.Windows.Forms.NumericUpDown();
+            this.torsoTextureUpDown = new System.Windows.Forms.NumericUpDown();
+            this.legsTextureUpDown = new System.Windows.Forms.NumericUpDown();
+            this.weaponTextureUpDown = new System.Windows.Forms.NumericUpDown();
+            this.triggersListBox = new System.Windows.Forms.ListBox();
+            this.triggerLabel = new System.Windows.Forms.Label();
+            this.addTriggerButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.partRotationUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.partScaleXUpDown)).BeginInit();
@@ -112,6 +119,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.weaponsPreview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.torsoPreview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.legsPreview)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.headTextureUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.torsoTextureUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.legsTextureUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.weaponTextureUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -570,7 +581,7 @@
             // scriptsListBox
             // 
             this.scriptsListBox.FormattingEnabled = true;
-            this.scriptsListBox.Location = new System.Drawing.Point(777, 293);
+            this.scriptsListBox.Location = new System.Drawing.Point(821, 203);
             this.scriptsListBox.Name = "scriptsListBox";
             this.scriptsListBox.Size = new System.Drawing.Size(120, 95);
             this.scriptsListBox.TabIndex = 28;
@@ -579,7 +590,7 @@
             // scriptsDeleteButton
             // 
             this.scriptsDeleteButton.Image = ((System.Drawing.Image)(resources.GetObject("scriptsDeleteButton.Image")));
-            this.scriptsDeleteButton.Location = new System.Drawing.Point(909, 393);
+            this.scriptsDeleteButton.Location = new System.Drawing.Point(953, 303);
             this.scriptsDeleteButton.Name = "scriptsDeleteButton";
             this.scriptsDeleteButton.Size = new System.Drawing.Size(20, 20);
             this.scriptsDeleteButton.TabIndex = 6;
@@ -589,7 +600,7 @@
             // scriptsEditButton
             // 
             this.scriptsEditButton.Image = ((System.Drawing.Image)(resources.GetObject("scriptsEditButton.Image")));
-            this.scriptsEditButton.Location = new System.Drawing.Point(883, 393);
+            this.scriptsEditButton.Location = new System.Drawing.Point(927, 303);
             this.scriptsEditButton.Name = "scriptsEditButton";
             this.scriptsEditButton.Size = new System.Drawing.Size(20, 20);
             this.scriptsEditButton.TabIndex = 8;
@@ -598,7 +609,7 @@
             // 
             // scriptsTextBox
             // 
-            this.scriptsTextBox.Location = new System.Drawing.Point(777, 394);
+            this.scriptsTextBox.Location = new System.Drawing.Point(821, 304);
             this.scriptsTextBox.Name = "scriptsTextBox";
             this.scriptsTextBox.Size = new System.Drawing.Size(100, 20);
             this.scriptsTextBox.TabIndex = 9;
@@ -607,7 +618,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(777, 274);
+            this.label9.Location = new System.Drawing.Point(821, 184);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(39, 13);
             this.label9.TabIndex = 29;
@@ -805,11 +816,78 @@
             this.label10.TabIndex = 44;
             this.label10.Text = "Current Editing Mode";
             // 
+            // headTextureUpDown
+            // 
+            this.headTextureUpDown.Location = new System.Drawing.Point(26, 532);
+            this.headTextureUpDown.Name = "headTextureUpDown";
+            this.headTextureUpDown.Size = new System.Drawing.Size(33, 20);
+            this.headTextureUpDown.TabIndex = 45;
+            this.headTextureUpDown.ValueChanged += new System.EventHandler(this.headTextureUpDown_ValueChanged);
+            // 
+            // torsoTextureUpDown
+            // 
+            this.torsoTextureUpDown.Location = new System.Drawing.Point(231, 532);
+            this.torsoTextureUpDown.Name = "torsoTextureUpDown";
+            this.torsoTextureUpDown.Size = new System.Drawing.Size(33, 20);
+            this.torsoTextureUpDown.TabIndex = 45;
+            this.torsoTextureUpDown.ValueChanged += new System.EventHandler(this.torsoTextureUpDown_ValueChanged);
+            // 
+            // legsTextureUpDown
+            // 
+            this.legsTextureUpDown.Location = new System.Drawing.Point(434, 532);
+            this.legsTextureUpDown.Name = "legsTextureUpDown";
+            this.legsTextureUpDown.Size = new System.Drawing.Size(33, 20);
+            this.legsTextureUpDown.TabIndex = 45;
+            this.legsTextureUpDown.ValueChanged += new System.EventHandler(this.legsTextureUpDown_ValueChanged);
+            // 
+            // weaponTextureUpDown
+            // 
+            this.weaponTextureUpDown.Location = new System.Drawing.Point(636, 532);
+            this.weaponTextureUpDown.Name = "weaponTextureUpDown";
+            this.weaponTextureUpDown.Size = new System.Drawing.Size(33, 20);
+            this.weaponTextureUpDown.TabIndex = 45;
+            this.weaponTextureUpDown.ValueChanged += new System.EventHandler(this.weaponTextureUpDown_ValueChanged);
+            // 
+            // triggersListBox
+            // 
+            this.triggersListBox.FormattingEnabled = true;
+            this.triggersListBox.Location = new System.Drawing.Point(821, 347);
+            this.triggersListBox.Name = "triggersListBox";
+            this.triggersListBox.Size = new System.Drawing.Size(120, 95);
+            this.triggersListBox.TabIndex = 46;
+            this.triggersListBox.SelectedIndexChanged += new System.EventHandler(this.triggersListBox_SelectedIndexChanged);
+            // 
+            // triggerLabel
+            // 
+            this.triggerLabel.AutoSize = true;
+            this.triggerLabel.Location = new System.Drawing.Point(821, 328);
+            this.triggerLabel.Name = "triggerLabel";
+            this.triggerLabel.Size = new System.Drawing.Size(91, 13);
+            this.triggerLabel.TabIndex = 47;
+            this.triggerLabel.Text = "Available Triggers";
+            // 
+            // addTriggerButton
+            // 
+            this.addTriggerButton.Location = new System.Drawing.Point(846, 448);
+            this.addTriggerButton.Name = "addTriggerButton";
+            this.addTriggerButton.Size = new System.Drawing.Size(75, 23);
+            this.addTriggerButton.TabIndex = 48;
+            this.addTriggerButton.Text = "Add Trigger";
+            this.addTriggerButton.UseVisualStyleBackColor = true;
+            this.addTriggerButton.Click += new System.EventHandler(this.addTriggerButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(983, 662);
+            this.Controls.Add(this.addTriggerButton);
+            this.Controls.Add(this.triggerLabel);
+            this.Controls.Add(this.triggersListBox);
+            this.Controls.Add(this.weaponTextureUpDown);
+            this.Controls.Add(this.legsTextureUpDown);
+            this.Controls.Add(this.torsoTextureUpDown);
+            this.Controls.Add(this.headTextureUpDown);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.editModeComboBox);
             this.Controls.Add(this.characterEditorMain1);
@@ -878,6 +956,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.weaponsPreview)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.torsoPreview)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.legsPreview)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.headTextureUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.torsoTextureUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.legsTextureUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.weaponTextureUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -964,6 +1046,13 @@
         private CharacterEditorMain characterEditorMain1;
         private System.Windows.Forms.ComboBox editModeComboBox;
         private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.NumericUpDown headTextureUpDown;
+        private System.Windows.Forms.NumericUpDown torsoTextureUpDown;
+        private System.Windows.Forms.NumericUpDown legsTextureUpDown;
+        private System.Windows.Forms.NumericUpDown weaponTextureUpDown;
+        private System.Windows.Forms.ListBox triggersListBox;
+        private System.Windows.Forms.Label triggerLabel;
+        private System.Windows.Forms.Button addTriggerButton;
         
         
     }

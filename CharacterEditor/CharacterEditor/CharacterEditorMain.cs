@@ -27,9 +27,9 @@ namespace CharacterEditor
 
 		CharacterDefinition characterDefinition;
 
-		Texture2D[] headTexture = new Texture2D[1];
-		Texture2D[] torsoTexture = new Texture2D[1];
-		Texture2D[] legsTexture = new Texture2D[1];
+		Texture2D[] headTexture = new Texture2D[2];
+		Texture2D[] torsoTexture = new Texture2D[2];
+		Texture2D[] legsTexture = new Texture2D[2];
 		Texture2D[] weaponTexture = new Texture2D[1];
 
 		Texture2D nullTexture;
@@ -43,6 +43,7 @@ namespace CharacterEditor
 
         const int AUX_SCRIPT = 0;
         const int AUX_TRIGS = 1;
+        const int AUX_TEXTURE = 2;
         int auxMode = AUX_SCRIPT;
         int trigScroll = 0;
 
@@ -358,6 +359,96 @@ namespace CharacterEditor
                 if (text.DrawClickText(260, 110, "trigs", mouseState.X, mouseState.Y, mouseClick))
                     auxMode = AUX_TRIGS;
             }
+
+            if (auxMode == AUX_TEXTURE)
+            {
+                text.color = Color.Lime;
+                text.DrawText(300, 110, "tex");
+            }
+            else
+            {
+                if (text.DrawClickText(300, 110, "tex", mouseState.X, mouseState.Y, mouseClick))
+                    auxMode = AUX_TEXTURE;
+                
+            }
+            #endregion
+
+            #region Texture Switching
+            if (auxMode == AUX_TEXTURE)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    if (DrawIconAsButton(210 + i * 21,40,upArrowTexture,mouseState.X,mouseState.Y,mouseClick))
+                    {
+                        switch (i)
+                        {
+                            case 0:
+                                if (characterDefinition.HeadIndex > 0)
+                                    characterDefinition.HeadIndex--;
+                                break;
+                            case 1:
+                                if (characterDefinition.TorsoIndex > 0)
+                                    characterDefinition.TorsoIndex--;
+                                break;
+                            case 2:
+                                if (characterDefinition.LegsIndex > 0)
+                                    characterDefinition.LegsIndex--;
+                                break;
+                            case 3:
+                                if (characterDefinition.WeaponIndex > 0)
+                                    characterDefinition.WeaponIndex--;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                    string t = characterDefinition.HeadIndex.ToString();
+
+                    switch (i)
+                    {
+                        case 1:
+                            t = characterDefinition.TorsoIndex.ToString();
+                            break;
+                        case 2:
+                            t = characterDefinition.LegsIndex.ToString();
+                            break;
+                        case 3:
+                            t = characterDefinition.WeaponIndex.ToString();
+                            break;
+                        default:
+                            break;
+                    }
+
+                    text.color = Color.White;
+                    text.DrawText(212 + i * 21, 60, t);
+
+                    if (DrawIconAsButton(210 + i * 21, 85, downArrowTexture, mouseState.X,mouseState.Y,mouseClick))
+                    {
+                        switch (i)
+                        {
+                            case 0:
+                                if (characterDefinition.HeadIndex < headTexture.Length - 1)
+                                    characterDefinition.HeadIndex++;
+                                break;
+                            case 1:
+                                if (characterDefinition.TorsoIndex < torsoTexture.Length - 1)
+                                    characterDefinition.TorsoIndex++;
+                                break;
+                            case 2:
+                                if (characterDefinition.LegsIndex < legsTexture.Length - 1)
+                                    characterDefinition.LegsIndex++;
+                                break;
+                            case 3:
+                                if (characterDefinition.WeaponIndex < weaponTexture.Length - 1)
+                                    characterDefinition.WeaponIndex++;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
             #endregion
 
             mouseClick = false;
@@ -380,6 +471,7 @@ namespace CharacterEditor
             }
             return "";
         }
+
 		#region Custom Draw Methods
 				
 		/// <summary>
@@ -560,7 +652,7 @@ namespace CharacterEditor
 		private bool DrawIconAsButton(int x, int y, Texture2D buttonTexture, int mouseX, int mouseY, bool mouseClick)
 		{
 			bool r = false;
-			Rectangle destinationRect = new Rectangle(x, y, 32, 32);
+			Rectangle destinationRect = new Rectangle(x, y, 16, 16);
 
 			if (destinationRect.Contains(mouseX, mouseY))
 			{

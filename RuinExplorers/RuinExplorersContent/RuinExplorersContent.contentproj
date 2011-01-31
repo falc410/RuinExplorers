@@ -46,6 +46,10 @@
       <Name>player</Name>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="data\characters\zombie.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>zombie</Name>
+    </None>
     <None Include="data\mapSegments.dat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <Name>mapSegments</Name>
@@ -72,20 +76,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="gfx\downarrow.png">
-      <Name>downarrow</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="gfx\folder_open_icon.png">
-      <Name>folder_open_icon</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="gfx\head1.png">
       <Name>head1</Name>
       <Importer>TextureImporter</Importer>
@@ -101,22 +91,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="gfx\save_icon.png">
-      <Name>save_icon</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="gfx\torso1.png">
       <Name>torso1</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="gfx\uparrow.png">
-      <Name>uparrow</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
@@ -157,6 +133,27 @@
   <ItemGroup>
     <Compile Include="gfx\sprites.png">
       <Name>sprites</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="gfx\head2.png">
+      <Name>head2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="gfx\legs2.png">
+      <Name>legs2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="gfx\torso2.png">
+      <Name>torso2</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

@@ -39,9 +39,9 @@ namespace RuinExplorers.CharacterClasses
         }
         #endregion
         #region Fields
-        public static Texture2D[] headTexture = new Texture2D[1];
-        public static Texture2D[] torsoTexture = new Texture2D[1];
-        public static Texture2D[] legsTexture = new Texture2D[1];
+        public static Texture2D[] headTexture = new Texture2D[2];
+        public static Texture2D[] torsoTexture = new Texture2D[2];
+        public static Texture2D[] legsTexture = new Texture2D[2];
         public static Texture2D[] weaponTexture = new Texture2D[1];
 
         public Map map;
@@ -69,6 +69,7 @@ namespace RuinExplorers.CharacterClasses
         private Script script;
         private CharacterDefinition characterDefinition;
         public int ID;
+        public int Team;
 
         float frame = 0f;
         int ledgeAttach = -1;
@@ -83,6 +84,9 @@ namespace RuinExplorers.CharacterClasses
 
         #region Constants (Triggers mostly)
 
+        public const int TEAM_PLAYERS = 0;
+        public const int TEAM_NPC = 1;
+
         public const int TRIG_PISTOL_ACROSS = 0;
         public const int TRIG_PISTOL_UP = 1;
         public const int TRIG_PISTOL_DOWN = 2;
@@ -96,7 +100,7 @@ namespace RuinExplorers.CharacterClasses
 
         #region Constructor
         
-        public Character(Vector2 newLocation, CharacterDefinition newCharDef)
+        public Character(Vector2 newLocation, CharacterDefinition newCharDef, int newID, int newTeam)
         {
             Location = newLocation;
             Trajectory = new Vector2();
@@ -105,7 +109,8 @@ namespace RuinExplorers.CharacterClasses
             Scale = 0.5f;
             characterDefinition = newCharDef;
 
-            ID = 0;
+            ID = newID;
+            Team = newTeam;
 
             SetAnim("fly");
 

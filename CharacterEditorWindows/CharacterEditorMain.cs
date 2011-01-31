@@ -8,6 +8,7 @@ using CharacterEditorWindows.Character;
 using System;
 using System.Windows.Forms;
 using System.Diagnostics;
+using TextLibrary;
 
 using Image = System.Drawing.Image;
 using Bitmap = System.Drawing.Bitmap;
@@ -27,17 +28,19 @@ namespace CharacterEditorWindows
 		ContentManager Content;		
 		SpriteBatch spriteBatch;
 		Stopwatch timer;
+        SpriteFont font;
+        Text text;
         
-        Image headBitmap;
-        Image torsoBitmap;
-        Image legsBitmap;
-        Image weaponsBitmap;
+        Image[] headBitmap = new Image[2];
+        Image[] torsoBitmap = new Image[2];
+        Image[] legsBitmap = new Image[2];
+        Image[] weaponsBitmap = new Image[1];
 
 		CharacterDefinition characterDefinition;
 
-		Texture2D[] headTexture = new Texture2D[1];
-		Texture2D[] torsoTexture = new Texture2D[1];
-		Texture2D[] legsTexture = new Texture2D[1];
+		Texture2D[] headTexture = new Texture2D[2];
+		Texture2D[] torsoTexture = new Texture2D[2];
+		Texture2D[] legsTexture = new Texture2D[2];
 		Texture2D[] weaponTexture = new Texture2D[1];
 
         Texture2D nullTexture;
@@ -57,24 +60,52 @@ namespace CharacterEditorWindows
         
 		#endregion
 
-		#region Properties
+        #region Triggers
 
-        public Image HeadBitmap
+        const int TRIG_PISTOL_ACROSS = 0;
+        const int TRIG_PISTOL_UP = 1;
+        const int TRIG_PISTOL_DOWN = 2;
+
+        #endregion
+
+        #region Properties
+
+        public Texture2D[] TorsoTextures
+        {
+            get { return torsoTexture; }
+        }
+
+        public Texture2D[] LegsTextures
+        {
+            get { return legsTexture; }
+        }
+
+        public Texture2D[] WeaponTextures
+        {
+            get { return weaponTexture; }
+        }
+
+        public Texture2D[] HeadTextures
+        {
+            get { return headTexture; }
+        }
+
+        public Image[] HeadBitmap
         {
             get { return headBitmap; }
         }
 
-        public Image TorsoBitmap
+        public Image[] TorsoBitmap
         {
             get { return torsoBitmap; }
         }
 
-        public Image LegsBitmap
+        public Image[] LegsBitmap
         {
             get { return legsBitmap; }
         }
 
-        public Image WeaponsBitmap
+        public Image[] WeaponsBitmap
         {
             get { return weaponsBitmap; }
         }
@@ -133,7 +164,11 @@ namespace CharacterEditorWindows
 		{
 			Content = new ContentManager(Services, "WindowsContent");
             
-			spriteBatch = new SpriteBatch(GraphicsDevice);            
+			spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            font = Content.Load<SpriteFont>(@"Fonts/Arial");
+            text = new Text(spriteBatch, font);
+
 
 			timer = Stopwatch.StartNew();           
 
@@ -142,10 +177,11 @@ namespace CharacterEditorWindows
 			LoadTextures(torsoTexture, @"gfx/torso");
             LoadTextures(weaponTexture, @"gfx/weapon");
                         
-            headBitmap = Bitmap.FromFile(@"WindowsContent/gfx/source/head1.png");
-            torsoBitmap = Bitmap.FromFile(@"WindowsContent/gfx/source/torso1.png");
-            legsBitmap = Bitmap.FromFile(@"WindowsContent/gfx/source/legs1.png");
-            weaponsBitmap = Bitmap.FromFile(@"WindowsContent/gfx/source/weapon1.png");
+            
+            LoadBitmaps(headBitmap, "head");
+            LoadBitmaps(torsoBitmap, "torso");
+            LoadBitmaps(legsBitmap, "legs");
+            LoadBitmaps(weaponsBitmap, "weapon");            
 			
 			nullTexture = Content.Load<Texture2D>(@"gfx/1x1");
 
@@ -163,6 +199,14 @@ namespace CharacterEditorWindows
             }
 
             base.Dispose(disposing);
+        }
+
+        private void LoadBitmaps(Image[] textures, string path)
+        {
+            for (int i = 0; i < textures.Length; i++)
+            {
+                textures[i] = Bitmap.FromFile(@"WindowsContent/gfx/source/" + path + (i + 1).ToString() + ".png");
+            }
         }
 
 		private void LoadTextures(Texture2D[] textures, string path)
@@ -234,6 +278,23 @@ namespace CharacterEditorWindows
                 currentKeyFrame = selectedKeyFrame;
 
         }
+
+        public string GetTrigName(int index)
+        {
+            switch (index)
+            {
+                case TRIG_PISTOL_ACROSS:
+                    return "pistol across";
+                case TRIG_PISTOL_DOWN:
+                    return "pistol down";
+                case TRIG_PISTOL_UP:
+                    return "pistol up";
+                default:
+                    break;
+            }
+            return "n/a";
+        }
+
 		#region Custom Draw Methods
 				
 		/// <summary>
@@ -296,51 +357,70 @@ namespace CharacterEditorWindows
 						location.X -= part.Location.X * _scale * 2.0f;
 					}
 
-					  Texture2D texture = null;
+                    if (part.Index >= 1000 && _alpha >= 1f)
+                    {
+                        spriteBatch.End();
+                        text.color = Color.Lime;
+                        if (_preview)
+                        {
+                            text.size = 0.45f;
+                            text.DrawText((int)location.X, (int)location.Y, "*");
+                        }
+                        else
+                        {
+                            text.size = 1f;
+                            text.DrawText((int)location.X, (int)location.Y, "*" + GetTrigName(part.Index - 1000));
+                        }
+                        spriteBatch.Begin();
+                    }
+                    else
+                    {
+                        Texture2D texture = null;
 
-					int t = part.Index / 64;
-					switch (t)
-					{
-						case 0:
-							texture = headTexture[characterDefinition.HeadIndex];
-							break;
-						case 1:
-							texture = torsoTexture[characterDefinition.TorsoIndex];
-							break;
-						case 2:
-							texture = legsTexture[characterDefinition.LegsIndex];
-							break;
-						case 3:
-							texture = weaponTexture[characterDefinition.WeaponIndex];
-							break;
-					}
+                        int t = part.Index / 64;
+                        switch (t)
+                        {
+                            case 0:
+                                texture = headTexture[characterDefinition.HeadIndex];
+                                break;
+                            case 1:
+                                texture = torsoTexture[characterDefinition.TorsoIndex];
+                                break;
+                            case 2:
+                                texture = legsTexture[characterDefinition.LegsIndex];
+                                break;
+                            case 3:
+                                texture = weaponTexture[characterDefinition.WeaponIndex];
+                                break;
+                        }
 
-					Color color = new Color(255, 255, 255, (byte)(_alpha * 255));
+                        Color color = new Color(255, 255, 255, (byte)(_alpha * 255));
 
-					// highlight selected part in red on editable character
-					if (!_preview && selectedPart == i)
-						color = new Color(255, 0, 0, (byte)(_alpha * 255));
+                        // highlight selected part in red on editable character
+                        if (!_preview && selectedPart == i)
+                            color = new Color(255, 0, 0, (byte)(_alpha * 255));
 
-					bool flip = false;
+                        bool flip = false;
 
-					if ((_face == FACE_RIGHT && part.Flip == 0) ||
-						(_face == FACE_LEFT && part.Flip == 1))
-						flip = true;
+                        if ((_face == FACE_RIGHT && part.Flip == 0) ||
+                            (_face == FACE_LEFT && part.Flip == 1))
+                            flip = true;
 
-					if (texture != null)
-					{
-						spriteBatch.Draw(
-							texture,
-							location,
-							sourceRect,
-							color,
-							rotation,
-							new Vector2((float)sourceRect.Width / 2f, 32f),
-							scaling,
-							(flip ? SpriteEffects.None : SpriteEffects.FlipHorizontally),
-							1.0f
-							);
-					}
+                        if (texture != null)
+                        {
+                            spriteBatch.Draw(
+                                texture,
+                                location,
+                                sourceRect,
+                                color,
+                                rotation,
+                                new Vector2((float)sourceRect.Width / 2f, 32f),
+                                scaling,
+                                (flip ? SpriteEffects.None : SpriteEffects.FlipHorizontally),
+                                1.0f
+                                );
+                        }
+                    }
 				}
 			}
 			spriteBatch.End();             
