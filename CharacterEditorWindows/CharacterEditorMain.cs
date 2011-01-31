@@ -66,6 +66,14 @@ namespace CharacterEditorWindows
         const int TRIG_PISTOL_UP = 1;
         const int TRIG_PISTOL_DOWN = 2;
 
+        const int TRIG_WRENCH_UP = 3;
+        const int TRIG_WRENCH_DOWN = 4;
+        const int TRIG_WRENCH_DIAG_UP = 5;
+        const int TRIG_WRENCH_DIAG_DOWN = 6;
+        const int TRIG_WRENCH_UPPERCUT = 7;
+        const int TRIG_WRENCH_SMACKDOWN = 8;
+        const int TRIG_KICK = 9;
+
         #endregion
 
         #region Properties
@@ -289,6 +297,20 @@ namespace CharacterEditorWindows
                     return "pistol down";
                 case TRIG_PISTOL_UP:
                     return "pistol up";
+                case TRIG_WRENCH_DOWN:
+                    return "wrench down";
+                case TRIG_WRENCH_SMACKDOWN:
+                    return "wrench smackdown";
+                case TRIG_WRENCH_DIAG_UP:
+                    return "wrench diag up";
+                case TRIG_WRENCH_DIAG_DOWN:
+                    return "wrench diag down";
+                case TRIG_WRENCH_UP:
+                    return "wrench up";
+                case TRIG_WRENCH_UPPERCUT:
+                    return "wrench uppercut";
+                case TRIG_KICK:
+                    return "kick";
                 default:
                     break;
             }

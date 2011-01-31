@@ -46,12 +46,23 @@ namespace CharacterEditor
         const int AUX_TEXTURE = 2;
         int auxMode = AUX_SCRIPT;
         int trigScroll = 0;
-
+        #region Trigger
+        
         const int TRIG_PISTOL_ACROSS = 0;
         const int TRIG_PISTOL_UP = 1;
         const int TRIG_PISTOL_DOWN = 2;
 
-		int selectedPart = 0;
+        const int TRIG_WRENCH_UP = 3;
+        const int TRIG_WRENCH_DOWN = 4;
+        const int TRIG_WRENCH_DIAG_UP = 5;
+        const int TRIG_WRENCH_DIAG_DOWN = 6;
+        const int TRIG_WRENCH_UPPERCUT = 7;
+        const int TRIG_WRENCH_SMACKDOWN = 8;
+        const int TRIG_KICK = 9;
+
+        #endregion
+
+        int selectedPart = 0;
 		int selectedFrame = 0;
 		int selectedAnimation = 0;
 		int selectedKeyFrame = 0;
@@ -328,7 +339,7 @@ namespace CharacterEditor
                     if (trigScroll < 100)
                         trigScroll++;
 
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < 10; i++)
                 {
                     int t = i + trigScroll;
                     if (text.DrawClickText(210, 42 + i * 16, GetTrigName(t), mouseState.X, mouseState.Y, mouseClick))
@@ -466,6 +477,20 @@ namespace CharacterEditor
                     return "pistol down";
                 case TRIG_PISTOL_UP:
                     return "pistol up";
+                case TRIG_WRENCH_DOWN:
+                    return "wrench down";
+                case TRIG_WRENCH_SMACKDOWN:
+                    return "wrench smackdown";
+                case TRIG_WRENCH_DIAG_UP:
+                    return "wrench diag up";
+                case TRIG_WRENCH_DIAG_DOWN:
+                    return "wrench diag down";
+                case TRIG_WRENCH_UP:
+                    return "wrench up";
+                case TRIG_WRENCH_UPPERCUT:
+                    return "wrench uppercut";
+                case TRIG_KICK:
+                    return "kick";
                 default:
                     break;
             }

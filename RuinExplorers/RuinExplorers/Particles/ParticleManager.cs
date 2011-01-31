@@ -93,6 +93,25 @@ namespace RuinExplorers.Particles
             }
         }
 
+        public void MakeBloodSplash(Vector2 location, Vector2 trajectory)
+        {
+            trajectory += RandomGenerator.GetRandomVector2(-100f, 100f, -100f, 100f);
+
+            for (int i = 0; i < 64; i++)
+            {
+                AddParticle(new Blood(location, trajectory * RandomGenerator.GetRandomFloat(0.1f, 3.5f) +
+                    RandomGenerator.GetRandomVector2(-70f, 70f, -70f, 70f), 1f, 0f, 0f, 1f,
+                    RandomGenerator.GetRandomFloat(0.01f, 0.25f), RandomGenerator.GetRandomInt(0, 4)));
+
+                AddParticle(new Blood(location, trajectory * RandomGenerator.GetRandomFloat(-0.2f, 0f) +
+                    RandomGenerator.GetRandomVector2(-120f, 120f, -120f, 120f), 1f, 0f, 0f, 1f,
+                    RandomGenerator.GetRandomFloat(0.01f, 0.25f), RandomGenerator.GetRandomInt(0, 4)));
+            }
+            // I think it's overkill to have steam on normal hits
+            //MakeBulletDust(location, trajectory * -20f);
+            //MakeBulletDust(location, trajectory * 10f);
+        }
+
         /// <summary>
         /// Creates 16 MuzzleFlash Particles trailing off in a direction defined
         /// by trajectory, with particle size decreasing the farther the particles are

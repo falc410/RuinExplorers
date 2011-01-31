@@ -25,11 +25,12 @@ namespace RuinExplorers
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        public static float frameTime = 0f;
+        private static float frameTime = 0f;
         private static Vector2 scroll;
         private const float friction = 1000f;
         private const float gravity = 900f;
         private static Vector2 screenSize = new Vector2();
+        private static float slowTime = 0f;
 
         Map map;
 
@@ -43,6 +44,18 @@ namespace RuinExplorers
 
         #endregion
         #region Properties
+
+        public static float FrameTime
+        {
+            get { return frameTime; }
+            set { frameTime = value; }
+        }
+
+        public static float SlowTime
+        {
+            get { return slowTime; }
+            set { slowTime = value; }
+        }
 
         public static Vector2 ScreenSize
         {
@@ -148,6 +161,11 @@ namespace RuinExplorers
                 this.Exit();
 
             frameTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (slowTime > 0f)
+            {
+                slowTime -= frameTime;
+                frameTime /= 10f;
+            }
 
             particleManager.UpdateParticles(frameTime, map, character);
 

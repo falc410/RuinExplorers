@@ -56,6 +56,7 @@ namespace RuinExplorers.CharacterClasses
         public String AnimationName;
         public bool floating;
         public float Speed = 200f;
+        public float CollisionMove = 0f;
 
         public bool keyLeft;
         public bool keyRight;
@@ -90,6 +91,28 @@ namespace RuinExplorers.CharacterClasses
         public const int TRIG_PISTOL_ACROSS = 0;
         public const int TRIG_PISTOL_UP = 1;
         public const int TRIG_PISTOL_DOWN = 2;
+        public const int TRIG_WRENCH_UP = 3;
+        public const int TRIG_WRENCH_DOWN = 4;
+        public const int TRIG_WRENCH_DIAG_UP = 5;
+        public const int TRIG_WRENCH_DIAG_DOWN = 6;
+        public const int TRIG_WRENCH_UPPERCUT = 7;
+        public const int TRIG_WRENCH_SMACKDOWN = 8;
+        public const int TRIG_KICK = 9;
+        public const int TRIG_ZOMBIE_HIT = 10;
+        public const int TRIG_BLOOD_SQUIRT_UP = 11;
+        public const int TRIG_BLOOD_SQUIRT_UP_FORWARD = 12;
+        public const int TRIG_BLOOD_SQUIRT_FORWARD = 13;
+        public const int TRIG_BLOOD_SQUIRT_DOWN_FORNWARD = 14;
+        public const int TRIG_BLOOD_SQUIRT_DOWN = 15;
+        public const int TRIG_BLOOD_SQUIRT_DOWN_BACK = 16;
+        public const int TRIG_BLOOD_SQUIRT_BACK = 17;
+        public const int TRIG_BLOOD_SQUIRT_UP_BACK = 18;
+        public const int TRIG_BLOOD_CLOUD = 19;
+        public const int TRIG_BLOOD_SPLAT = 20;
+        public const int TRIG_CHAINSAW_DOWN = 21;
+        public const int TRIG_CHAINSAW_UPPER = 22;
+        public const int TRIG_ROCKET = 23;
+        public const int TRIG_FIRE_DIE = 24;
 
         #endregion
 
@@ -145,7 +168,52 @@ namespace RuinExplorers.CharacterClasses
         /// <param name="gameTime">The game time.</param>
         public void Update(GameTime gameTime, ParticleManager particleManager, Character[] character)
         {
-            float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            //float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            float elapsedTime = RuinExplorersMain.FrameTime;
+
+            #region Collision with other characters
+            for (int i = 0; i < character.Length; i++)
+            {
+                if (i != ID)
+                {
+                    if (character[i] != null)
+                    {
+                        if (Location.X > character[i].Location.X - 90f * character[i].Scale &&
+                            Location.X < character[i].Location.X + 90f * character[i].Scale &&
+                            Location.Y > character[i].Location.Y - 120f * character[i].Scale &&
+                            Location.Y < character[i].Location.Y + 10f * character[i].Scale)
+                        {
+                            float dif = (float)Math.Abs(Location.X - character[i].Location.X);
+                            dif = 180f * character[i].Scale - dif;
+                            dif *= 2f;
+                            if (Location.X < character[i].Location.X)
+                            {
+                                CollisionMove = -dif;
+                                character[i].CollisionMove = dif;
+                            }
+                            else
+                            {
+                                CollisionMove = dif;
+                                character[i].CollisionMove = -dif;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (CollisionMove > 0f)
+            {
+                CollisionMove -= 400f * elapsedTime;
+                if (CollisionMove < 0f)
+                    CollisionMove = 0f;
+            }
+            else if (CollisionMove < 0f)
+            {
+                CollisionMove += 400f * elapsedTime;
+                if (CollisionMove > 0f)
+                    CollisionMove = 0f;
+            }
+            #endregion
 
             #region Update Animation
             Animation animation = characterDefinition.Animations[Animation];
@@ -193,6 +261,7 @@ namespace RuinExplorers.CharacterClasses
             }
 
             Location.X += Trajectory.X * elapsedTime;
+            Location.X += CollisionMove * elapsedTime;
 
             if (State == CharacterState.Air)
             {
@@ -404,6 +473,8 @@ namespace RuinExplorers.CharacterClasses
             //    }
             //}
             #endregion
+
+           
         }
 
         private void CheckTrigger(ParticleManager particleManager)
@@ -441,6 +512,7 @@ namespace RuinExplorers.CharacterClasses
                     particleManager.MakeBullet(location, new Vector2(1400f, -1400f), Face, ID);
                     break;                    
                 default:
+                    particleManager.AddParticle(new Hit(location, new Vector2(200f * (float)Face - 100f, 0f), ID, trigger));
                     break;
             }
         }
@@ -453,10 +525,10 @@ namespace RuinExplorers.CharacterClasses
         /// <param name="pLoc">The previous location.</param>
         public void CheckXCollision(Vector2 pLocation)
         {
-            if (Trajectory.X > 0f)
+            if (Trajectory.X + CollisionMove > 0f)
                 if (map.CheckCollision(new Vector2(Location.X + 25f, Location.Y - 15f)))
                     Location.X = pLocation.X;
-            if (Trajectory.X < 0f)
+            if (Trajectory.X + CollisionMove < 0f)
                 if (map.CheckCollision(new Vector2(Location.X - 25f, Location.Y - 15f)))
                     Location.X = pLocation.X;            
         }
@@ -489,7 +561,20 @@ namespace RuinExplorers.CharacterClasses
         public void Land()
         {
             State = CharacterState.Ground;
-            SetAnim("land");
+
+            switch (AnimationName)
+            {
+                case "jhit":
+                    break;
+                case "jmid":
+                    break;
+                case "jfall":
+                    SetAnim("hitland");
+                    break;
+                default:
+                    SetAnim("land");
+                    break;
+            }
         }
 
         /// <summary>

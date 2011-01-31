@@ -19,7 +19,7 @@ namespace RuinExplorers.Particles
         protected float size;
         protected float rotation;
 
-        protected int flag;
+        public int flag;
         public int owner;
 
         public bool Exists;

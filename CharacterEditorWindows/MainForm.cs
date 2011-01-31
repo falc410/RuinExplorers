@@ -116,7 +116,7 @@ namespace CharacterEditorWindows
 
             // initialize triggers
             triggersListBox.Items.Clear();
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 25; i++)
             {
                 triggersListBox.Items.Add(characterEditorMain1.GetTrigName(i));
             }
@@ -246,7 +246,7 @@ namespace CharacterEditorWindows
                 // initiliaze triggers
                 triggersListBox.Items.Clear();
 
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < 25; i++)
                 {
                     triggersListBox.Items.Add(characterEditorMain1.GetTrigName(i));
                 }
@@ -614,6 +614,7 @@ namespace CharacterEditorWindows
 
                     partListBox.Items.Add(i.ToString() + ": " + line);
                 }
+                partListBox.SelectedIndex = 0;
             }
         }
 
