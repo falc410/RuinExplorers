@@ -9,7 +9,7 @@ namespace RuinExplorers.MapClasses
     /// <summary>
     /// One segment on a map. Got a location and index value
     /// </summary>
-    class MapSegment
+    public class MapSegment
     {
         public Vector2 location;
         int segmentIndex;

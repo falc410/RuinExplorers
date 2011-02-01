@@ -12,7 +12,7 @@ namespace RuinExplorers.CharacterClasses
     /// and another array of animations[64] (each made up out of keyFrames which in fact are frames + duration)
     /// Requires a previously created character data from the editor.
     /// </summary>
-    class CharacterDefinition
+    public class CharacterDefinition
     {
         Animation[] animations;
         Frame[] frames;

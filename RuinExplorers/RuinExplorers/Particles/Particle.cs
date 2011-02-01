@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace RuinExplorers.Particles
 {
-    class Particle
+    public class Particle
     {
         public Vector2 location;
         public Vector2 trajectory;

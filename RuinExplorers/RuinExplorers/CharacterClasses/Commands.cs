@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RuinExplorers.CharacterClasses
 {
-    enum Commands
+    public enum Commands
     {
         SetAnim,
         Goto,
@@ -25,6 +25,17 @@ namespace RuinExplorers.CharacterClasses
         SetSecondaryGoto,
         SetSecUpGoto,
         SetSecDownGoto,
-        PlaySound
+        PlaySound,
+        Ethereal,
+        Solid,
+        Speed,
+        HP,
+        DeathCheck,
+        IfDyingGoto,
+        KillMe,
+        AI,
+        CanCancel,
+        Size,
+        NoLifty
     }
 }

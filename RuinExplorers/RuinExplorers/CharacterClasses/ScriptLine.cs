@@ -17,7 +17,7 @@ namespace RuinExplorers.CharacterClasses
     /// Notice that all script commands are lowercase only. A correspoding
     /// command should exist in the Commands enum.
     /// </summary>
-    class ScriptLine
+    public class ScriptLine
     {
         Commands command;
         String stringParameter;
@@ -142,9 +142,45 @@ namespace RuinExplorers.CharacterClasses
                         command = Commands.SetSecDownGoto;
                         intParameter = Convert.ToInt32(split[1]);
                         break;
+                    // play a sound cue
                     case "play":
                         command = Commands.PlaySound;
                         stringParameter = split[1];
+                        break;
+                    case "ethereal":
+                        command = Commands.Ethereal;
+                        break;
+                    case "solid":
+                        command = Commands.Solid;
+                        break;
+                    case "speed":
+                        command = Commands.Speed;
+                        intParameter = Convert.ToInt32(split[1]);
+                        break;
+                    case "hp":
+                        command = Commands.HP;
+                        intParameter = Convert.ToInt32(split[1]);
+                        break;
+                    case "deathcheck":
+                        command = Commands.DeathCheck;
+                        break;
+                    case "ifdyinggoto":
+                        command = Commands.IfDyingGoto;
+                        intParameter = Convert.ToInt32(split[1]);
+                        break;
+                    case "killme":
+                        command = Commands.KillMe;
+                        break;
+                    case "ai":
+                        command = Commands.AI;
+                        stringParameter = split[1];
+                        break;
+                    case "size":
+                        command = Commands.Size;
+                        intParameter = Convert.ToInt32(split[1]);
+                        break;
+                    case "nolifty":
+                        command = Commands.NoLifty;
                         break;
                 }
             }

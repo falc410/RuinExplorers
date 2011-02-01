@@ -59,6 +59,21 @@ namespace CharacterEditor
         const int TRIG_WRENCH_UPPERCUT = 7;
         const int TRIG_WRENCH_SMACKDOWN = 8;
         const int TRIG_KICK = 9;
+        public const int TRIG_ZOMBIE_HIT = 10;
+        public const int TRIG_BLOOD_SQUIRT_UP = 11;
+        public const int TRIG_BLOOD_SQUIRT_UP_FORWARD = 12;
+        public const int TRIG_BLOOD_SQUIRT_FORWARD = 13;
+        public const int TRIG_BLOOD_SQUIRT_DOWN_FORWARD = 14;
+        public const int TRIG_BLOOD_SQUIRT_DOWN = 15;
+        public const int TRIG_BLOOD_SQUIRT_DOWN_BACK = 16;
+        public const int TRIG_BLOOD_SQUIRT_BACK = 17;
+        public const int TRIG_BLOOD_SQUIRT_UP_BACK = 18;
+        public const int TRIG_BLOOD_CLOUD = 19;
+        public const int TRIG_BLOOD_SPLAT = 20;
+        public const int TRIG_CHAINSAW_DOWN = 21;
+        public const int TRIG_CHAINSAW_UPPER = 22;
+        public const int TRIG_ROCKET = 23;
+        public const int TRIG_FIRE_DIE = 24;
 
         #endregion
 
@@ -491,6 +506,28 @@ namespace CharacterEditor
                     return "wrench uppercut";
                 case TRIG_KICK:
                     return "kick";
+                case TRIG_ZOMBIE_HIT:
+                    return "zombie hit";
+                case TRIG_BLOOD_SQUIRT_UP:
+                    return "squirt up";
+                case TRIG_BLOOD_SQUIRT_UP_FORWARD:
+                    return "squirt up forward";
+                case TRIG_BLOOD_SQUIRT_FORWARD:
+                    return "squirt forward";
+                case TRIG_BLOOD_SQUIRT_DOWN_FORWARD:
+                    return "squirt down forward";
+                case TRIG_BLOOD_SQUIRT_DOWN:
+                    return "squirt down";
+                case TRIG_BLOOD_SQUIRT_DOWN_BACK:
+                    return "squirt down back";
+                case TRIG_BLOOD_SQUIRT_BACK:
+                    return "squirt back";
+                case TRIG_BLOOD_SQUIRT_UP_BACK:
+                    return "squirt up back";
+                case TRIG_BLOOD_CLOUD:
+                    return "blood cloud";
+                case TRIG_BLOOD_SPLAT:
+                    return "blood splat";
                 default:
                     break;
             }

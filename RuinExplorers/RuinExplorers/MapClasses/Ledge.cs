@@ -12,7 +12,7 @@ namespace RuinExplorers.MapClasses
     /// hard ledge - meaning that a character can not move past it.
     /// A node is a simple Vector2 object.
     /// </summary>
-    class Ledge
+    public class Ledge
     {
         Vector2[] nodes = new Vector2[16];
         private int totalNodes = 0;

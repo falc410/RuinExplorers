@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Content;
 using RuinExplorers.Helpers;
 using RuinExplorers.Particles;
 using RuinExplorers.Audio;
+using RuinExplorers.AIClasses;
 
 namespace RuinExplorers.CharacterClasses
 {
@@ -18,7 +19,7 @@ namespace RuinExplorers.CharacterClasses
     /// Requires a start location and a CharacterDefinition to create a new character
     /// and of course proper textures which are loaded in the LoadTextures method
     /// </summary>
-    class Character
+    public class Character
     {
         #region enums
         
@@ -58,6 +59,14 @@ namespace RuinExplorers.CharacterClasses
         public bool floating;
         public float Speed = 200f;
         public float CollisionMove = 0f;
+
+        public AI Ai;
+        public bool Ethereal;
+        public float DyingFrame = -1f;
+        public bool NoLifty;
+        public int HP;
+        public int MHP;
+        public bool CanCancel;
 
         public bool keyLeft;
         public bool keyRight;
@@ -103,7 +112,7 @@ namespace RuinExplorers.CharacterClasses
         public const int TRIG_BLOOD_SQUIRT_UP = 11;
         public const int TRIG_BLOOD_SQUIRT_UP_FORWARD = 12;
         public const int TRIG_BLOOD_SQUIRT_FORWARD = 13;
-        public const int TRIG_BLOOD_SQUIRT_DOWN_FORNWARD = 14;
+        public const int TRIG_BLOOD_SQUIRT_DOWN_FORWARD = 14;
         public const int TRIG_BLOOD_SQUIRT_DOWN = 15;
         public const int TRIG_BLOOD_SQUIRT_DOWN_BACK = 16;
         public const int TRIG_BLOOD_SQUIRT_BACK = 17;
@@ -126,23 +135,43 @@ namespace RuinExplorers.CharacterClasses
         
         public Character(Vector2 newLocation, CharacterDefinition newCharDef, int newID, int newTeam)
         {
+            script = new Script(this);
+            Ai = null;
+            
             Location = newLocation;
             Trajectory = new Vector2();
-
+            ID = newID;
+            Team = newTeam;
             Face = CharacterDirection.Right;
             Scale = 0.5f;
             characterDefinition = newCharDef;
 
-            ID = newID;
-            Team = newTeam;
-
+            NoLifty = false;
+          
+            InitScript();
+            
+            Ethereal = false;
+            AnimationName = "";
             SetAnim("fly");
 
             State = CharacterState.Air;
 
-            script = new Script(this);
+            
         }
         #endregion
+
+        private void InitScript()
+        {
+            SetAnim("init");
+            if (AnimationName == "init")
+            {
+                for (int i = 0; i < characterDefinition.Animations[Animation].KeyFrames.Length; i++)
+                {
+                    if (characterDefinition.Animations[Animation].KeyFrames[i].FrameReference > -1)
+                        script.DoScript(Animation, i);
+                }
+            }
+        }
 
         public void SetAnim(string newAnim)
         {
@@ -156,10 +185,19 @@ namespace RuinExplorers.CharacterClasses
                     AnimationFrame = 0;
                     frame = 0;
                     AnimationName = newAnim;
-
+                    Ethereal = false;
                     break;
                 }
             }
+        }
+
+        public void SetFrame(int newFrame)
+        {
+            AnimationFrame = newFrame;
+            frame = 0f;
+            for (int i = 0; i < GotoGoal.Length; i++)
+                GotoGoal[i] = -1;
+            CanCancel = false;
         }
 
 
@@ -172,6 +210,9 @@ namespace RuinExplorers.CharacterClasses
             //float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             float elapsedTime = RuinExplorersMain.FrameTime;
 
+            if (Ai != null)
+                Ai.Update(character, ID, map);
+
             #region Collision with other characters
             for (int i = 0; i < character.Length; i++)
             {
@@ -179,25 +220,28 @@ namespace RuinExplorers.CharacterClasses
                 {
                     if (character[i] != null)
                     {
-                        if (Location.X > character[i].Location.X - 90f * character[i].Scale &&
-                            Location.X < character[i].Location.X + 90f * character[i].Scale &&
-                            Location.Y > character[i].Location.Y - 120f * character[i].Scale &&
-                            Location.Y < character[i].Location.Y + 10f * character[i].Scale)
+                        if (!Ethereal && !character[i].Ethereal)
                         {
-                            float dif = (float)Math.Abs(Location.X - character[i].Location.X);
-                            dif = 180f * character[i].Scale - dif;
-                            dif *= 2f;
-                            if (Location.X < character[i].Location.X)
+                            if (Location.X > character[i].Location.X - 90f * character[i].Scale &&
+                         Location.X < character[i].Location.X + 90f * character[i].Scale &&
+                         Location.Y > character[i].Location.Y - 120f * character[i].Scale &&
+                         Location.Y < character[i].Location.Y + 10f * character[i].Scale)
                             {
-                                CollisionMove = -dif;
-                                character[i].CollisionMove = dif;
+                                float dif = (float)Math.Abs(Location.X - character[i].Location.X);
+                                dif = 180f * character[i].Scale - dif;
+                                dif *= 2f;
+                                if (Location.X < character[i].Location.X)
+                                {
+                                    CollisionMove = -dif;
+                                    character[i].CollisionMove = dif;
+                                }
+                                else
+                                {
+                                    CollisionMove = dif;
+                                    character[i].CollisionMove = -dif;
+                                }
                             }
-                            else
-                            {
-                                CollisionMove = dif;
-                                character[i].CollisionMove = -dif;
-                            }
-                        }
+                        }                     
                     }
                 }
             }
@@ -216,30 +260,41 @@ namespace RuinExplorers.CharacterClasses
             }
             #endregion
 
-            #region Update Animation
-            Animation animation = characterDefinition.Animations[Animation];
-            KeyFrame keyFrame = animation.KeyFrames[AnimationFrame];
-
-            frame += elapsedTime * 30.0f;
-            if (frame > (float)keyFrame.Duration)
+            #region update dying
+            if (DyingFrame > -1f)
             {
-                int previousFrame = AnimationFrame;
-                script.DoScript(Animation, AnimationFrame);
+                DyingFrame += RuinExplorersMain.FrameTime;
+            }
+            #endregion
 
-                CheckTrigger(particleManager);                   
+            #region Update Animation
+            if (DyingFrame < 0)
+            {
+                Animation animation = characterDefinition.Animations[Animation];
+                KeyFrame keyFrame = animation.KeyFrames[AnimationFrame];
 
-                frame -= (float)keyFrame.Duration;
-                if (AnimationFrame == previousFrame)
-                    AnimationFrame++;
-                
-                if (AnimationFrame >= animation.KeyFrames.Length)
-                    AnimationFrame = 0;
+                frame += elapsedTime * 30.0f;
+                if (frame > (float)keyFrame.Duration)
+                {
+                    int previousFrame = AnimationFrame;
+                    script.DoScript(Animation, AnimationFrame);
 
-                keyFrame = animation.KeyFrames[AnimationFrame];
+                    CheckTrigger(particleManager);
 
-                if (keyFrame.FrameReference < 0)
-                    AnimationFrame = 0;                
-            }            
+                    frame -= (float)keyFrame.Duration;
+                    if (AnimationFrame == previousFrame)
+                        AnimationFrame++;
+
+                    if (AnimationFrame >= animation.KeyFrames.Length)
+                        AnimationFrame = 0;
+
+                    keyFrame = animation.KeyFrames[AnimationFrame];
+
+                    if (keyFrame.FrameReference < 0)
+                        AnimationFrame = 0;
+                }            
+            }
+            
             #endregion
 
             #region Update Location by Trajectory
@@ -514,7 +569,67 @@ namespace RuinExplorers.CharacterClasses
                 case TRIG_PISTOL_UP:
                     particleManager.MakeBullet(location, new Vector2(1400f, -1400f), Face, ID);
                     Sound.PlayCue("revol");
-                    break;                    
+                    break;
+                case TRIG_BLOOD_SQUIRT_BACK:
+                case TRIG_BLOOD_SQUIRT_DOWN:
+                case TRIG_BLOOD_SQUIRT_DOWN_BACK:
+                case TRIG_BLOOD_SQUIRT_DOWN_FORWARD:
+                case TRIG_BLOOD_SQUIRT_FORWARD:
+                case TRIG_BLOOD_SQUIRT_UP:
+                case TRIG_BLOOD_SQUIRT_UP_BACK:
+                case TRIG_BLOOD_SQUIRT_UP_FORWARD:
+                    double r = 0.0;
+                    switch (trigger)
+                    {
+                        case TRIG_BLOOD_SQUIRT_FORWARD:
+                            r = 0.0;
+                            break;
+                        case TRIG_BLOOD_SQUIRT_DOWN_FORWARD:
+                            r = Math.PI * .25;
+                            break;
+                        case TRIG_BLOOD_SQUIRT_DOWN:
+                            r = Math.PI * .5;
+                            break;
+                        case TRIG_BLOOD_SQUIRT_DOWN_BACK:
+                            r = Math.PI * .75;
+                            break;
+                        case TRIG_BLOOD_SQUIRT_BACK:
+                            r = Math.PI;
+                            break;
+                        case TRIG_BLOOD_SQUIRT_UP_BACK:
+                            r = Math.PI * 1.25;
+                            break;
+                        case TRIG_BLOOD_SQUIRT_UP:
+                            r = Math.PI * 1.5;
+                            break;
+                        case TRIG_BLOOD_SQUIRT_UP_FORWARD:
+                            r = Math.PI * 1.75;
+                            break;
+                        default:
+                            break;
+                    }
+                    for (int i = 0; i < 7; i++)
+                    {
+                        particleManager.AddParticle(new Blood(location,
+                            new Vector2((float)Math.Cos(r) * (Face == CharacterDirection.Right ? 1f : -1f),
+                                (float)Math.Sin(r)) * RandomGenerator.GetRandomFloat(10f, 500f) +
+                                RandomGenerator.GetRandomVector2(-90f, 90f, -90f, 90f),
+                                1f, 0f, 0f, 1f, RandomGenerator.GetRandomFloat(0.1f, 0.5f), RandomGenerator.GetRandomInt(0, 4)));
+                    }
+                    particleManager.AddParticle(new BloodDust(location, RandomGenerator.GetRandomVector2(-30f, 30f, -30f, 30),
+                        1f, 0f, 0f, 0.2f, RandomGenerator.GetRandomFloat(0.25f, 0.5f), RandomGenerator.GetRandomInt(0, 4)));
+                    break;
+                case TRIG_BLOOD_CLOUD:
+                    particleManager.AddParticle(new BloodDust(location, RandomGenerator.GetRandomVector2(-30f, 30f, -30f, 30),
+                        1f, 0f, 0f, 0.4f, RandomGenerator.GetRandomFloat(0.25f, 0.75f), RandomGenerator.GetRandomInt(0, 4)));
+                    break;
+                case TRIG_BLOOD_SPLAT:
+                    for (int i = 0; i < 6; i++)
+                    {
+                        particleManager.AddParticle(new BloodDust(location, RandomGenerator.GetRandomVector2(-30f, 30f, -30f, 30),
+                            1f, 0f, 0f, 0.4f, RandomGenerator.GetRandomFloat(0.025f, 0.125f), RandomGenerator.GetRandomInt(0, 4)));
+                    }
+                    break;
                 default:
                     particleManager.AddParticle(new Hit(location, new Vector2(200f * (float)Face - 100f, 0f), ID, trigger));
                     break;
@@ -574,11 +689,23 @@ namespace RuinExplorers.CharacterClasses
                     break;
                 case "jfall":
                     SetAnim("hitland");
+                    if (HP < 0)
+                        SetAnim("dieland");
                     break;
                 default:
                     SetAnim("land");
                     break;
             }
+        }
+
+        /// <summary>
+        /// Kills me. We could add lines here to create coins left
+        /// behind by enemies.
+        /// </summary>
+        public void KillMe()
+        {
+            if (DyingFrame < 0f)
+                DyingFrame = 0f;
         }
 
         /// <summary>
@@ -664,7 +791,15 @@ namespace RuinExplorers.CharacterClasses
                             break;
                     }
 
-                    Color color = Color.White;
+                    Color color = new Color(new
+                        Vector4(1.0f, 1.0f, 1.0f, 1f));
+
+                    if (DyingFrame > 0f)
+                        color = new Color(new Vector4(
+                            1f - DyingFrame,
+                            1f - DyingFrame,
+                            1f - DyingFrame,
+                            1f - DyingFrame));
 
                     bool flip = false;
 

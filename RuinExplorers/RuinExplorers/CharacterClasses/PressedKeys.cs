@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RuinExplorers.CharacterClasses
 {
-    enum PressedKeys
+    public enum PressedKeys
     {
         None,
         Upper,

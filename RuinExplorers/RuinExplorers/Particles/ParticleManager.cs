@@ -10,7 +10,7 @@ using RuinExplorers.Helpers;
 
 namespace RuinExplorers.Particles
 {
-    class ParticleManager
+    public class ParticleManager
     {
         Particle[] particles = new Particle[1024];
         SpriteBatch spriteBatch;

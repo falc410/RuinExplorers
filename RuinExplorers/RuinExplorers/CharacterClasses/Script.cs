@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using RuinExplorers.Audio;
+using RuinExplorers.AIClasses;
 
 namespace RuinExplorers.CharacterClasses
 {
-    class Script
+    public class Script
     {
         Character character;
 
@@ -109,6 +110,51 @@ namespace RuinExplorers.CharacterClasses
                             break;
                         case Commands.PlaySound:
                             Sound.PlayCue(line.StringParameter);
+                            break;
+                        case Commands.Ethereal:
+                            character.Ethereal = true;
+                            break;
+                        case Commands.Solid:
+                            character.Ethereal = false;
+                            break;
+                        case Commands.Speed:
+                            character.Speed = (float)line.IntParameter;
+                            break;
+                        case Commands.HP:
+                            character.HP = character.MHP = line.IntParameter;
+                            break;
+                        case Commands.DeathCheck:
+                            if (character.HP < 0)
+                            {
+                                character.KillMe();
+                            }
+                            break;
+                        case Commands.IfDyingGoto:
+                            if (character.HP < 0)
+                            {
+                                character.SetFrame(line.IntParameter);
+                                done = true;
+                            }
+                            break;
+                        case Commands.KillMe:
+                            character.KillMe();
+                            break;
+                        case Commands.AI:
+                            switch (line.StringParameter)
+                            {
+                                case "zombie":
+                                    character.Ai = new Zombie();
+                                    break;                              
+                                default:
+                                    character.Ai = new Zombie();
+                                    break;
+                            }
+                            break;
+                        case Commands.Size:
+                            character.Scale = (float)(line.IntParameter) / 200f;
+                            break;
+                        case Commands.NoLifty:
+                            character.NoLifty = true;
                             break;
                     }
                 }

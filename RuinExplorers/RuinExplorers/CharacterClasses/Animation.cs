@@ -8,7 +8,7 @@ namespace RuinExplorers.CharacterClasses
     /// <summary>
     /// An animation is made up of an array of keyFrames[64] and a name
     /// </summary>
-    class Animation
+    public class Animation
     {
         public string Name;
         KeyFrame[] keyFrames;

@@ -9,7 +9,7 @@ namespace RuinExplorers.CharacterClasses
     /// A frame is part a character
     /// It contains an array of invidivual parts [16] and a name
     /// </summary>
-    class Frame
+    public class Frame
     {
         Part[] parts;
         public string Name;

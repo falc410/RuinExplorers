@@ -12,7 +12,7 @@ namespace RuinExplorers.MapClasses
     /// where the segment is located on the texture and additional flags which
     /// might be used for particle or script system in the future
     /// </summary>
-    class SegmentDefinitions
+    public class SegmentDefinitions
     {
         private string Name;
         private int SourceIndex;

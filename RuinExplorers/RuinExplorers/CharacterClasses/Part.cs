@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace RuinExplorers.CharacterClasses
 {
-    class Part
+    public class Part
     {
         public Vector2 Location;
         public float Rotation;

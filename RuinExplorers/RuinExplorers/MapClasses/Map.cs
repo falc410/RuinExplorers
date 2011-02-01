@@ -19,7 +19,7 @@ namespace RuinExplorers.MapClasses
 	/// reads in a file containing rectangle information and flags for a specific
 	/// texture file (max of 512 lines).
 	/// </summary>
-	class Map
+	public class Map
 	{
 		#region Variable Declaration
 		

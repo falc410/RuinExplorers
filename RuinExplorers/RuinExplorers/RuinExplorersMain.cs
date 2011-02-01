@@ -194,7 +194,12 @@ namespace RuinExplorers
             for (int i = 0; i < character.Length; i++)
             {
                 if (character[i] != null)
+                {
                     character[i].Update(gameTime, particleManager, character);
+                    if (character[i].DyingFrame > 1f)
+                        character[i] = null;
+                }
+                  
             }
 
             //call map.update() to update fire & smoke particles on torches
