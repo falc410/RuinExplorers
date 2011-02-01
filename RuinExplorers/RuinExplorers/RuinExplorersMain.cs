@@ -13,6 +13,7 @@ using RuinExplorers.CharacterClasses;
 using RuinExplorers.Helpers;
 using RuinExplorers.Particles;
 using RuinExplorers.Audio;
+using RuinExplorers.Shakes;
 
 namespace RuinExplorers
 {
@@ -25,6 +26,7 @@ namespace RuinExplorers
         
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        RenderTarget2D mainTarget;
 
         private static float frameTime = 0f;
         private static Vector2 scroll;
@@ -128,6 +130,9 @@ namespace RuinExplorers
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            // TODO: not working - RenderTarget2D Constructor has changed probably
+            //mainTarget = new RenderTarget2D(GraphicsDevice, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight, 1, SurfaceFormat.Color);
             particleManager = new ParticleManager(spriteBatch);
             spritesTexture = Content.Load<Texture2D>(@"gfx/sprites");
 
@@ -173,6 +178,8 @@ namespace RuinExplorers
             if (character[0] != null)
             {
                 scroll += ((character[0].Location - new Vector2(400f, 400f)) - scroll) * frameTime * 20f;
+                // added for rumble
+                scroll += QuakeManager.Quake.Vector;
 
                 float xLim = map.GetXLim();
                 float yLim = map.GetYLim();
@@ -205,9 +212,15 @@ namespace RuinExplorers
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
+
+            // part of the screen shake effect
+            //graphics.GraphicsDevice.SetRenderTarget(mainTarget);
+            //graphics.GraphicsDevice.Clear(Color.Black);
+
             // draw the background and back layers first
             map.Draw(spriteBatch, mapTexture, mapBackgroundTexture, 0, 2);
+            
             // next draw the character(s)
            //character[0].Draw(spriteBatch);
             for (int i = 0; i < character.Length; i++)
@@ -217,6 +230,30 @@ namespace RuinExplorers
             }
             // finally draw the foreground layer
             map.Draw(spriteBatch, mapTexture, mapBackgroundTexture, 2, 3);
+           
+            // TODO: not working!
+            #region Screen Shake Effect
+           
+            //graphics.GraphicsDevice.SetRenderTarget(null);
+            //spriteBatch.Begin();
+            //spriteBatch.Draw(mainTarget.GetData<Texture2D>(0),new Vector2(),Color.White);
+            //spriteBatch.End();
+
+            //if (QuakeManager.Blast.Value > 0f)
+            //{
+            //    spriteBatch.Begin();
+            //    for (int i = 0; i < 5; i++)
+            //    {
+            //        spriteBatch.Draw(mainTarget.GetData<Texture2D>(0),
+            //            QuakeManager.Blast.Center - Scroll, new Rectangle(0, 0, (int)ScreenSize.X, (int)ScreenSize.Y),
+            //            new Color(new Vector4(1f, 1f, 1f, 0.35f * (QuakeManager.Blast.Value / QuakeManager.Blast.Magnitude))),
+            //            0f, QuakeManager.Blast.Center - Scroll, (1.0f + (QuakeManager.Blast.Magnitude - QuakeManager.Blast.Value) * 0.1f + ((float)(i + 1) / 40f)),
+            //            SpriteEffects.None, 1f);
+            //    }
+            //    spriteBatch.End();
+            //}
+
+            #endregion
 
             particleManager.DrawParticles(spritesTexture, true);
             character[0].Draw(spriteBatch);

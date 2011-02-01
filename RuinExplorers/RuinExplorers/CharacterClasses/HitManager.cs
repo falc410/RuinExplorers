@@ -5,6 +5,7 @@ using System.Text;
 using RuinExplorers.Particles;
 using Microsoft.Xna.Framework;
 using RuinExplorers.Audio;
+using RuinExplorers.Shakes;
 
 namespace RuinExplorers.CharacterClasses
 {
@@ -95,6 +96,8 @@ namespace RuinExplorers.CharacterClasses
                                         character[i].SetAnim("jhit");
                                         character[i].SetJump(700f);
                                         RuinExplorersMain.SlowTime = 0.125f;
+                                        QuakeManager.SetQuake(0.5f);
+                                        QuakeManager.SetBlast(0.5f, particle.location);
                                         break;
                                     case Character.TRIG_WRENCH_SMACKDOWN:
                                         particleManager.MakeBloodSplash(particle.location,
