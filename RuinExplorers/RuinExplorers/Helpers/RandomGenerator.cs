@@ -38,7 +38,7 @@ namespace RuinExplorers.Helpers
 
         public static int GetRandomInt(int min, int max)
         {
-            return random.Next(min, max);
+            return random.Next(min, max) + min;
         }
 
     }

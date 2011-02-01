@@ -13,7 +13,7 @@ Global Settings
 {
     Xbox File = Xbox\audioproject.xgs;
     Windows File = Win\audioproject.xgs;
-    Header File = C:\Users\Falcon\Documents\Visual Studio 2010\Projects\RuinExplorers\RuinExplorers\RuinExplorersContent\sfx\audioproject.h;
+    Header File = sfxproj.h;
     Exclude Category Names = 0;
     Exclude Variable Names = 0;
     Last Modified Low = 0;
@@ -238,44 +238,17 @@ Wave Bank
     Windows Bank Path Edited = 0;
     Seek Tables = 1;
     Compression Preset Name = <none>;
-    Xbox Bank Last Modified Low = 0;
-    Xbox Bank Last Modified High = 0;
-    PC Bank Last Modified Low = 0;
-    PC Bank Last Modified High = 0;
     Header Last Modified Low = 0;
     Header Last Modified High = 0;
-    Bank Last Revised Low = 779688160;
-    Bank Last Revised High = 30130665;
-
-    Wave
-    {
-        Name = bomb;
-        File = wavs\bomb.wav;
-        Build Settings Last Modified Low = 1946357344;
-        Build Settings Last Modified High = 30130661;
-
-        Cache
-        {
-            Format Tag = 0;
-            Channels = 2;
-            Sampling Rate = 44100;
-            Bits Per Sample = 1;
-            Play Region Offset = 44;
-            Play Region Length = 2025028;
-            Loop Region Offset = 0;
-            Loop Region Length = 0;
-            File Type = 1;
-            Last Modified Low = 134364640;
-            Last Modified High = 30130660;
-        }
-    }
+    Bank Last Revised Low = 3887534444;
+    Bank Last Revised High = 30130773;
 
     Wave
     {
         Name = crunch;
         File = wavs\crunch.wav;
-        Build Settings Last Modified Low = 1946377344;
-        Build Settings Last Modified High = 30130661;
+        Build Settings Last Modified Low = 749991451;
+        Build Settings Last Modified High = 29923602;
 
         Cache
         {
@@ -288,8 +261,8 @@ Wave Bank
             Loop Region Offset = 0;
             Loop Region Length = 0;
             File Type = 1;
-            Last Modified Low = 134574640;
-            Last Modified High = 30130660;
+            Last Modified Low = 3889698944;
+            Last Modified High = 29922936;
         }
     }
 
@@ -297,8 +270,8 @@ Wave Bank
     {
         Name = crush;
         File = wavs\crush.wav;
-        Build Settings Last Modified Low = 1946377344;
-        Build Settings Last Modified High = 30130661;
+        Build Settings Last Modified Low = 776171451;
+        Build Settings Last Modified High = 29923602;
 
         Cache
         {
@@ -311,31 +284,8 @@ Wave Bank
             Loop Region Offset = 0;
             Loop Region Length = 0;
             File Type = 1;
-            Last Modified Low = 134654640;
-            Last Modified High = 30130660;
-        }
-    }
-
-    Wave
-    {
-        Name = explode;
-        File = wavs\explode.wav;
-        Build Settings Last Modified Low = 1946387344;
-        Build Settings Last Modified High = 30130661;
-
-        Cache
-        {
-            Format Tag = 0;
-            Channels = 2;
-            Sampling Rate = 48000;
-            Bits Per Sample = 1;
-            Play Region Offset = 44;
-            Play Region Length = 465136;
-            Loop Region Offset = 0;
-            Loop Region Length = 0;
-            File Type = 1;
-            Last Modified Low = 134784640;
-            Last Modified High = 30130660;
+            Last Modified Low = 3789698944;
+            Last Modified High = 29922936;
         }
     }
 
@@ -343,8 +293,8 @@ Wave Bank
     {
         Name = hit;
         File = wavs\hit.wav;
-        Build Settings Last Modified Low = 1946397344;
-        Build Settings Last Modified High = 30130661;
+        Build Settings Last Modified Low = 776171451;
+        Build Settings Last Modified High = 29923602;
 
         Cache
         {
@@ -357,31 +307,8 @@ Wave Bank
             Loop Region Offset = 0;
             Loop Region Length = 0;
             File Type = 1;
-            Last Modified Low = 135174640;
-            Last Modified High = 30130660;
-        }
-    }
-
-    Wave
-    {
-        Name = launch;
-        File = wavs\launch.wav;
-        Build Settings Last Modified Low = 1946407344;
-        Build Settings Last Modified High = 30130661;
-
-        Cache
-        {
-            Format Tag = 0;
-            Channels = 2;
-            Sampling Rate = 44100;
-            Bits Per Sample = 1;
-            Play Region Offset = 44;
-            Play Region Length = 198656;
-            Loop Region Offset = 0;
-            Loop Region Length = 0;
-            File Type = 1;
-            Last Modified Low = 135254640;
-            Last Modified High = 30130660;
+            Last Modified Low = 4014588944;
+            Last Modified High = 29922936;
         }
     }
 
@@ -389,8 +316,8 @@ Wave Bank
     {
         Name = revol;
         File = wavs\revol.wav;
-        Build Settings Last Modified Low = 1946407344;
-        Build Settings Last Modified High = 30130661;
+        Build Settings Last Modified Low = 776181451;
+        Build Settings Last Modified High = 29923602;
 
         Cache
         {
@@ -403,31 +330,8 @@ Wave Bank
             Loop Region Offset = 0;
             Loop Region Length = 0;
             File Type = 1;
-            Last Modified Low = 135394640;
-            Last Modified High = 30130660;
-        }
-    }
-
-    Wave
-    {
-        Name = saw;
-        File = wavs\saw.wav;
-        Build Settings Last Modified Low = 1946417344;
-        Build Settings Last Modified High = 30130661;
-
-        Cache
-        {
-            Format Tag = 0;
-            Channels = 1;
-            Sampling Rate = 44100;
-            Bits Per Sample = 1;
-            Play Region Offset = 44;
-            Play Region Length = 100372;
-            Loop Region Offset = 0;
-            Loop Region Length = 0;
-            File Type = 1;
-            Last Modified Low = 135454640;
-            Last Modified High = 30130660;
+            Last Modified Low = 3439108944;
+            Last Modified High = 29922936;
         }
     }
 
@@ -435,8 +339,8 @@ Wave Bank
     {
         Name = splatter;
         File = wavs\splatter.wav;
-        Build Settings Last Modified Low = 1946427344;
-        Build Settings Last Modified High = 30130661;
+        Build Settings Last Modified Low = 776181451;
+        Build Settings Last Modified High = 29923602;
 
         Cache
         {
@@ -449,8 +353,8 @@ Wave Bank
             Loop Region Offset = 0;
             Loop Region Length = 0;
             File Type = 1;
-            Last Modified Low = 135554640;
-            Last Modified High = 30130660;
+            Last Modified Low = 3636248944;
+            Last Modified High = 29922936;
         }
     }
 
@@ -458,8 +362,8 @@ Wave Bank
     {
         Name = swing;
         File = wavs\swing.wav;
-        Build Settings Last Modified Low = 1946437344;
-        Build Settings Last Modified High = 30130661;
+        Build Settings Last Modified Low = 2199235979;
+        Build Settings Last Modified High = 29923759;
 
         Cache
         {
@@ -472,8 +376,8 @@ Wave Bank
             Loop Region Offset = 0;
             Loop Region Length = 0;
             File Type = 1;
-            Last Modified Low = 135654640;
-            Last Modified High = 30130660;
+            Last Modified Low = 3187007728;
+            Last Modified High = 29918707;
         }
     }
 
@@ -481,8 +385,8 @@ Wave Bank
     {
         Name = throw;
         File = wavs\throw.wav;
-        Build Settings Last Modified Low = 1946447344;
-        Build Settings Last Modified High = 30130661;
+        Build Settings Last Modified Low = 2199245979;
+        Build Settings Last Modified High = 29923759;
 
         Cache
         {
@@ -495,8 +399,100 @@ Wave Bank
             Loop Region Offset = 0;
             Loop Region Length = 0;
             File Type = 1;
-            Last Modified Low = 135694640;
-            Last Modified High = 30130660;
+            Last Modified Low = 2878007728;
+            Last Modified High = 29918707;
+        }
+    }
+
+    Wave
+    {
+        Name = saw;
+        File = wavs\saw.wav;
+        Build Settings Last Modified Low = 3622962048;
+        Build Settings Last Modified High = 29936287;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 1;
+            Sampling Rate = 44100;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 100372;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 4267309440;
+            Last Modified High = 29918735;
+        }
+    }
+
+    Wave
+    {
+        Name = launch;
+        File = wavs\launch.wav;
+        Build Settings Last Modified Low = 3860672048;
+        Build Settings Last Modified High = 29936287;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 2;
+            Sampling Rate = 44100;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 198656;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 3227505664;
+            Last Modified High = 29918741;
+        }
+    }
+
+    Wave
+    {
+        Name = bomb;
+        File = wavs\bomb.wav;
+        Build Settings Last Modified Low = 88274752;
+        Build Settings Last Modified High = 29936288;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 2;
+            Sampling Rate = 44100;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 2025028;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 1997374848;
+            Last Modified High = 29918737;
+        }
+    }
+
+    Wave
+    {
+        Name = explode;
+        File = wavs\explode.wav;
+        Build Settings Last Modified Low = 242234752;
+        Build Settings Last Modified High = 29936288;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 2;
+            Sampling Rate = 48000;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 465136;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 2677374848;
+            Last Modified High = 29918737;
         }
     }
 }
@@ -513,29 +509,29 @@ Wave Bank
     Compression Preset Name = music;
     Header Last Modified Low = 0;
     Header Last Modified High = 0;
-    Bank Last Revised Low = 2808540912;
-    Bank Last Revised High = 30130703;
+    Bank Last Revised Low = 3887534444;
+    Bank Last Revised High = 30130773;
 
     Wave
     {
         Name = music1;
         File = wavs\music1.wav;
-        Build Settings Last Modified Low = 846494384;
-        Build Settings Last Modified High = 30130671;
+        Build Settings Last Modified Low = 2284604395;
+        Build Settings Last Modified High = 29923788;
 
         Cache
         {
             Format Tag = 0;
             Channels = 2;
-            Sampling Rate = 22050;
+            Sampling Rate = 44100;
             Bits Per Sample = 1;
             Play Region Offset = 44;
-            Play Region Length = 54098108;
+            Play Region Length = 39522816;
             Loop Region Offset = 0;
             Loop Region Length = 0;
             File Type = 1;
-            Last Modified Low = 1317296272;
-            Last Modified High = 30130668;
+            Last Modified Low = 1487622980;
+            Last Modified High = 29927870;
         }
     }
 }
@@ -547,12 +543,10 @@ Sound Bank
     Windows File = Win\sfxsounds.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Header Last Modified High = 0;
-    Header Last Modified Low = 0;
 
     Sound
     {
-        Name = zombiehit1;
+        Name = zomhit1;
         Volume = -1200;
         Pitch = 0;
         Priority = 0;
@@ -589,7 +583,7 @@ Sound Bank
                     Bank Name = sfxwavs;
                     Bank Index = 0;
                     Entry Name = hit;
-                    Entry Index = 4;
+                    Entry Index = 2;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -598,7 +592,7 @@ Sound Bank
 
         Track
         {
-            Volume = -440;
+            Volume = -100;
             Use Filter = 0;
 
             Play Wave Event
@@ -623,7 +617,7 @@ Sound Bank
                     Bank Name = sfxwavs;
                     Bank Index = 0;
                     Entry Name = crunch;
-                    Entry Index = 1;
+                    Entry Index = 0;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -633,7 +627,7 @@ Sound Bank
 
     Sound
     {
-        Name = zombiehit2;
+        Name = zomhit2;
         Volume = -1200;
         Pitch = 0;
         Priority = 0;
@@ -670,97 +664,16 @@ Sound Bank
                     Bank Name = sfxwavs;
                     Bank Index = 0;
                     Entry Name = hit;
-                    Entry Index = 4;
-                    Weight = 255;
-                    Weight Min = 0;
-                }
-            }
-        }
-
-        Track
-        {
-            Volume = -1260;
-            Use Filter = 0;
-
-            Play Wave Event
-            {
-                Break Loop = 0;
-                Use Speaker Position = 0;
-                Use Center Speaker = 1;
-                New Speaker Position On Loop = 1;
-                Speaker Position Angle = 0.000000;
-                Speaker Position Arc = 0.000000;
-
-                Event Header
-                {
-                    Timestamp = 0;
-                    Relative = 0;
-                    Random Recurrence = 0;
-                    Random Offset = 0;
-                }
-
-                Wave Entry
-                {
-                    Bank Name = sfxwavs;
-                    Bank Index = 0;
-                    Entry Name = crush;
                     Entry Index = 2;
                     Weight = 255;
                     Weight Min = 0;
                 }
             }
         }
-    }
-
-    Sound
-    {
-        Name = zombiehit3;
-        Volume = -1200;
-        Pitch = 0;
-        Priority = 0;
-
-        Category Entry
-        {
-            Name = Default;
-        }
 
         Track
         {
             Volume = 0;
-            Use Filter = 0;
-
-            Play Wave Event
-            {
-                Break Loop = 0;
-                Use Speaker Position = 0;
-                Use Center Speaker = 1;
-                New Speaker Position On Loop = 1;
-                Speaker Position Angle = 0.000000;
-                Speaker Position Arc = 0.000000;
-
-                Event Header
-                {
-                    Timestamp = 0;
-                    Relative = 0;
-                    Random Recurrence = 0;
-                    Random Offset = 0;
-                }
-
-                Wave Entry
-                {
-                    Bank Name = sfxwavs;
-                    Bank Index = 0;
-                    Entry Name = hit;
-                    Entry Index = 4;
-                    Weight = 255;
-                    Weight Min = 0;
-                }
-            }
-        }
-
-        Track
-        {
-            Volume = -560;
             Use Filter = 0;
 
             Play Wave Event
@@ -785,7 +698,88 @@ Sound Bank
                     Bank Name = sfxwavs;
                     Bank Index = 0;
                     Entry Name = splatter;
-                    Entry Index = 8;
+                    Entry Index = 4;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = zomhit3;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaker Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = sfxwavs;
+                    Bank Index = 0;
+                    Entry Name = hit;
+                    Entry Index = 2;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+
+        Track
+        {
+            Volume = -920;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaker Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = sfxwavs;
+                    Bank Index = 0;
+                    Entry Name = crush;
+                    Entry Index = 1;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -832,7 +826,7 @@ Sound Bank
                     Bank Name = sfxwavs;
                     Bank Index = 0;
                     Entry Name = revol;
-                    Entry Index = 6;
+                    Entry Index = 3;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -854,7 +848,7 @@ Sound Bank
 
         Track
         {
-            Volume = -2090;
+            Volume = -600;
             Use Filter = 0;
 
             Play Wave Event
@@ -874,12 +868,20 @@ Sound Bank
                     Random Offset = 0;
                 }
 
+                Pitch Variation
+                {
+                    Min = 421;
+                    Max = 580;
+                    Operator = 0;
+                    New Variation On Loop = 0;
+                }
+
                 Wave Entry
                 {
                     Bank Name = sfxwavs;
                     Bank Index = 0;
                     Entry Name = hit;
-                    Entry Index = 4;
+                    Entry Index = 2;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -888,7 +890,7 @@ Sound Bank
 
         Track
         {
-            Volume = -1800;
+            Volume = 0;
             Use Filter = 0;
 
             Play Wave Event
@@ -912,8 +914,55 @@ Sound Bank
                 {
                     Bank Name = sfxwavs;
                     Bank Index = 0;
-                    Entry Name = crunch;
-                    Entry Index = 1;
+                    Entry Name = splatter;
+                    Entry Index = 4;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = throw;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaker Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = sfxwavs;
+                    Bank Index = 0;
+                    Entry Name = throw;
+                    Entry Index = 6;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -960,6 +1009,194 @@ Sound Bank
                     Bank Name = sfxwavs;
                     Bank Index = 0;
                     Entry Name = swing;
+                    Entry Index = 5;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = explode;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaker Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = sfxwavs;
+                    Bank Index = 0;
+                    Entry Name = explode;
+                    Entry Index = 10;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = saw;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaker Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = sfxwavs;
+                    Bank Index = 0;
+                    Entry Name = saw;
+                    Entry Index = 7;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = launch;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaker Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = sfxwavs;
+                    Bank Index = 0;
+                    Entry Name = launch;
+                    Entry Index = 8;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = bomb;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaker Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = sfxwavs;
+                    Bank Index = 0;
+                    Entry Name = bomb;
                     Entry Index = 9;
                     Weight = 255;
                     Weight Min = 0;
@@ -981,7 +1218,7 @@ Sound Bank
 
         Sound Entry
         {
-            Name = zombiehit1;
+            Name = zomhit1;
             Index = 0;
             Weight Min = 0;
             Weight Max = 255;
@@ -989,7 +1226,7 @@ Sound Bank
 
         Sound Entry
         {
-            Name = zombiehit2;
+            Name = zomhit2;
             Index = 1;
             Weight Min = 0;
             Weight Max = 255;
@@ -997,7 +1234,7 @@ Sound Bank
 
         Sound Entry
         {
-            Name = zombiehit3;
+            Name = zomhit3;
             Index = 2;
             Weight Min = 0;
             Weight Max = 255;
@@ -1046,6 +1283,26 @@ Sound Bank
 
     Cue
     {
+        Name = throw;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = throw;
+            Index = 5;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
         Name = swing;
 
         Variation
@@ -1058,7 +1315,87 @@ Sound Bank
         Sound Entry
         {
             Name = swing;
-            Index = 5;
+            Index = 6;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = explode;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = explode;
+            Index = 7;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = saw;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = saw;
+            Index = 8;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = launch;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = launch;
+            Index = 9;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = bomb;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = bomb;
+            Index = 10;
             Weight Min = 0;
             Weight Max = 255;
         }
@@ -1076,7 +1413,7 @@ Sound Bank
     Sound
     {
         Name = music1;
-        Volume = -1200;
+        Volume = -1900;
         Pitch = 0;
         Priority = 0;
 

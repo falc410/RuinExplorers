@@ -6,7 +6,6 @@ Content\gfx\torso1.xnb
 Content\gfx\weapon1.xnb
 Content\gfx\segments1.xnb
 Content\gfx\background1.xnb
-Content\gfx\sprites.xnb
 Content\gfx\head2.xnb
 Content\gfx\legs2.xnb
 Content\gfx\torso2.xnb
@@ -21,6 +20,7 @@ Content\sfx\wavs\saw.xnb
 Content\sfx\wavs\splatter.xnb
 Content\sfx\wavs\swing.xnb
 Content\sfx\wavs\throw.xnb
+Content\gfx\sprites.xnb
 Content\sfx\audioproject.xgs
 Content\sfx\sfxwavs.xwb
 Content\sfx\musicwavs.xwb

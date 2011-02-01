@@ -14,10 +14,21 @@ namespace RuinExplorers.Particles
             this.location = location;
             this.trajectory = trajectory;
             this.size = size;
-            flag = icon;
-            Exists = true;
-            frame = 0.5f;
-            Additive = true;
+            this.flag = icon;
+            this.Exists = true;
+            this.frame = 0.5f;
+            this.Additive = true;
+        }
+
+        public Fire(Vector2 loc, Vector2 traj, float size, int icon, float frame)
+        {
+            this.location = loc;
+            this.trajectory = traj;
+            this.size = size;
+            this.flag = icon;
+            this.Exists = true;
+            this.frame = frame;
+            this.Additive = true;
         }
 
         public override void Draw(SpriteBatch spriteBatch, Texture2D spriteTexture)

@@ -136,13 +136,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="gfx\sprites.png">
-      <Name>sprites</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="gfx\head2.png">
       <Name>head2</Name>
       <Importer>TextureImporter</Importer>
@@ -218,6 +211,13 @@
       <Name>throw</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="gfx\sprites.png">
+      <Name>sprites</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

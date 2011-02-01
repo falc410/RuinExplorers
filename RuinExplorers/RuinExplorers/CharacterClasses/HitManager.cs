@@ -15,7 +15,7 @@ namespace RuinExplorers.CharacterClasses
         public static bool CheckHit(Particle particle, Character[] character, ParticleManager particleManager)
         {
             bool r = false;
-            Character.CharacterDirection tFace = GetFaceFromTrajectory(particle.trajectory);
+            CharacterDirection tFace = GetFaceFromTrajectory(particle.trajectory);
 
             for (int i = 0; i < character.Length; i++)
             {
@@ -38,10 +38,10 @@ namespace RuinExplorers.CharacterClasses
                                     {
                                         hVal *= 4f;
 
-                                        if (tFace == Character.CharacterDirection.Left)
-                                            character[i].Face = Character.CharacterDirection.Right;
+                                        if (tFace == CharacterDirection.Left)
+                                            character[i].Face = CharacterDirection.Right;
                                         else
-                                            character[i].Face = Character.CharacterDirection.Left;
+                                            character[i].Face = CharacterDirection.Left;
 
                                         character[i].SetAnim("idle");
                                         character[i].SetAnim("hit");
@@ -62,16 +62,16 @@ namespace RuinExplorers.CharacterClasses
 
                                 else if (particle is Hit)
                                 {
-                                    character[i].Face = (tFace == Character.CharacterDirection.Left) ? Character.CharacterDirection.Right : Character.CharacterDirection.Left;
+                                    character[i].Face = (tFace == CharacterDirection.Left) ? CharacterDirection.Right : CharacterDirection.Left;
                                     float tX = 1f;
-                                    if (tFace == Character.CharacterDirection.Left)
+                                    if (tFace == CharacterDirection.Left)
                                         tX = -1f;
 
                                     character[i].SetAnim("idle");
                                     character[i].SetAnim("hit");
                                     Sound.PlayCue("zombiehit");
 
-                                    if (character[i].State == Character.CharacterState.Ground)
+                                    if (character[i].State == CharacterState.Ground)
                                         character[i].Slide(-200f);
                                     else
                                         character[i].Slide(-50f);
@@ -140,7 +140,7 @@ namespace RuinExplorers.CharacterClasses
 
                                 #region hitting characters in air
 
-                                if (character[i].State == Character.CharacterState.Air)
+                                if (character[i].State == CharacterState.Air)
                                 {
                                     if (character[i].AnimationName == "hit")
                                     {
@@ -171,9 +171,9 @@ namespace RuinExplorers.CharacterClasses
             return r;
         }
         
-        public static Character.CharacterDirection GetFaceFromTrajectory(Vector2 trajectory)
+        public static CharacterDirection GetFaceFromTrajectory(Vector2 trajectory)
         {
-            return (trajectory.X <= 0) ? Character.CharacterDirection.Left : Character.CharacterDirection.Right;
+            return (trajectory.X <= 0) ? CharacterDirection.Left : CharacterDirection.Right;
 
         }
     }

@@ -30,24 +30,25 @@ namespace RuinExplorers.Particles
 
         /// <summary>
         /// Updates the blood particles which are slighly affected by gravity.
+        /// Weird thing is that this is not used in the original game?
         /// </summary>
         /// <param name="gameTime">The game time.</param>
         /// <param name="map">The map.</param>
         /// <param name="particleManager">The particle manager.</param>
         /// <param name="characters">The characters.</param>
-        public override void Update(float gameTime, Map map, ParticleManager particleManager, Character[] characters)
-        {
-            trajectory.Y += gameTime * 100f;
+        //public override void Update(float gameTime, Map map, ParticleManager particleManager, Character[] characters)
+        //{
+        //    trajectory.Y += gameTime * 100f;
 
-            if (trajectory.X < -10f)
-                trajectory.X += gameTime * 200f;
-            if (trajectory.X > 10f)
-                trajectory.X -= gameTime * 200f;
+        //    if (trajectory.X < -10f)
+        //        trajectory.X += gameTime * 200f;
+        //    if (trajectory.X > 10f)
+        //        trajectory.X -= gameTime * 200f;
 
-            rotation = GlobalFunctions.GetAngle(Vector2.Zero, trajectory);
+        //    rotation = GlobalFunctions.GetAngle(Vector2.Zero, trajectory);
 
-            base.Update(gameTime, map, particleManager, characters);
-        }
+        //    base.Update(gameTime, map, particleManager, characters);
+        //}
 
         /// <summary>
         /// Scale to make it wide thin blood streaks.

@@ -11,6 +11,19 @@ namespace RuinExplorers.Particles
 {
     public class Particle
     {
+        public const byte PARTICLE_NONE = 0;
+        public const byte PARTICLE_BLOOD = 1;
+        public const byte PARTICLE_BLOOD_DUST = 2;
+        public const byte PARTICLE_BULLET = 3;
+        public const byte PARTICLE_FIRE = 4;
+        public const byte PARTICLE_FOG = 5;
+        public const byte PARTICLE_HEAT = 6;
+        public const byte PARTICLE_HIT = 7;
+        public const byte PARTICLE_MUZZLEFLASH = 8;
+        public const byte PARTICLE_ROCKET = 9;
+        public const byte PARTICLE_SHOCKWAVE = 10;
+        public const byte PARTICLE_SMOKE = 11;
+
         public Vector2 location;
         public Vector2 trajectory;
        
@@ -26,6 +39,10 @@ namespace RuinExplorers.Particles
         public bool Background;
         private bool additive;
 
+        public bool refract;
+
+        #region Properties
+        
         public bool Additive
         {
             get { return additive; }
@@ -36,6 +53,8 @@ namespace RuinExplorers.Particles
         {
             get { return location - RuinExplorersMain.Scroll; }
         }
+
+        #endregion
 
         public Particle()
         {

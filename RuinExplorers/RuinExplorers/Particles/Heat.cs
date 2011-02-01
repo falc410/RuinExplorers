@@ -22,7 +22,7 @@ namespace RuinExplorers.Particles
             this.Exists = true;
             this.rotation = RandomGenerator.GetRandomFloat(0f, 6.28f);
             this.frame = RandomGenerator.GetRandomFloat(.5f, .785f);
-            //this.refract = true;
+            this.refract = true;
         }
 
 

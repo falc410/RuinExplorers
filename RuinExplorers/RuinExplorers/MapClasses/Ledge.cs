@@ -6,6 +6,13 @@ using Microsoft.Xna.Framework;
 
 namespace RuinExplorers.MapClasses
 {
+    enum LedgeFlags
+    {
+        None = 0,
+        Solid
+    }       
+
+
     /// <summary>
     /// A Ledge is used for collision detection. It consists of
     /// an array of 16 nodes. A ledge can either be a soft ledge or

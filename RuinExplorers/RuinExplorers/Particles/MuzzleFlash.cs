@@ -22,10 +22,10 @@ namespace RuinExplorers.Particles
             this.location = location;
             this.trajectory = trajectory;
             this.size = size;
-            rotation = RandomGenerator.GetRandomFloat(0f, 6.28f);
-            Exists = true;
-            frame = 0.05f;
-            Additive = true;
+            this.rotation = RandomGenerator.GetRandomFloat(0f, 6.28f);
+            this.Exists = true;
+            this.frame = 0.05f;
+            this.Additive = true;
                 
         }
 

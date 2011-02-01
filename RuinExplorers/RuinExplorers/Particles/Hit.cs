@@ -16,8 +16,8 @@ namespace RuinExplorers.Particles
             this.owner = owner;
             this.flag = flag;
 
-            Exists = true;
-            frame = 0.5f;
+            this.Exists = true;
+            this.frame = 0.5f;
         }
 
         public override void Update(float gameTime, MapClasses.Map map, ParticleManager particleManager, CharacterClasses.Character[] characters)

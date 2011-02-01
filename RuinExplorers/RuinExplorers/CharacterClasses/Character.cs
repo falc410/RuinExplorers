@@ -11,9 +11,26 @@ using RuinExplorers.Helpers;
 using RuinExplorers.Particles;
 using RuinExplorers.Audio;
 using RuinExplorers.AIClasses;
+using RuinExplorers.Shakes;
 
 namespace RuinExplorers.CharacterClasses
 {
+    // Maybe move this to its own .cs file?
+    #region public enums
+    
+    public enum CharacterState
+    {
+        Ground = 0,
+        Air = 1
+    }
+
+    public enum CharacterDirection
+    {
+        Left = 0,
+        Right = 1
+    }
+    #endregion
+
     /// <summary>
     /// Handles input, drawing, updating and collision check for characters
     /// Requires a start location and a CharacterDefinition to create a new character
@@ -21,26 +38,8 @@ namespace RuinExplorers.CharacterClasses
     /// </summary>
     public class Character
     {
-        #region enums
-        
-        public enum CharacterState
-        {
-            Ground = 0,
-            Air = 1
-        }
-
-        public enum CharacterDirection
-        {
-            Left = 0,
-            Right = 1
-        }
-
-        public enum LedgeFlags
-        {
-            Solid = 0
-        }
-        #endregion
         #region Fields
+
         public static Texture2D[] headTexture = new Texture2D[2];
         public static Texture2D[] torsoTexture = new Texture2D[2];
         public static Texture2D[] legsTexture = new Texture2D[2];
@@ -59,6 +58,7 @@ namespace RuinExplorers.CharacterClasses
         public bool floating;
         public float Speed = 200f;
         public float CollisionMove = 0f;
+        public float StunFrame = 0f;
 
         public AI Ai;
         public bool Ethereal;
@@ -67,7 +67,8 @@ namespace RuinExplorers.CharacterClasses
         public int HP;
         public int MHP;
         public bool CanCancel;
-
+        public int LastHitBy;
+        
         public bool keyLeft;
         public bool keyRight;
         public bool keyUp;
@@ -87,6 +88,7 @@ namespace RuinExplorers.CharacterClasses
 
         GamePadState currentGamepadState = new GamePadState();
         GamePadState previousGamepadState = new GamePadState();
+        public Vector2 RightAnalog;
         KeyboardState currentKeyboardState = new KeyboardState();
 
         public ParticleManager particleManager;
@@ -132,7 +134,15 @@ namespace RuinExplorers.CharacterClasses
         }
 
         #region Constructor
-        
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Character"/> class.
+        /// This method has been verified!
+        /// </summary>
+        /// <param name="newLocation">The new location.</param>
+        /// <param name="newCharDef">The new char def.</param>
+        /// <param name="newID">The new ID.</param>
+        /// <param name="newTeam">The new team.</param>
         public Character(Vector2 newLocation, CharacterDefinition newCharDef, int newID, int newTeam)
         {
             script = new Script(this);
@@ -160,6 +170,11 @@ namespace RuinExplorers.CharacterClasses
         }
         #endregion
 
+        /// <summary>
+        /// Initiliazes a character. Gets all Scripts from the "init" Animation
+        /// and sets values like HP, Speed or AI Script.
+        /// This method has been verified!
+        /// </summary>
         private void InitScript()
         {
             SetAnim("init");
@@ -173,24 +188,62 @@ namespace RuinExplorers.CharacterClasses
             }
         }
 
+        /// <summary>
+        /// Sets a new animation.
+        /// This method has been verified!
+        /// </summary>
+        /// <param name="newAnim">The new anim.</param>
         public void SetAnim(string newAnim)
         {
-            if (AnimationName == newAnim)
-                return;
-            for (int i = 0; i < characterDefinition.Animations.Length; i++)
+            if (AnimationName != newAnim)
             {
-                if (characterDefinition.Animations[i].Name == newAnim)
+                for (int i = 0; i < characterDefinition.Animations.Length; i++)
                 {
-                    Animation = i;
-                    AnimationFrame = 0;
-                    frame = 0;
-                    AnimationName = newAnim;
-                    Ethereal = false;
-                    break;
+                    if (characterDefinition.Animations[i].Name == newAnim)
+                    {
+                        for (int t = 0; t < GotoGoal.Length; t++)
+                            GotoGoal[t] = -1;
+
+
+                        floating = false;
+                        Animation = i;
+                        AnimationFrame = 0;
+                        frame = 0f;
+                        AnimationName = newAnim;
+                        CanCancel = false;
+                        Ethereal = false;
+
+                        if (keyLeft)
+                            Face = CharacterDirection.Left;
+                        if (keyRight)
+                            Face = CharacterDirection.Right;
+
+                    }
+
                 }
             }
+            //if (AnimationName == newAnim)
+            //    return;
+            //for (int i = 0; i < characterDefinition.Animations.Length; i++)
+            //{
+            //    if (characterDefinition.Animations[i].Name == newAnim)
+            //    {
+            //        Animation = i;
+            //        AnimationFrame = 0;
+            //        frame = 0;
+            //        AnimationName = newAnim;
+            //        Ethereal = false;
+            //        break;
+            //    }
+            //}
         }
 
+        /// <summary>
+        /// Sets the frame.
+        /// Actually who calls this method???
+        /// This method has been verified!
+        /// </summary>
+        /// <param name="newFrame">The new frame.</param>
         public void SetFrame(int newFrame)
         {
             AnimationFrame = newFrame;
@@ -203,15 +256,94 @@ namespace RuinExplorers.CharacterClasses
 
         /// <summary>
         /// Updates the Character, checks for collision and handles input.
+        /// This method has been verified!
         /// </summary>
         /// <param name="gameTime">The game time.</param>
-        public void Update(GameTime gameTime, ParticleManager particleManager, Character[] character)
+        public void Update(Map map, ParticleManager particleManager, Character[] character)
         {
-            //float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            float elapsedTime = RuinExplorersMain.FrameTime;
-
             if (Ai != null)
                 Ai.Update(character, ID, map);
+
+            PressedKey = PressedKeys.None;
+            if (keyAttack)
+            {
+                PressedKey = PressedKeys.Attack;
+                if (keyUp) PressedKey = PressedKeys.Lower;
+                if (keyDown) PressedKey = PressedKeys.Upper;
+            }
+            if (keySecondary)
+            {
+                PressedKey = PressedKeys.Secondary;
+                if (keyUp) PressedKey = PressedKeys.SecUp;
+                if (keyDown) PressedKey = PressedKeys.SecDown;
+            }
+            if (PressedKey > PressedKeys.None)
+            {
+                if (GotoGoal[(int)PressedKey] > -1)
+                {
+                    SetFrame(GotoGoal[(int)PressedKey]);
+
+                    if (keyLeft)
+                        Face = CharacterDirection.Left;
+                    if (keyRight)
+                        Face = CharacterDirection.Right;
+
+                    PressedKey = PressedKeys.None;
+
+                    for (int i = 0; i < GotoGoal.Length; i++)
+                        GotoGoal[i] = -1;
+
+                    frame = 0f;
+                }
+            }
+            
+            if (StunFrame > 0f)
+                StunFrame -= RuinExplorersMain.FrameTime;
+
+            #region update dying
+            if (DyingFrame > -1f)
+            {
+                DyingFrame += RuinExplorersMain.FrameTime;
+            }
+            #endregion
+            
+            #region Update Animation
+            if (DyingFrame < 0)
+            {
+                Animation animation = characterDefinition.Animations[Animation];
+                KeyFrame keyFrame = animation.KeyFrames[AnimationFrame];
+
+                frame += RuinExplorersMain.FrameTime * 30.0f;
+
+                if (frame > (float)keyFrame.Duration)
+                {
+                    int pframe = AnimationFrame;
+
+                    script.DoScript(Animation, AnimationFrame);
+                    CheckTrigger(particleManager);
+
+                    frame -= (float)keyFrame.Duration;
+                    if (AnimationFrame == pframe)
+                        AnimationFrame++;
+
+                    keyFrame = animation.KeyFrames[AnimationFrame];
+
+                    if (AnimationFrame >=
+                        animation.KeyFrames.Length)
+                        AnimationFrame = 0;
+                }
+
+                if (keyFrame.FrameReference < 0)
+                    AnimationFrame = 0;
+
+                if (AnimationName == "jhit")
+                {
+                    if (Trajectory.Y > -100f)
+                        SetAnim("jmid");
+                }                
+            }
+
+            #endregion
 
             #region Collision with other characters
             for (int i = 0; i < character.Length; i++)
@@ -248,81 +380,43 @@ namespace RuinExplorers.CharacterClasses
 
             if (CollisionMove > 0f)
             {
-                CollisionMove -= 400f * elapsedTime;
+                CollisionMove -= 400f * RuinExplorersMain.FrameTime;
                 if (CollisionMove < 0f)
                     CollisionMove = 0f;
             }
-            else if (CollisionMove < 0f)
+            if (CollisionMove < 0f)
             {
-                CollisionMove += 400f * elapsedTime;
+                CollisionMove += 400f * RuinExplorersMain.FrameTime;
                 if (CollisionMove > 0f)
                     CollisionMove = 0f;
             }
             #endregion
 
-            #region update dying
-            if (DyingFrame > -1f)
-            {
-                DyingFrame += RuinExplorersMain.FrameTime;
-            }
-            #endregion
-
-            #region Update Animation
-            if (DyingFrame < 0)
-            {
-                Animation animation = characterDefinition.Animations[Animation];
-                KeyFrame keyFrame = animation.KeyFrames[AnimationFrame];
-
-                frame += elapsedTime * 30.0f;
-                if (frame > (float)keyFrame.Duration)
-                {
-                    int previousFrame = AnimationFrame;
-                    script.DoScript(Animation, AnimationFrame);
-
-                    CheckTrigger(particleManager);
-
-                    frame -= (float)keyFrame.Duration;
-                    if (AnimationFrame == previousFrame)
-                        AnimationFrame++;
-
-                    if (AnimationFrame >= animation.KeyFrames.Length)
-                        AnimationFrame = 0;
-
-                    keyFrame = animation.KeyFrames[AnimationFrame];
-
-                    if (keyFrame.FrameReference < 0)
-                        AnimationFrame = 0;
-                }            
-            }
-            
-            #endregion
-
             #region Update Location by Trajectory
             Vector2 previousLocation = new Vector2(Location.X, Location.Y);
 
-            if (State == CharacterState.Ground)
+            if (State == CharacterState.Ground || (State == CharacterState.Air && floating))
             {
                 if (Trajectory.X > 0f)
                 {
-                    Trajectory.X -= RuinExplorersMain.Friction * elapsedTime;
+                    Trajectory.X -= RuinExplorersMain.Friction * RuinExplorersMain.FrameTime;
                     if (Trajectory.X < 0f)
                         Trajectory.X = 0f;
                 }
                 if (Trajectory.X < 0f)
                 {
-                    Trajectory.X += RuinExplorersMain.Friction * elapsedTime;
+                    Trajectory.X += RuinExplorersMain.Friction * RuinExplorersMain.FrameTime;
                     if (Trajectory.X > 0f)
                         Trajectory.X = 0f;
                 }
             }
 
-            Location.X += Trajectory.X * elapsedTime;
-            Location.X += CollisionMove * elapsedTime;
+            Location.X += Trajectory.X * RuinExplorersMain.FrameTime;
+            Location.X += CollisionMove * RuinExplorersMain.FrameTime;
 
             if (State == CharacterState.Air)
             {
-                Location.Y += Trajectory.Y * elapsedTime;
-                Trajectory.Y += elapsedTime * RuinExplorersMain.Gravity;
+                Location.Y += Trajectory.Y * RuinExplorersMain.FrameTime;               
             }
             #endregion
 
@@ -330,7 +424,17 @@ namespace RuinExplorers.CharacterClasses
             if (State == CharacterState.Air)
             {
                 #region Air State
-                CheckXCollision(previousLocation);
+                if (floating)
+                {
+                    Trajectory.Y += RuinExplorersMain.FrameTime * RuinExplorersMain.Gravity * 0.5f;
+                    if (Trajectory.Y > 100f) Trajectory.Y = 100f;
+                    if (Trajectory.Y < -100f) Trajectory.Y = -100f;
+
+                }
+                else
+                    Trajectory.Y += RuinExplorersMain.FrameTime * RuinExplorersMain.Gravity;
+
+                CheckXCollision(map, previousLocation);
 
                 #region Land on ledge
                 if (Trajectory.Y > 0.0f)
@@ -339,42 +443,49 @@ namespace RuinExplorers.CharacterClasses
                     {
                         if (map.Legdes[i].TotalNodes > 1)
                         {
+
                             int ts = map.GetLedgeSection(i, previousLocation.X);
                             int s = map.GetLedgeSection(i, Location.X);
                             float fY;
                             float tfY;
                             if (s > -1 && ts > -1)
                             {
+
                                 tfY = map.GetLedgeYLocation(i, s, previousLocation.X);
                                 fY = map.GetLedgeYLocation(i, s, Location.X);
                                 if (previousLocation.Y <= tfY && Location.Y >= fY)
                                 {
                                     if (Trajectory.Y > 0.0f)
                                     {
+
                                         Location.Y = fY;
                                         ledgeAttach = i;
                                         Land();
                                     }
                                 }
                                 else
-                                    if (map.Legdes[i].isHardLedge == (int)LedgeFlags.Solid && Location.Y >= fY)
+
+                                    if (map.Legdes[i].isHardLedge == (int)LedgeFlags.Solid
+                                        &&
+                                        Location.Y >= fY)
                                     {
                                         Location.Y = fY;
                                         ledgeAttach = i;
                                         Land();
                                     }
                             }
+
                         }
                     }
                 }
                 #endregion
 
-                #region Land on Collision Grid
+                #region Land on col
                 if (State == CharacterState.Air)
                 {
                     if (Trajectory.Y > 0f)
                     {
-                        if (map.CheckCollision(new Vector2(Location.X,Location.Y + 15f)))
+                        if (map.CheckCollision(new Vector2(Location.X, Location.Y + 15f)))
                         {
                             Location.Y = (float)((int)((Location.Y + 15f) / 64f) * 64);
                             Land();
@@ -388,15 +499,17 @@ namespace RuinExplorers.CharacterClasses
             else if (State == CharacterState.Ground)
             {
                 #region Grounded State
+
                 if (ledgeAttach > -1)
                 {
                     if (map.GetLedgeSection(ledgeAttach, Location.X) == -1)
                     {
-                        FallOff(); 
+                        FallOff();
                     }
                     else
                     {
-                        Location.Y = map.GetLedgeYLocation(ledgeAttach, map.GetLedgeSection(ledgeAttach, Location.X), Location.X);
+                        Location.Y = map.GetLedgeYLocation(ledgeAttach,
+                            map.GetLedgeSection(ledgeAttach, Location.X), Location.X);
                     }
                 }
                 else
@@ -405,134 +518,98 @@ namespace RuinExplorers.CharacterClasses
                         FallOff();
                 }
 
-                CheckXCollision(previousLocation);
+                CheckXCollision(map, previousLocation);
+
+
                 #endregion
             }
             #endregion
 
             #region Key input
-            if (AnimationName == "idle" || AnimationName == "run")
+            if (AnimationName == "idle" || AnimationName == "run" ||
+                (State == CharacterState.Ground && CanCancel))
             {
-                if (keyLeft)
+                if (AnimationName == "idle" || AnimationName == "run")
                 {
-                    SetAnim("run");
-                    Trajectory.X = -200f;
-                    Face = CharacterDirection.Left;
+                    if (keyLeft)
+                    {
+                        SetAnim("run");
+                        Trajectory.X = -Speed;
+                        Face = CharacterDirection.Left;
+                    }
+                    else if (keyRight)
+                    {
+                        SetAnim("run");
+                        Trajectory.X = Speed;
+                        Face = CharacterDirection.Right;
+                    }
+                    else
+                    {
+                        SetAnim("idle");
+                    }
                 }
-                else if (keyRight)
-                {
-                    SetAnim("run");
-                    Trajectory.X = 200f;
-                    Face = CharacterDirection.Right;
-                }
-                else
-                {
-                    SetAnim("idle");
-                }
-
                 if (keyAttack)
+                {
                     SetAnim("attack");
+                }
                 if (keySecondary)
+                {
                     SetAnim("second");
-
+                }
                 if (keyJump)
                 {
                     SetAnim("jump");
-                    Trajectory.Y = -600f;
-                    State = CharacterState.Air;
-                    ledgeAttach = -1;
-                    if (keyRight)
-                        Trajectory.X = 200f;
-                    if (keyLeft)
-                        Trajectory.X = -200f;
+                }
+                if (RightAnalog.X > 0.2f || RightAnalog.X < -0.2f)
+                {
+                    SetAnim("roll");
+                    if (AnimationName == "roll")
+                    {
+                        if (RightAnalog.X > 0f)
+                            Face = CharacterDirection.Right;
+                        else
+                            Face = CharacterDirection.Left;
+                    }
                 }
             }
 
-            if (AnimationName == "fly")
+            if (AnimationName == "fly" ||
+                (State == CharacterState.Air && CanCancel))
             {
                 if (keyLeft)
                 {
                     Face = CharacterDirection.Left;
-                    if (Trajectory.X > -200f)
-                        Trajectory.X -= 500f * elapsedTime;
+                    if (Trajectory.X > -Speed)
+                        Trajectory.X -= 500f * RuinExplorersMain.FrameTime;
                 }
                 if (keyRight)
                 {
                     Face = CharacterDirection.Right;
-                    if (Trajectory.X < 200f)
-                        Trajectory.X += 500f * elapsedTime;
+                    if (Trajectory.X < Speed)
+                        Trajectory.X += 500f * RuinExplorersMain.FrameTime;
                 }
-            }
-
-            if (keyAttack)
-            {
-                PressedKey = PressedKeys.Attack;
-                if (keyUp) PressedKey = PressedKeys.Lower;
-                if (keyDown) PressedKey = PressedKeys.Upper;
-            }
-
-            if (keySecondary)
-            {
-                PressedKey = PressedKeys.Secondary;
-                if (keyUp) PressedKey = PressedKeys.SecUp;
-                if (keyDown) PressedKey = PressedKeys.SecDown;
-            }
-
-            if (PressedKey != PressedKeys.None)
-            {
-                if (GotoGoal[(int)PressedKey] > -1)
+                if (keySecondary)
                 {
-                    AnimationFrame = GotoGoal[(int)PressedKey];
-
-                    if (keyLeft)
-                        Face = CharacterDirection.Left;
-                    if (keyRight)
-                        Face = CharacterDirection.Right;
-
-                    PressedKey = PressedKeys.None;
-
-                    for (int i = 0; i < GotoGoal.Length; i++)
-                        GotoGoal[i] = -1;
-
-                    frame = 0f;
-
-                    script.DoScript(Animation, AnimationFrame);
+                    SetAnim("fsecond");
+                }
+                if (keyAttack)
+                {
+                    SetAnim("fattack");
                 }
             }
 
             #endregion
-
-            #region Particle Test
-            // test for particles floating above the characters head
-            //for (int i = 0; i < 4; i++)
-            //{
-            //    Vector2 tloc = (Location - previousLocation) * (float)i / 4.0f + previousLocation;
-            //    tloc.Y -= 100f;
-
-            //    particleManager.AddParticle(new Smoke(
-            //        tloc,
-            //        RandomGenerator.GetRandomVector2(-50.0f, 50.0f, -300.0f, -200.0f),
-            //        1.0f,
-            //        0.8f,
-            //        0.6f,
-            //        1.0f,
-            //        RandomGenerator.GetRandomFloat(0.25f, 0.5f),
-            //        RandomGenerator.GetRandomInt(0, 4)));
-
-            //    if (i % 2 == 0)
-            //    {
-            //        particleManager.AddParticle(new Fire(
-            //            tloc + RandomGenerator.GetRandomVector2(10.0f, 10.0f, -10.0f, 10.0f),
-            //            RandomGenerator.GetRandomVector2(-30.0f,30.0f,-250.0f,-200.0f),
-            //            RandomGenerator.GetRandomFloat(0.25f, 0.75f),
-            //            RandomGenerator.GetRandomInt(0, 4)));
-            //    }
-            //}
-            #endregion
-
-           
         }
 
+
+        /// <summary>
+        /// Gets the trigger by checking all parts with an index >= 1000.
+        /// All Triggers have values between 1-25 (constants defined in the Character class)
+        /// and are set to index + 1000. So we deduct 1000 from the part index and get back
+        /// the original constant trigger. We then give this trigger index to FireTrigger method.
+        /// This method has been verified!
+        /// </summary>
+        /// <param name="particleManager">The particle manager.</param>
         private void CheckTrigger(ParticleManager particleManager)
         {
             int frameIndex = characterDefinition.Animations[Animation].KeyFrames[AnimationFrame].FrameReference;
@@ -554,21 +631,68 @@ namespace RuinExplorers.CharacterClasses
             }
         }
 
+        /// <summary>
+        /// Gets a Trigger and it's location and then usually creates new Particles,
+        /// plays sound and set screen shake.
+        /// This method has been verified!
+        /// </summary>
+        /// <param name="trigger">The trigger.</param>
+        /// <param name="location">The location.</param>
+        /// <param name="particleManager">The particle manager.</param>
         private void FireTrigger(int trigger, Vector2 location, ParticleManager particleManager)
         {
             switch (trigger)
             {
                 case TRIG_PISTOL_ACROSS:
+                case TRIG_PISTOL_UP:
+                case TRIG_PISTOL_DOWN:
+                    if (Team == TEAM_PLAYERS && ID < 4)
+                    {
+                        QuakeManager.SetRumble(ID, 1, .5f);
+                        QuakeManager.SetRumble(ID, 0, .3f);
+                    }
+                    break;
+            }
+
+            #region Trigger Code
+
+            switch (trigger)
+            {
+                case TRIG_FIRE_DIE:
+                    for (int i = 0; i < 5; i++)
+                    {
+                        particleManager.AddParticle(new Fire(location +
+                            RandomGenerator.GetRandomVector2(-30f, 30f, -30f, 30f),
+                            RandomGenerator.GetRandomVector2(-5f, 60f, -150f, -20f),
+                            RandomGenerator.GetRandomFloat(.3f, .8f), RandomGenerator.GetRandomInt(0, 4),
+                            RandomGenerator.GetRandomFloat(.5f, .8f)));
+                    }
+                    particleManager.AddParticle(new Smoke(location,
+                        RandomGenerator.GetRandomVector2(-10f, 10f, -60f, 10f),
+                        1f, .8f, .6f, 1f, RandomGenerator.GetRandomFloat(.5f, 1.2f),
+                        RandomGenerator.GetRandomInt(0, 4)));
+                    particleManager.AddParticle(new Heat(location,
+                        RandomGenerator.GetRandomVector2(-50f, 50f, -100f, 0f),
+                        RandomGenerator.GetRandomFloat(1f, 2f)));
+                    break;
+                case TRIG_ROCKET:
+                    particleManager.AddParticle(new Rocket(location, new Vector2((Face == CharacterDirection.Right ? 350f : -350f),
+                        100f), ID));
+                    break;
+                case TRIG_PISTOL_ACROSS:
                     particleManager.MakeBullet(location, new Vector2(2000f, 0f), Face, ID);
                     Sound.PlayCue("revol");
+                    //QuakeManager.SetQuake(0.3f);
                     break;
                 case TRIG_PISTOL_DOWN:
                     particleManager.MakeBullet(location, new Vector2(1400f, 1400f), Face, ID);
                     Sound.PlayCue("revol");
+                    //QuakeManager.SetQuake(0.3f);
                     break;
                 case TRIG_PISTOL_UP:
                     particleManager.MakeBullet(location, new Vector2(1400f, -1400f), Face, ID);
                     Sound.PlayCue("revol");
+                    //QuakeManager.SetQuake(0.3f);
                     break;
                 case TRIG_BLOOD_SQUIRT_BACK:
                 case TRIG_BLOOD_SQUIRT_DOWN:
@@ -605,44 +729,57 @@ namespace RuinExplorers.CharacterClasses
                         case TRIG_BLOOD_SQUIRT_UP_FORWARD:
                             r = Math.PI * 1.75;
                             break;
-                        default:
-                            break;
                     }
                     for (int i = 0; i < 7; i++)
                     {
-                        particleManager.AddParticle(new Blood(location,
-                            new Vector2((float)Math.Cos(r) * (Face == CharacterDirection.Right ? 1f : -1f),
-                                (float)Math.Sin(r)) * RandomGenerator.GetRandomFloat(10f, 500f) +
-                                RandomGenerator.GetRandomVector2(-90f, 90f, -90f, 90f),
-                                1f, 0f, 0f, 1f, RandomGenerator.GetRandomFloat(0.1f, 0.5f), RandomGenerator.GetRandomInt(0, 4)));
+                        particleManager.AddParticle(new Blood(location, new Vector2(
+                            (float)Math.Cos(r) * (Face == CharacterDirection.Right ? 1f : -1f),
+                            (float)Math.Sin(r)
+                            ) * RandomGenerator.GetRandomFloat(10f, 500f) +
+                            RandomGenerator.GetRandomVector2(-90f, 90f, -90f, 90f),
+                            1f, 0f, 0f, 1f, RandomGenerator.GetRandomFloat(0.1f, 0.5f),
+                            RandomGenerator.GetRandomInt(0, 4)));
                     }
-                    particleManager.AddParticle(new BloodDust(location, RandomGenerator.GetRandomVector2(-30f, 30f, -30f, 30),
-                        1f, 0f, 0f, 0.2f, RandomGenerator.GetRandomFloat(0.25f, 0.5f), RandomGenerator.GetRandomInt(0, 4)));
+                    particleManager.AddParticle(new BloodDust(location,
+                        RandomGenerator.GetRandomVector2(-30f, 30f, -30f, 30f),
+                        1f, 0f, 0f, .2f,
+                        RandomGenerator.GetRandomFloat(.25f, .5f),
+                        RandomGenerator.GetRandomInt(0, 4)));
                     break;
                 case TRIG_BLOOD_CLOUD:
-                    particleManager.AddParticle(new BloodDust(location, RandomGenerator.GetRandomVector2(-30f, 30f, -30f, 30),
-                        1f, 0f, 0f, 0.4f, RandomGenerator.GetRandomFloat(0.25f, 0.75f), RandomGenerator.GetRandomInt(0, 4)));
+                    particleManager.AddParticle(new BloodDust(location,
+                        RandomGenerator.GetRandomVector2(-30f, 30f, -30f, 30f),
+                        1f, 0f, 0f, .4f,
+                        RandomGenerator.GetRandomFloat(.25f, .75f),
+                        RandomGenerator.GetRandomInt(0, 4)));
                     break;
                 case TRIG_BLOOD_SPLAT:
                     for (int i = 0; i < 6; i++)
                     {
-                        particleManager.AddParticle(new BloodDust(location, RandomGenerator.GetRandomVector2(-30f, 30f, -30f, 30),
-                            1f, 0f, 0f, 0.4f, RandomGenerator.GetRandomFloat(0.025f, 0.125f), RandomGenerator.GetRandomInt(0, 4)));
+                        particleManager.AddParticle(new BloodDust(location,
+                        RandomGenerator.GetRandomVector2(-30f, 30f, -30f, 30f),
+                        1f, 0f, 0f, .4f,
+                        RandomGenerator.GetRandomFloat(.025f, .125f),
+                        RandomGenerator.GetRandomInt(0, 4)));
                     }
                     break;
                 default:
-                    particleManager.AddParticle(new Hit(location, new Vector2(200f * (float)Face - 100f, 0f), ID, trigger));
+                    particleManager.AddParticle(new Hit(location, new Vector2(
+                        200f * (float)Face - 100f, 0f),
+                        ID, trigger));
                     break;
             }
+            #endregion
         }
 
 
         /// <summary>
         /// Checks for x-based collisions.
+        /// This method has been verified!
         /// </summary>
         /// <param name="map">The map.</param>
         /// <param name="pLoc">The previous location.</param>
-        public void CheckXCollision(Vector2 pLocation)
+        public void CheckXCollision(Map map, Vector2 pLocation)
         {
             if (Trajectory.X + CollisionMove > 0f)
                 if (map.CheckCollision(new Vector2(Location.X + 25f, Location.Y - 15f)))
@@ -652,10 +789,11 @@ namespace RuinExplorers.CharacterClasses
                     Location.X = pLocation.X;            
         }
 
+        // This method has been verified but not yet documented!
         public bool InHitBounds(Vector2 hitLocation)
         {
-            if (hitLocation.X > Location.X - 50f * Scale &&
-                hitLocation.X < Location.X + 50f * Scale &&
+            if (hitLocation.X > Location.X - 110f * Scale &&
+                hitLocation.X < Location.X + 110f * Scale &&
                 hitLocation.Y > Location.Y - 190f * Scale &&
                 hitLocation.Y < Location.Y + 10f * Scale)
                 return true;
@@ -666,16 +804,22 @@ namespace RuinExplorers.CharacterClasses
         /// <summary>
         /// When no ledges or collision cells are beneath the character
         /// set anim to fly and reset his trajectory.Y.
+        /// This method has been verified!
         /// </summary>
         public void FallOff()
         {
             State = CharacterState.Air;
             SetAnim("fly");
             Trajectory.Y = 0f;
+            if (Trajectory.X > 300f)
+                Trajectory.X = 300f;
+            if (Trajectory.X < -300f)
+                Trajectory.X = -300f;
         }
 
         /// <summary>
         /// Character lands on collision cell or ledge - set animation and characterState
+        /// This method has been verified!
         /// </summary>
         public void Land()
         {
@@ -684,29 +828,22 @@ namespace RuinExplorers.CharacterClasses
             switch (AnimationName)
             {
                 case "jhit":
-                    // if we don't set a new animation here, the zombies will be stuck with the jhit animation forever
-                    // how can we solve this?
-                    if (this.Team == TEAM_NPC)
-                        SetAnim("land");
-                    break;
                 case "jmid":
-                    break;
                 case "jfall":
-                     SetAnim("hitland");    
-                    // Our character does not have a dieland animation! what's going on?
-                    // I had to put in the additional team check so we don't vanish from the screen
-                    if (this.Team != TEAM_PLAYERS && HP < 0)
+                    SetAnim("hitland");
+                    if (HP < 0)
                         SetAnim("dieland");
                     break;
                 default:
                     SetAnim("land");
-                    break;
+                    break;                
             }
         }
 
         /// <summary>
         /// Kills me. We could add lines here to create coins left
         /// behind by enemies.
+        /// This method has been verified!
         /// </summary>
         public void KillMe()
         {
@@ -716,6 +853,7 @@ namespace RuinExplorers.CharacterClasses
 
         /// <summary>
         /// Set via script. Slides the character in facing x-direction.
+        /// This method has been verified!
         /// </summary>
         /// <param name="distance">The distance to slide the character (set by script).</param>
         public void Slide(float distance)
@@ -723,7 +861,12 @@ namespace RuinExplorers.CharacterClasses
             Trajectory.X = (float)Face * 2f * distance - distance;
         }
 
-        
+
+        /// <summary>
+        /// Moves a character into the air by setting his trajectory.Y
+        /// This method has been verified!
+        /// </summary>
+        /// <param name="jump">The jump.</param>
         public void SetJump(float jump)
         {
             Trajectory.Y = -jump;
@@ -733,6 +876,7 @@ namespace RuinExplorers.CharacterClasses
 
         /// <summary>
         /// Draws the character. Needs to be adjusted depending on texture setup.
+        /// This method has been verified!
         /// </summary>
         /// <param name="spriteBatch">The sprite batch.</param>
         public void Draw(SpriteBatch spriteBatch)
@@ -795,6 +939,9 @@ namespace RuinExplorers.CharacterClasses
                         case 3:
                             texture = weaponTexture[characterDefinition.WeaponIndex];
                             break;
+                        default:
+                            texture = null;
+                            break;
                     }
 
                     Color color = new Color(new
@@ -835,6 +982,7 @@ namespace RuinExplorers.CharacterClasses
 
         /// <summary>
         /// Loads the textures - but with hardcoded file names and path.
+        /// This method has been verified!
         /// </summary>
         /// <param name="content">The ContentManager.</param>
         internal static void LoadTextures(ContentManager content)
@@ -852,8 +1000,8 @@ namespace RuinExplorers.CharacterClasses
 
         #region Input Handler Methods
         /// <summary>
-        /// Handles input for Gamepad or Keyboard.
-        /// TODO: Finish input handler for keyboard!
+        /// Handles input for Gamepad and / or Keyboard.
+        /// This method has been verified!
         /// </summary>
         /// <param name="index">The index of the Player who is pressing the button. N/A for keyboard.</param>
         public void DoInput(int index)
@@ -881,12 +1029,14 @@ namespace RuinExplorers.CharacterClasses
             if (currentGamepadState.ThumbSticks.Left.Y > 0.1f || currentKeyboardState.IsKeyDown(Keys.Up))
                 keyUp = true;
 
+            RightAnalog = currentGamepadState.ThumbSticks.Right;
+
             if ((currentGamepadState.Buttons.A == ButtonState.Pressed &&
                 previousGamepadState.Buttons.A == ButtonState.Released) || currentKeyboardState.IsKeyDown(Keys.Space))
                 keyJump = true;
 
-            if ((currentGamepadState.Buttons.Y == ButtonState.Pressed &&
-                previousGamepadState.Buttons.Y == ButtonState.Released) || currentKeyboardState.IsKeyDown(Keys.X))
+            if ((currentGamepadState.Buttons.X == ButtonState.Pressed &&
+                previousGamepadState.Buttons.X == ButtonState.Released) || currentKeyboardState.IsKeyDown(Keys.X))
                 keyAttack = true;
 
             if ((currentGamepadState.Buttons.B == ButtonState.Pressed &&

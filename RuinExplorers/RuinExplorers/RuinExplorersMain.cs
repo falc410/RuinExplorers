@@ -31,7 +31,7 @@ namespace RuinExplorers
         private static float frameTime = 0f;
         private static Vector2 scroll;
         private const float friction = 1000f;
-        private const float gravity = 900f;
+        private const float gravity = 1400f;
         private static Vector2 screenSize = new Vector2();
         private static float slowTime = 0f;
 
@@ -165,44 +165,50 @@ namespace RuinExplorers
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
-        {
-            Sound.Update();                      
-            Music.Play("music1");
-            
+        {   
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
+            Sound.Update();
+            Music.Play("music1");
+            QuakeManager.Update();
+
             frameTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            //frameTime *= 1.5f;
+
             if (slowTime > 0f)
             {
                 slowTime -= frameTime;
                 frameTime /= 10f;
-            }
-
-            particleManager.UpdateParticles(frameTime, map, character);
-
+            }           
+            
             if (character[0] != null)
             {
-                scroll += ((character[0].Location - new Vector2(400f, 400f)) - scroll) * frameTime * 20f;
-                // added for rumble
-                scroll += QuakeManager.Quake.Vector;
-
-                float xLim = map.GetXLim();
-                float yLim = map.GetYLim();
-
-                if (scroll.X < 0f) scroll.X = 0f;
-                else if (scroll.X > xLim) scroll.X = xLim;
-                if (scroll.Y < 0f) scroll.Y = 0f;
-                else if (scroll.Y > yLim) scroll.Y = yLim;
-
-                character[0].DoInput(0);
+                scroll += ((character[0].Location - new Vector2(400f, 400f)) - scroll) * frameTime * 20f;               
             }
+
+            // added for rumble
+            scroll += QuakeManager.Quake.Vector;
+
+            float xLim = map.GetXLim();
+            float yLim = map.GetYLim();
+
+            if (scroll.X < 0f) scroll.X = 0f;
+            if (scroll.X > xLim) scroll.X = xLim;
+            if (scroll.Y < 0f) scroll.Y = 0f;
+            if (scroll.Y > yLim) scroll.Y = yLim;
+            
+
+            particleManager.UpdateParticles(frameTime, map, character);
+            if(character[0] != null)
+                character[0].DoInput(0);
+
             for (int i = 0; i < character.Length; i++)
             {
                 if (character[i] != null)
                 {
-                    character[i].Update(gameTime, particleManager, character);
+                    character[i].Update(map, particleManager, character);
                     if (character[i].DyingFrame > 1f)
                         character[i] = null;
                 }
@@ -221,15 +227,15 @@ namespace RuinExplorers
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
-
-            // part of the screen shake effect
             //graphics.GraphicsDevice.SetRenderTarget(mainTarget);
-            //graphics.GraphicsDevice.Clear(Color.Black);
-
+            graphics.GraphicsDevice.Clear(Color.Black);
+            
             // draw the background and back layers first
             map.Draw(spriteBatch, mapTexture, mapBackgroundTexture, 0, 2);
-            
+
+            // next draw the background particles
+            particleManager.DrawParticles(spritesTexture, true);
+
             // next draw the character(s)
            //character[0].Draw(spriteBatch);
             for (int i = 0; i < character.Length; i++)
@@ -237,45 +243,52 @@ namespace RuinExplorers
                 if (character[i] != null)
                     character[i].Draw(spriteBatch);
             }
+
+            // draw other particles
+            particleManager.DrawParticles(spritesTexture, false);
+
             // finally draw the foreground layer
             map.Draw(spriteBatch, mapTexture, mapBackgroundTexture, 2, 3);
            
             // TODO: not working!
             #region Screen Shake Effect
-           
-            //graphics.GraphicsDevice.SetRenderTarget(null);
-            //spriteBatch.Begin();
-            //spriteBatch.Draw(mainTarget.GetData<Texture2D>(0),new Vector2(),Color.White);
+
+            //graphics.GraphicsDevice.SetRenderTarget(0, null);
+
+            //spriteBatch.Begin(SpriteBlendMode.None);
+
+            //spriteBatch.Draw(mainTarget.GetTexture(), new Vector2(), Color.White);
+
             //spriteBatch.End();
+
+            ///*
+            // * Draw our blast effect, which we set up in chapter 8.
+            // */
+
+            //spriteBatch.Begin(SpriteBlendMode.AlphaBlend);
 
             //if (QuakeManager.Blast.Value > 0f)
             //{
-            //    spriteBatch.Begin();
-            //    for (int i = 0; i < 5; i++)
+            //    for (int i = 7; i >= 0; i--)
             //    {
-            //        spriteBatch.Draw(mainTarget.GetData<Texture2D>(0),
-            //            QuakeManager.Blast.Center - Scroll, new Rectangle(0, 0, (int)ScreenSize.X, (int)ScreenSize.Y),
-            //            new Color(new Vector4(1f, 1f, 1f, 0.35f * (QuakeManager.Blast.Value / QuakeManager.Blast.Magnitude))),
-            //            0f, QuakeManager.Blast.Center - Scroll, (1.0f + (QuakeManager.Blast.Magnitude - QuakeManager.Blast.Value) * 0.1f + ((float)(i + 1) / 40f)),
+            //        spriteBatch.Draw(mainTarget.GetTexture(),
+            //            QuakeManager.Blast.center - Scroll,
+            //            new Rectangle(0, 0, (int)ScreenSize.X, (int)ScreenSize.Y),
+            //            new Color(new Vector4(1f, 1f, 1f,
+            //            .25f * (QuakeManager.Blast.Value / QuakeManager.Blast.Magnitude))),
+            //            0f, QuakeManager.Blast.center - Scroll,
+            //            (1.0f + (QuakeManager.Blast.Magnitude - QuakeManager.Blast.Value)
+            //            * .1f
+            //            + ((float)(i) / 50f)),
             //            SpriteEffects.None, 1f);
+
             //    }
-            //    spriteBatch.End();
             //}
 
-            #endregion
-
-            particleManager.DrawParticles(spritesTexture, true);
-            //character[0].Draw(spriteBatch);
-            particleManager.DrawParticles(spritesTexture, false);
-
-            // glowing orb for inner fire above the characters head (for particle testing)
-            //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
-            //spriteBatch.Draw(spritesTexture,
-            //    character[0].Location - new Vector2(0f, 100f) - Scroll,
-            //    new Rectangle(0, 128, 64, 64), Color.White, 0.0f,
-            //    new Vector2(32.0f, 32.0f), RandomGenerator.GetRandomFloat(0.5f, 1.0f), SpriteEffects.None, 1.0f);
             //spriteBatch.End();
 
+            #endregion
+           
             base.Draw(gameTime);
         }
     }

@@ -119,18 +119,18 @@ namespace RuinExplorers.AIClasses
             {
                 if (me.keyLeft)
                 {
-                    if (FriendInWay(c, ID, Character.CharacterDirection.Left))
+                    if (FriendInWay(c, ID, CharacterDirection.Left))
                         me.keyLeft = false;
                 }
                 if (me.keyRight)
                 {
-                    if (FriendInWay(c, ID, Character.CharacterDirection.Right))
+                    if (FriendInWay(c, ID, CharacterDirection.Right))
                         me.keyRight = false;
                 }
             }
         }
 
-        private bool FriendInWay(Character[] c, int ID, Character.CharacterDirection face)
+        private bool FriendInWay(Character[] c, int ID, CharacterDirection face)
         {
             for (int i = 0; i < c.Length; i++)
             {
@@ -143,7 +143,7 @@ namespace RuinExplorers.AIClasses
                             if (me.Location.Y > c[i].Location.Y - 100f &&
                                 me.Location.Y < c[i].Location.Y + 10f)
                             {
-                                if (face == Character.CharacterDirection.Right)
+                                if (face == CharacterDirection.Right)
                                 {
                                     if (c[i].Location.X > me.Location.X &&
                                         c[i].Location.X < me.Location.X + 70f)
@@ -201,12 +201,12 @@ namespace RuinExplorers.AIClasses
         {
             if (c[targ] == null)
                 return false;
-            if (me.Location.X > c[targ].Location.X && me.Face == Character.CharacterDirection.Right)
+            if (me.Location.X > c[targ].Location.X && me.Face == CharacterDirection.Right)
             {
                 me.keyLeft = true;
                 return true;
             }
-            else if (me.Location.X > c[targ].Location.X && me.Face == Character.CharacterDirection.Right)
+            else if (me.Location.X > c[targ].Location.X && me.Face == CharacterDirection.Right)
             {
                 me.keyRight = true;
                 return true;

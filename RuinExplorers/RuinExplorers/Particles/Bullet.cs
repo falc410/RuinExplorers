@@ -17,10 +17,10 @@ namespace RuinExplorers.Particles
             this.location = location;
             this.trajectory = trajectory;
             this.owner = owner;
-            rotation = GlobalFunctions.GetAngle(Vector2.Zero, trajectory);
-            Exists = true;
-            frame = 0.5f;
-            Additive = true;
+            this.rotation = GlobalFunctions.GetAngle(Vector2.Zero, trajectory);
+            this.Exists = true;
+            this.frame = 0.5f;
+            this.Additive = true;
         }
 
         public override void Draw(SpriteBatch spriteBatch, Texture2D spriteTexture)
