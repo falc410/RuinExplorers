@@ -684,12 +684,18 @@ namespace RuinExplorers.CharacterClasses
             switch (AnimationName)
             {
                 case "jhit":
+                    // if we don't set a new animation here, the zombies will be stuck with the jhit animation forever
+                    // how can we solve this?
+                    if (this.Team == TEAM_NPC)
+                        SetAnim("land");
                     break;
                 case "jmid":
                     break;
                 case "jfall":
-                    SetAnim("hitland");
-                    if (HP < 0)
+                     SetAnim("hitland");    
+                    // Our character does not have a dieland animation! what's going on?
+                    // I had to put in the additional team check so we don't vanish from the screen
+                    if (this.Team != TEAM_PLAYERS && HP < 0)
                         SetAnim("dieland");
                     break;
                 default:

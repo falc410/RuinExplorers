@@ -111,6 +111,7 @@ namespace RuinExplorers
 
             character[0] = new Character(new Vector2(100f, 100f), characterDefinition[(int)CharacterType.Player1],0,Character.TEAM_PLAYERS);
             character[0].map = map;
+            character[0].HP = character[0].MHP = 100;
 
             for (int i = 1; i < 9; i++)
             {
@@ -264,7 +265,7 @@ namespace RuinExplorers
             #endregion
 
             particleManager.DrawParticles(spritesTexture, true);
-            character[0].Draw(spriteBatch);
+            //character[0].Draw(spriteBatch);
             particleManager.DrawParticles(spritesTexture, false);
 
             // glowing orb for inner fire above the characters head (for particle testing)
