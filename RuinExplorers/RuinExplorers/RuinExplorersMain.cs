@@ -119,7 +119,10 @@ namespace RuinExplorers
                 character[i].map = map;
             }
 
-            base.Initialize();
+            Sound.Initialize();
+            Music.Initialize();
+
+            base.Initialize();  
         }
 
         /// <summary>
@@ -161,7 +164,10 @@ namespace RuinExplorers
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
-        {           
+        {
+            Sound.Update();                      
+            Music.Play("music1");
+            
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
@@ -204,9 +210,6 @@ namespace RuinExplorers
 
             //call map.update() to update fire & smoke particles on torches
             map.Update(particleManager);
-
-            // TODO: Does not work atm! Dunno why it crashes.
-            //Music.Play("music1");
 
             base.Update(gameTime);
         }

@@ -14,10 +14,10 @@ namespace RuinExplorers.Audio
         private static Cue musicCue;
         private static String musicString;
 
-        static Music()
-        {
-            waveBank = new WaveBank(Sound.GetEngine(), @"Content/sfx/musicwavs.xwb", 0, 16);
-            soundBank = new SoundBank(Sound.GetEngine(), @"Content/sfx/musicsounds.xsb");
+        public static void Initialize()
+        {            
+            waveBank = new WaveBank(Sound.GetEngine(), @"Content/sfx/musicwavs.xwb",0,16);
+            soundBank = new SoundBank(Sound.GetEngine(), @"Content/sfx/musicsounds.xsb");            
         }
 
         public static void Play(String musicName)
@@ -28,10 +28,17 @@ namespace RuinExplorers.Audio
 
                 if (musicCue != null)
                     musicCue.Dispose();
-
+                
+                // always crashes for unknown reasons
                 musicCue = soundBank.GetCue(musicString);
+                //soundBank.PlayCue(musicString);
                 musicCue.Play();
             }
+        }
+
+        public static void Update()
+        {
+            Sound.Update();
         }
     }
 }

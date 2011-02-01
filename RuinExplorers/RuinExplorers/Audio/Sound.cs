@@ -12,7 +12,7 @@ namespace RuinExplorers.Audio
         private static SoundBank soundBank;
         private static WaveBank waveBank;
 
-        static Sound()
+        public static void Initialize()
         {
             engine = new AudioEngine(@"Content/sfx/audioproject.xgs");
             soundBank = new SoundBank(engine, @"Content/sfx/sfxsounds.xsb");
