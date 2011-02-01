@@ -9,6 +9,7 @@ using RuinExplorers.MapClasses;
 using Microsoft.Xna.Framework.Content;
 using RuinExplorers.Helpers;
 using RuinExplorers.Particles;
+using RuinExplorers.Audio;
 
 namespace RuinExplorers.CharacterClasses
 {
@@ -504,12 +505,15 @@ namespace RuinExplorers.CharacterClasses
             {
                 case TRIG_PISTOL_ACROSS:
                     particleManager.MakeBullet(location, new Vector2(2000f, 0f), Face, ID);
+                    Sound.PlayCue("revol");
                     break;
                 case TRIG_PISTOL_DOWN:
                     particleManager.MakeBullet(location, new Vector2(1400f, 1400f), Face, ID);
+                    Sound.PlayCue("revol");
                     break;
                 case TRIG_PISTOL_UP:
                     particleManager.MakeBullet(location, new Vector2(1400f, -1400f), Face, ID);
+                    Sound.PlayCue("revol");
                     break;                    
                 default:
                     particleManager.AddParticle(new Hit(location, new Vector2(200f * (float)Face - 100f, 0f), ID, trigger));

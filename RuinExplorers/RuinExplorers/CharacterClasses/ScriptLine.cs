@@ -142,6 +142,10 @@ namespace RuinExplorers.CharacterClasses
                         command = Commands.SetSecDownGoto;
                         intParameter = Convert.ToInt32(split[1]);
                         break;
+                    case "play":
+                        command = Commands.PlaySound;
+                        stringParameter = split[1];
+                        break;
                 }
             }
             catch (Exception e)

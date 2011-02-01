@@ -24,6 +24,7 @@ namespace RuinExplorers.CharacterClasses
         SetAnyGoto,
         SetSecondaryGoto,
         SetSecUpGoto,
-        SetSecDownGoto
+        SetSecDownGoto,
+        PlaySound
     }
 }

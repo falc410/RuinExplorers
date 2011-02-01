@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using RuinExplorers.Audio;
 
 namespace RuinExplorers.CharacterClasses
 {
@@ -105,6 +106,9 @@ namespace RuinExplorers.CharacterClasses
                             break;
                         case Commands.SetSecDownGoto:
                             character.GotoGoal[(int)PressedKeys.SecDown] = line.IntParameter;
+                            break;
+                        case Commands.PlaySound:
+                            Sound.PlayCue(line.StringParameter);
                             break;
                     }
                 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using RuinExplorers.Particles;
 using Microsoft.Xna.Framework;
+using RuinExplorers.Audio;
 
 namespace RuinExplorers.CharacterClasses
 {
@@ -36,6 +37,7 @@ namespace RuinExplorers.CharacterClasses
                                 character[i].SetAnim("idle");
                                 character[i].SetAnim("hit");
                                 character[i].Slide(-100f);
+                                Sound.PlayCue("bullethit");
 
                                 particleManager.MakeBulletBlood(particle.location, particle.trajectory / 2f);
                                 particleManager.MakeBulletBlood(particle.location, -particle.trajectory);
@@ -57,6 +59,7 @@ namespace RuinExplorers.CharacterClasses
 
                                 character[i].SetAnim("idle");
                                 character[i].SetAnim("hit");
+                                Sound.PlayCue("zombiehit");
 
                                 if (character[i].State == Character.CharacterState.Ground)
                                     character[i].Slide(-200f);
