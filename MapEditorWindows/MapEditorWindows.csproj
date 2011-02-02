@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MapClasses\DrawingMode.cs" />
+    <Compile Include="MapClasses\ScriptCommands.cs" />
     <Compile Include="MapEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -80,6 +81,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -100,6 +102,9 @@
       <Project>{290D43FB-52C8-4505-A8A0-6244568B05C6}</Project>
       <Name>WindowsContentBuilder</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\plus.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

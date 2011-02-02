@@ -138,8 +138,8 @@ namespace RuinExplorers
             spriteBatch = new SpriteBatch(GraphicsDevice);
                         
             // not sure if there is a visible difference with these two constructors
-            //mainTarget = new RenderTarget2D(GraphicsDevice, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight, true, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
-            mainTarget = new RenderTarget2D(GraphicsDevice, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+            mainTarget = new RenderTarget2D(GraphicsDevice, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight, true, SurfaceFormat.Color, DepthFormat.Depth24);
+            //mainTarget = new RenderTarget2D(GraphicsDevice, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
 
             particleManager = new ParticleManager(spriteBatch);
             spritesTexture = Content.Load<Texture2D>(@"gfx/sprites");
@@ -259,8 +259,8 @@ namespace RuinExplorers
             graphics.GraphicsDevice.SetRenderTarget(null);
 
             // again I'm not sure if the blendstate does have a visiual impact on the rendertarget
-            //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque);
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque);
+            //spriteBatch.Begin();
 
             spriteBatch.Draw(mainTarget, new Vector2(), Color.White);
 

@@ -229,5 +229,64 @@ namespace MapEditorWindows
 		}
 
 		#endregion	
-	}
+
+        #region Script Related
+
+        public T NumToEnum<T>(int number)
+        {
+            return (T)Enum.ToObject(typeof(T), number);
+        }
+
+        public string GetScriptCommandExplanation(ScriptCommands scriptCommand)
+        {
+            switch (scriptCommand)
+            {
+                case ScriptCommands.fog:
+                    return "'fog' : Turns map fog on";
+                case ScriptCommands.monster:
+                    return "'monster type x y name' : Creates a monster of type 'type' at location 'x y' with the name 'name'. Example: 'monster zombie 200 100 z1'";
+                case ScriptCommands.makebucket:
+                    return "'makebucket size' : Creates a bucket of size 'size'. A bucket is a list of monsters that will empty itself onto the map as long as screen population is < size. Example: 'makebucket 3'";
+                case ScriptCommands.addbucket:
+                    return "'addbucket type x y' : Adds a monster of type 'type' to the bucket. It will spawn at location 'x y'. Example: 'addbucket zombie 300 100'";
+                case ScriptCommands.ifnotbucketgoto:
+                    break;
+                case ScriptCommands.wait:
+                    return "'wait ticks' : Pauses the script for 'ticks' ticks. Example: wait 5";
+                case ScriptCommands.setflag:
+                    break;
+                case ScriptCommands.iftruegoto:
+                    break;
+                case ScriptCommands.iffalsegoto:
+                    break;
+                case ScriptCommands.setglobalflag:
+                    break;
+                case ScriptCommands.ifglobaltruegoto:
+                    break;
+                case ScriptCommands.ifglobalfalsegoto:
+                    break;
+                case ScriptCommands.stop:
+                    break;
+                case ScriptCommands.setleftexit:
+                    break;
+                case ScriptCommands.setleftentrance:
+                    break;
+                case ScriptCommands.setrightexit:
+                    break;
+                case ScriptCommands.setrightentrance:
+                    break;
+                case ScriptCommands.setintroentrance:
+                    break;
+                case ScriptCommands.water:
+                    break;
+                case ScriptCommands.tag:
+                    break;
+                default:
+                    break;
+            }
+
+            return "Not available for this Command!";
+        }
+        #endregion
+    }
 }

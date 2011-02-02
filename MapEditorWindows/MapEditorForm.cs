@@ -18,7 +18,7 @@ namespace MapEditorWindows
         int mouseY;
         bool isLeftMouseDown;
         bool isRightMouseDown;        
-        int mouseDragSegment;
+        int mouseDragSegment;        
 
         public MapEditorForm()
         {
@@ -41,6 +41,18 @@ namespace MapEditorWindows
             for (int i = 0; i < mapEditorMain1.Map.Legdes.Length; i++)
             {
                 ledgeListBox.Items.Add("ledge " + i.ToString());
+            }
+
+            // Fill Script Line Box
+            for (int i = 0; i < mapEditorMain1.Map.Scripts.Length; i++)
+            {
+                scriptListBox.Items.Add(i.ToString() + ": " + mapEditorMain1.Map.Scripts[i]);
+            }
+
+            // Fill Scriptcommands Box
+            foreach (var command in Enum.GetNames(typeof(ScriptCommands)))
+            {
+                scriptCommandsListBox.Items.Add(command.ToString());
             }
 
             ledgeListBox.SelectedIndex = 0;
@@ -72,6 +84,18 @@ namespace MapEditorWindows
             for (int i = 0; i < mapEditorMain1.Map.Legdes.Length; i++)
             {
                 ledgeListBox.Items.Add("ledge " + i.ToString());
+            }
+
+            // Read Script Data from file
+            for (int i = 0; i < mapEditorMain1.Map.Scripts.Length; i++)
+            {
+                scriptListBox.Items.Add(i.ToString() + ": " + mapEditorMain1.Map.Scripts[i]);
+            }
+            
+            // Fill Scriptcommands Box
+            foreach (var command in Enum.GetNames(typeof(ScriptCommands)))
+            {
+                scriptCommandsListBox.Items.Add(command.ToString());
             }
             
             mapEditorMain1.CurrentLedge = 0;            
@@ -126,6 +150,7 @@ namespace MapEditorWindows
             collisionMapToolStripMenuItem.Checked = false;
             editLedgesToolStripMenuItem.Checked = false;
             deleteSegmentsToolStripMenuItem.Checked = false;
+            scriptCoordinatesToolStripMenuItem.Checked = false;
             modeSelectComboBox.SelectedIndex = 0;
         }
 
@@ -135,6 +160,7 @@ namespace MapEditorWindows
             collisionMapToolStripMenuItem.Checked = true;
             editLedgesToolStripMenuItem.Checked = false;
             deleteSegmentsToolStripMenuItem.Checked = false;
+            scriptCoordinatesToolStripMenuItem.Checked = false;
             modeSelectComboBox.SelectedIndex = 1;
         }
 
@@ -144,6 +170,7 @@ namespace MapEditorWindows
             collisionMapToolStripMenuItem.Checked = false;
             editLedgesToolStripMenuItem.Checked = true;
             deleteSegmentsToolStripMenuItem.Checked = false;
+            scriptCoordinatesToolStripMenuItem.Checked = false;
             modeSelectComboBox.SelectedIndex = 2;
         }
 
@@ -153,9 +180,21 @@ namespace MapEditorWindows
             collisionMapToolStripMenuItem.Checked = false;
             editLedgesToolStripMenuItem.Checked = false;
             deleteSegmentsToolStripMenuItem.Checked = true;
+            scriptCoordinatesToolStripMenuItem.Checked = false;
             modeSelectComboBox.SelectedIndex = 3;
 
         }
+
+        private void scriptCoordinatesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            drawingToolStripMenuItem.Checked = false;
+            collisionMapToolStripMenuItem.Checked = false;
+            editLedgesToolStripMenuItem.Checked = false;
+            deleteSegmentsToolStripMenuItem.Checked = false;
+            scriptCoordinatesToolStripMenuItem.Checked = true;
+            modeSelectComboBox.SelectedIndex = 4;
+        }
+
 
         private void helpToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -250,6 +289,7 @@ namespace MapEditorWindows
                 collisionMapToolStripMenuItem.Checked = false;
                 editLedgesToolStripMenuItem.Checked = false;
                 deleteSegmentsToolStripMenuItem.Checked = false;
+                scriptCoordinatesToolStripMenuItem.Checked = false;
                     break;
                 case 1:
                     mapEditorMain1.Mode = DrawingMode.CollisionMap;
@@ -257,6 +297,7 @@ namespace MapEditorWindows
                      collisionMapToolStripMenuItem.Checked = true;
                 editLedgesToolStripMenuItem.Checked = false;
                 deleteSegmentsToolStripMenuItem.Checked = false;
+                scriptCoordinatesToolStripMenuItem.Checked = false;
                     break;
                 case 2:
                     mapEditorMain1.Mode = DrawingMode.Ledges;
@@ -264,6 +305,7 @@ namespace MapEditorWindows
                 collisionMapToolStripMenuItem.Checked = false;
                 editLedgesToolStripMenuItem.Checked = true;
                 deleteSegmentsToolStripMenuItem.Checked = false;
+                scriptCoordinatesToolStripMenuItem.Checked = false;
                     break;
                 case 3:
                     mapEditorMain1.Mode = DrawingMode.DeleteSegment;
@@ -271,6 +313,15 @@ namespace MapEditorWindows
                 collisionMapToolStripMenuItem.Checked = false;
                 editLedgesToolStripMenuItem.Checked = false;
                 deleteSegmentsToolStripMenuItem.Checked = true;
+                scriptCoordinatesToolStripMenuItem.Checked = false;
+                    break;
+                case 4:
+                    mapEditorMain1.Mode = DrawingMode.ScriptCoordinates;
+                    drawingToolStripMenuItem.Checked = false;
+                    collisionMapToolStripMenuItem.Checked = false;
+                    editLedgesToolStripMenuItem.Checked = false;
+                    deleteSegmentsToolStripMenuItem.Checked = false;
+                    scriptCoordinatesToolStripMenuItem.Checked = true;
                     break;
                 default:
                     break;
@@ -335,6 +386,10 @@ namespace MapEditorWindows
         
         private void onMouseMove(object sender, MouseEventArgs e)
         {
+            mouseCoordinatesLabel.Text = e.X.ToString() + " / " + e.Y.ToString();
+            ingameMouseCoordinates.Text = ((int)((float)e.X + mapEditorMain1.Scroll.X / 2f)).ToString() +
+                " / " + ((int)((float)e.Y + mapEditorMain1.Scroll.Y / 2f)).ToString();
+
             int mouseDiffX = e.X - mouseX;
             int mouseDiffY = e.Y - mouseY;
 
@@ -427,10 +482,98 @@ namespace MapEditorWindows
                 isRightMouseDown = false;      
         }
         #endregion
+              
+        #region Script Forms Related
         
+        private void scriptCommandsListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ScriptCommands scriptCommand = mapEditorMain1.NumToEnum<ScriptCommands>(scriptCommandsListBox.SelectedIndex);
+            scriptDetailTextBox.Text = mapEditorMain1.GetScriptCommandExplanation(scriptCommand);
 
-   
+        }
 
-      
+        private void scriptListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            scriptLineTextBox.Text = mapEditorMain1.Map.Scripts[scriptListBox.SelectedIndex];
+        }
+
+        private void scriptLineTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void scriptEditButton_Click(object sender, EventArgs e)
+        {
+            if (scriptListBox.SelectedIndex < 0)
+            {
+                DialogResult noScriptLineSelected = MessageBox.Show("Please select the Script Line first before inserting new Script Commands", "Can not add new Script Command", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else if (scriptLineTextBox.Text == "")
+            {
+                DialogResult noScriptExt = MessageBox.Show("Please write a script command!", "Empty Script Command", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                mapEditorMain1.Map.Scripts[scriptListBox.SelectedIndex] = scriptLineTextBox.Text;
+                // reload script listbox
+                scriptListBox.Items.Clear();
+                for (int i = 0; i < mapEditorMain1.Map.Scripts.Length; i++)
+                {
+                    scriptListBox.Items.Add(i.ToString() + ": " + mapEditorMain1.Map.Scripts[i]);
+                }
+                // clear the textbox
+                scriptLineTextBox.Text = "";
+            }
+        }
+
+        private void addScriptCommandButton_Click(object sender, EventArgs e)
+        {
+            scriptLineTextBox.Text = scriptCommandsListBox.SelectedItem.ToString();
+            scriptCommandsListBox.SelectedIndex = -1;
+        }
+
+        private void getMouseCoordButton_Click(object sender, EventArgs e)
+        {
+           //TODO: how can we wait for the next mouseclick? using a global bool?
+        }
+
+        private void scriptInsertLineButton_Click(object sender, EventArgs e)
+        {
+            //TODO: insert new line into scripts, shifting everything down            
+        }
+
+        private void scriptDetailTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void scriptLineBoxOnEnterPressed(object sender, KeyPressEventArgs e)
+        {
+            //TODO: if enter is pressed fire scriptEditButton_Click
+        }
+
+        private void scriptDeleteButton_Click(object sender, EventArgs e)
+        {
+            if (scriptListBox.SelectedIndex >= 0)
+            {
+                mapEditorMain1.Map.Scripts[scriptListBox.SelectedIndex] = "";
+                //reload scriptlistbox
+                scriptListBox.Items.Clear();
+                for (int i = 0; i < mapEditorMain1.Map.Scripts.Length; i++)
+                {
+                    scriptListBox.Items.Add(i.ToString() + ": " + mapEditorMain1.Map.Scripts[i]);
+                }
+                scriptLineTextBox.Text = "";
+            }
+
+        }
+
+
+        #endregion
+
+        
+       
+       
+
     }
 }

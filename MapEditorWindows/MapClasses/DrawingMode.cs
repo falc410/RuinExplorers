@@ -10,6 +10,7 @@ namespace MapEditorWindows.MapClasses
         SegmentSelection,
         CollisionMap,
         Ledges,
-        DeleteSegment
+        DeleteSegment,
+        ScriptCoordinates
     }
 }

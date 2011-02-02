@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MapEditorForm));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -40,6 +41,8 @@
             this.drawingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.collisionMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editLedgesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteSegmentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.scriptCoordinatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.layerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.backgroundToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.middleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -59,13 +62,28 @@
             this.label3 = new System.Windows.Forms.Label();
             this.layerSelectComboBox = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.mapEditorMain1 = new MapEditorWindows.MapEditorMain();
             this.ledgeCheckBox = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
             this.ledgeNodeLabel = new System.Windows.Forms.Label();
             this.nodeDeleteButton = new System.Windows.Forms.Button();
             this.ledgeDeleteButton = new System.Windows.Forms.Button();
-            this.deleteSegmentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.label6 = new System.Windows.Forms.Label();
+            this.mouseCoordinatesLabel = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.ingameMouseCoordinates = new System.Windows.Forms.Label();
+            this.scriptListBox = new System.Windows.Forms.ListBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.scriptLineTextBox = new System.Windows.Forms.TextBox();
+            this.scriptDeleteButton = new System.Windows.Forms.Button();
+            this.scriptEditButton = new System.Windows.Forms.Button();
+            this.scriptCommandsListBox = new System.Windows.Forms.ListBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.addScriptCommandButton = new System.Windows.Forms.Button();
+            this.getMouseCoordButton = new System.Windows.Forms.Button();
+            this.scriptInsertLineButton = new System.Windows.Forms.Button();
+            this.label10 = new System.Windows.Forms.Label();
+            this.scriptDetailTextBox = new System.Windows.Forms.TextBox();
+            this.mapEditorMain1 = new MapEditorWindows.MapEditorMain();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.segmentPictureBox)).BeginInit();
             this.SuspendLayout();
@@ -80,7 +98,7 @@
             this.aboutToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(984, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1184, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -142,7 +160,8 @@
             this.drawingToolStripMenuItem,
             this.collisionMapToolStripMenuItem,
             this.editLedgesToolStripMenuItem,
-            this.deleteSegmentsToolStripMenuItem});
+            this.deleteSegmentsToolStripMenuItem,
+            this.scriptCoordinatesToolStripMenuItem});
             this.modeToolStripMenuItem.Name = "modeToolStripMenuItem";
             this.modeToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
             this.modeToolStripMenuItem.Text = "Mode";
@@ -150,23 +169,37 @@
             // drawingToolStripMenuItem
             // 
             this.drawingToolStripMenuItem.Name = "drawingToolStripMenuItem";
-            this.drawingToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.drawingToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.drawingToolStripMenuItem.Text = "Drawing";
             this.drawingToolStripMenuItem.Click += new System.EventHandler(this.drawingToolStripMenuItem_Click);
             // 
             // collisionMapToolStripMenuItem
             // 
             this.collisionMapToolStripMenuItem.Name = "collisionMapToolStripMenuItem";
-            this.collisionMapToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.collisionMapToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.collisionMapToolStripMenuItem.Text = "Collision Map";
             this.collisionMapToolStripMenuItem.Click += new System.EventHandler(this.collisionMapToolStripMenuItem_Click);
             // 
             // editLedgesToolStripMenuItem
             // 
             this.editLedgesToolStripMenuItem.Name = "editLedgesToolStripMenuItem";
-            this.editLedgesToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.editLedgesToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.editLedgesToolStripMenuItem.Text = "Edit Ledges";
             this.editLedgesToolStripMenuItem.Click += new System.EventHandler(this.editLedgesToolStripMenuItem_Click);
+            // 
+            // deleteSegmentsToolStripMenuItem
+            // 
+            this.deleteSegmentsToolStripMenuItem.Name = "deleteSegmentsToolStripMenuItem";
+            this.deleteSegmentsToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.deleteSegmentsToolStripMenuItem.Text = "Delete Segments";
+            this.deleteSegmentsToolStripMenuItem.Click += new System.EventHandler(this.deleteSegmentsToolStripMenuItem_Click);
+            // 
+            // scriptCoordinatesToolStripMenuItem
+            // 
+            this.scriptCoordinatesToolStripMenuItem.Name = "scriptCoordinatesToolStripMenuItem";
+            this.scriptCoordinatesToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.scriptCoordinatesToolStripMenuItem.Text = "Script Coordinates";
+            this.scriptCoordinatesToolStripMenuItem.Click += new System.EventHandler(this.scriptCoordinatesToolStripMenuItem_Click);
             // 
             // layerToolStripMenuItem
             // 
@@ -234,7 +267,8 @@
             "Drawing",
             "Collision Map",
             "Edit Ledges",
-            "Delete Segments"});
+            "Delete Segments",
+            "Script Coordiantes"});
             this.modeSelectComboBox.Location = new System.Drawing.Point(822, 44);
             this.modeSelectComboBox.Name = "modeSelectComboBox";
             this.modeSelectComboBox.Size = new System.Drawing.Size(121, 21);
@@ -253,7 +287,7 @@
             // segmentPictureBox
             // 
             this.segmentPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.segmentPictureBox.Location = new System.Drawing.Point(825, 200);
+            this.segmentPictureBox.Location = new System.Drawing.Point(825, 182);
             this.segmentPictureBox.Name = "segmentPictureBox";
             this.segmentPictureBox.Size = new System.Drawing.Size(150, 100);
             this.segmentPictureBox.TabIndex = 4;
@@ -262,7 +296,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(825, 181);
+            this.label2.Location = new System.Drawing.Point(825, 163);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(45, 13);
             this.label2.TabIndex = 5;
@@ -271,7 +305,7 @@
             // segmentListBox
             // 
             this.segmentListBox.FormattingEnabled = true;
-            this.segmentListBox.Location = new System.Drawing.Point(825, 307);
+            this.segmentListBox.Location = new System.Drawing.Point(825, 289);
             this.segmentListBox.Name = "segmentListBox";
             this.segmentListBox.Size = new System.Drawing.Size(150, 95);
             this.segmentListBox.TabIndex = 6;
@@ -279,7 +313,7 @@
             // 
             // addSegmentButton
             // 
-            this.addSegmentButton.Location = new System.Drawing.Point(860, 408);
+            this.addSegmentButton.Location = new System.Drawing.Point(860, 390);
             this.addSegmentButton.Name = "addSegmentButton";
             this.addSegmentButton.Size = new System.Drawing.Size(86, 23);
             this.addSegmentButton.TabIndex = 7;
@@ -290,7 +324,7 @@
             // ledgeListBox
             // 
             this.ledgeListBox.FormattingEnabled = true;
-            this.ledgeListBox.Location = new System.Drawing.Point(825, 459);
+            this.ledgeListBox.Location = new System.Drawing.Point(825, 441);
             this.ledgeListBox.Name = "ledgeListBox";
             this.ledgeListBox.Size = new System.Drawing.Size(147, 95);
             this.ledgeListBox.TabIndex = 8;
@@ -299,7 +333,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(822, 443);
+            this.label3.Location = new System.Drawing.Point(822, 425);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(73, 13);
             this.label3.TabIndex = 9;
@@ -328,26 +362,10 @@
             this.label4.TabIndex = 3;
             this.label4.Text = "Layer Select:";
             // 
-            // mapEditorMain1
-            // 
-            this.mapEditorMain1.CurrentLayer = 1;
-            this.mapEditorMain1.CurrentLedge = 0;
-            this.mapEditorMain1.Location = new System.Drawing.Point(12, 27);
-            this.mapEditorMain1.Map = null;
-            this.mapEditorMain1.Mode = MapEditorWindows.MapClasses.DrawingMode.SegmentSelection;
-            this.mapEditorMain1.Name = "mapEditorMain1";
-            this.mapEditorMain1.Scroll = new Microsoft.Xna.Framework.Vector2(0F, 0F);
-            this.mapEditorMain1.Size = new System.Drawing.Size(800, 600);
-            this.mapEditorMain1.TabIndex = 10;
-            this.mapEditorMain1.Text = "mapEditorMain1";
-            this.mapEditorMain1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.onMouseDown);
-            this.mapEditorMain1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.onMouseMove);
-            this.mapEditorMain1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.onMouseUp);
-            // 
             // ledgeCheckBox
             // 
             this.ledgeCheckBox.AutoSize = true;
-            this.ledgeCheckBox.Location = new System.Drawing.Point(825, 560);
+            this.ledgeCheckBox.Location = new System.Drawing.Point(825, 542);
             this.ledgeCheckBox.Name = "ledgeCheckBox";
             this.ledgeCheckBox.Size = new System.Drawing.Size(96, 17);
             this.ledgeCheckBox.TabIndex = 11;
@@ -358,7 +376,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(822, 580);
+            this.label5.Location = new System.Drawing.Point(843, 562);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(85, 13);
             this.label5.TabIndex = 12;
@@ -367,7 +385,7 @@
             // ledgeNodeLabel
             // 
             this.ledgeNodeLabel.AutoSize = true;
-            this.ledgeNodeLabel.Location = new System.Drawing.Point(908, 580);
+            this.ledgeNodeLabel.Location = new System.Drawing.Point(929, 562);
             this.ledgeNodeLabel.Name = "ledgeNodeLabel";
             this.ledgeNodeLabel.Size = new System.Drawing.Size(13, 13);
             this.ledgeNodeLabel.TabIndex = 13;
@@ -375,7 +393,7 @@
             // 
             // nodeDeleteButton
             // 
-            this.nodeDeleteButton.Location = new System.Drawing.Point(846, 596);
+            this.nodeDeleteButton.Location = new System.Drawing.Point(846, 578);
             this.nodeDeleteButton.Name = "nodeDeleteButton";
             this.nodeDeleteButton.Size = new System.Drawing.Size(100, 23);
             this.nodeDeleteButton.TabIndex = 14;
@@ -385,7 +403,7 @@
             // 
             // ledgeDeleteButton
             // 
-            this.ledgeDeleteButton.Location = new System.Drawing.Point(846, 627);
+            this.ledgeDeleteButton.Location = new System.Drawing.Point(846, 609);
             this.ledgeDeleteButton.Name = "ledgeDeleteButton";
             this.ledgeDeleteButton.Size = new System.Drawing.Size(100, 23);
             this.ledgeDeleteButton.TabIndex = 15;
@@ -393,24 +411,202 @@
             this.ledgeDeleteButton.UseVisualStyleBackColor = true;
             this.ledgeDeleteButton.Click += new System.EventHandler(this.ledgeDeleteButton_Click);
             // 
-            // deleteSegmentsToolStripMenuItem
+            // label6
             // 
-            this.deleteSegmentsToolStripMenuItem.Name = "deleteSegmentsToolStripMenuItem";
-            this.deleteSegmentsToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
-            this.deleteSegmentsToolStripMenuItem.Text = "Delete Segments";
-            this.deleteSegmentsToolStripMenuItem.Click += new System.EventHandler(this.deleteSegmentsToolStripMenuItem_Click);
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(822, 119);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(78, 13);
+            this.label6.TabIndex = 16;
+            this.label6.Text = "Mouse ( x / y ):";
+            // 
+            // mouseCoordinatesLabel
+            // 
+            this.mouseCoordinatesLabel.AutoSize = true;
+            this.mouseCoordinatesLabel.Location = new System.Drawing.Point(903, 119);
+            this.mouseCoordinatesLabel.Name = "mouseCoordinatesLabel";
+            this.mouseCoordinatesLabel.Size = new System.Drawing.Size(30, 13);
+            this.mouseCoordinatesLabel.TabIndex = 17;
+            this.mouseCoordinatesLabel.Text = "0 / 0";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(822, 141);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(81, 13);
+            this.label7.TabIndex = 16;
+            this.label7.Text = "Ingame ( x / y ):";
+            // 
+            // ingameMouseCoordinates
+            // 
+            this.ingameMouseCoordinates.AutoSize = true;
+            this.ingameMouseCoordinates.Location = new System.Drawing.Point(903, 141);
+            this.ingameMouseCoordinates.Name = "ingameMouseCoordinates";
+            this.ingameMouseCoordinates.Size = new System.Drawing.Size(30, 13);
+            this.ingameMouseCoordinates.TabIndex = 17;
+            this.ingameMouseCoordinates.Text = "0 / 0";
+            // 
+            // scriptListBox
+            // 
+            this.scriptListBox.FormattingEnabled = true;
+            this.scriptListBox.Location = new System.Drawing.Point(1001, 44);
+            this.scriptListBox.Name = "scriptListBox";
+            this.scriptListBox.Size = new System.Drawing.Size(171, 199);
+            this.scriptListBox.TabIndex = 19;
+            this.scriptListBox.SelectedIndexChanged += new System.EventHandler(this.scriptListBox_SelectedIndexChanged);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(998, 28);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(37, 13);
+            this.label8.TabIndex = 20;
+            this.label8.Text = "Script:";
+            // 
+            // scriptLineTextBox
+            // 
+            this.scriptLineTextBox.Location = new System.Drawing.Point(1001, 249);
+            this.scriptLineTextBox.Name = "scriptLineTextBox";
+            this.scriptLineTextBox.Size = new System.Drawing.Size(146, 20);
+            this.scriptLineTextBox.TabIndex = 21;
+            this.scriptLineTextBox.TextChanged += new System.EventHandler(this.scriptLineTextBox_TextChanged);
+            this.scriptLineTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.scriptLineBoxOnEnterPressed);
+            // 
+            // scriptDeleteButton
+            // 
+            this.scriptDeleteButton.Image = ((System.Drawing.Image)(resources.GetObject("scriptDeleteButton.Image")));
+            this.scriptDeleteButton.Location = new System.Drawing.Point(1153, 278);
+            this.scriptDeleteButton.Name = "scriptDeleteButton";
+            this.scriptDeleteButton.Size = new System.Drawing.Size(20, 20);
+            this.scriptDeleteButton.TabIndex = 22;
+            this.scriptDeleteButton.UseVisualStyleBackColor = true;
+            this.scriptDeleteButton.Click += new System.EventHandler(this.scriptDeleteButton_Click);
+            // 
+            // scriptEditButton
+            // 
+            this.scriptEditButton.Image = ((System.Drawing.Image)(resources.GetObject("scriptEditButton.Image")));
+            this.scriptEditButton.Location = new System.Drawing.Point(1152, 249);
+            this.scriptEditButton.Name = "scriptEditButton";
+            this.scriptEditButton.Size = new System.Drawing.Size(20, 20);
+            this.scriptEditButton.TabIndex = 22;
+            this.scriptEditButton.UseVisualStyleBackColor = true;
+            this.scriptEditButton.Click += new System.EventHandler(this.scriptEditButton_Click);
+            // 
+            // scriptCommandsListBox
+            // 
+            this.scriptCommandsListBox.FormattingEnabled = true;
+            this.scriptCommandsListBox.Location = new System.Drawing.Point(1001, 343);
+            this.scriptCommandsListBox.Name = "scriptCommandsListBox";
+            this.scriptCommandsListBox.Size = new System.Drawing.Size(172, 95);
+            this.scriptCommandsListBox.TabIndex = 23;
+            this.scriptCommandsListBox.SelectedIndexChanged += new System.EventHandler(this.scriptCommandsListBox_SelectedIndexChanged);
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(998, 327);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(138, 13);
+            this.label9.TabIndex = 24;
+            this.label9.Text = "Available Script Commands:";
+            // 
+            // addScriptCommandButton
+            // 
+            this.addScriptCommandButton.Location = new System.Drawing.Point(1027, 441);
+            this.addScriptCommandButton.Name = "addScriptCommandButton";
+            this.addScriptCommandButton.Size = new System.Drawing.Size(120, 23);
+            this.addScriptCommandButton.TabIndex = 25;
+            this.addScriptCommandButton.Text = "Add Script Command";
+            this.addScriptCommandButton.UseVisualStyleBackColor = true;
+            this.addScriptCommandButton.Click += new System.EventHandler(this.addScriptCommandButton_Click);
+            // 
+            // getMouseCoordButton
+            // 
+            this.getMouseCoordButton.Location = new System.Drawing.Point(1001, 278);
+            this.getMouseCoordButton.Name = "getMouseCoordButton";
+            this.getMouseCoordButton.Size = new System.Drawing.Size(120, 23);
+            this.getMouseCoordButton.TabIndex = 26;
+            this.getMouseCoordButton.Text = "Get Mouse Coord.";
+            this.getMouseCoordButton.UseVisualStyleBackColor = true;
+            this.getMouseCoordButton.Click += new System.EventHandler(this.getMouseCoordButton_Click);
+            // 
+            // scriptInsertLineButton
+            // 
+            this.scriptInsertLineButton.Image = global::MapEditorWindows.Properties.Resources.plus;
+            this.scriptInsertLineButton.Location = new System.Drawing.Point(1127, 278);
+            this.scriptInsertLineButton.Name = "scriptInsertLineButton";
+            this.scriptInsertLineButton.Size = new System.Drawing.Size(20, 20);
+            this.scriptInsertLineButton.TabIndex = 27;
+            this.scriptInsertLineButton.UseVisualStyleBackColor = true;
+            this.scriptInsertLineButton.Click += new System.EventHandler(this.scriptInsertLineButton_Click);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(1001, 466);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(65, 13);
+            this.label10.TabIndex = 29;
+            this.label10.Text = "Explanation:";
+            // 
+            // scriptDetailTextBox
+            // 
+            this.scriptDetailTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.scriptDetailTextBox.Enabled = false;
+            this.scriptDetailTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.scriptDetailTextBox.Location = new System.Drawing.Point(1001, 482);
+            this.scriptDetailTextBox.Multiline = true;
+            this.scriptDetailTextBox.Name = "scriptDetailTextBox";
+            this.scriptDetailTextBox.ReadOnly = true;
+            this.scriptDetailTextBox.Size = new System.Drawing.Size(172, 150);
+            this.scriptDetailTextBox.TabIndex = 30;
+            this.scriptDetailTextBox.TextChanged += new System.EventHandler(this.scriptDetailTextBox_TextChanged);
+            // 
+            // mapEditorMain1
+            // 
+            this.mapEditorMain1.CurrentLayer = 1;
+            this.mapEditorMain1.CurrentLedge = 0;
+            this.mapEditorMain1.Location = new System.Drawing.Point(13, 28);
+            this.mapEditorMain1.Map = null;
+            this.mapEditorMain1.Mode = MapEditorWindows.MapClasses.DrawingMode.SegmentSelection;
+            this.mapEditorMain1.Name = "mapEditorMain1";
+            this.mapEditorMain1.Scroll = new Microsoft.Xna.Framework.Vector2(0F, 0F);
+            this.mapEditorMain1.Size = new System.Drawing.Size(800, 600);
+            this.mapEditorMain1.TabIndex = 31;
+            this.mapEditorMain1.Text = "mapEditorMain1";
+            this.mapEditorMain1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.onMouseDown);
+            this.mapEditorMain1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.onMouseMove);
+            this.mapEditorMain1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.onMouseUp);
             // 
             // MapEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(984, 662);
+            this.ClientSize = new System.Drawing.Size(1184, 647);
+            this.Controls.Add(this.mapEditorMain1);
+            this.Controls.Add(this.scriptDetailTextBox);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.scriptEditButton);
+            this.Controls.Add(this.scriptInsertLineButton);
+            this.Controls.Add(this.getMouseCoordButton);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.scriptCommandsListBox);
+            this.Controls.Add(this.addScriptCommandButton);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.scriptLineTextBox);
+            this.Controls.Add(this.scriptDeleteButton);
+            this.Controls.Add(this.scriptListBox);
+            this.Controls.Add(this.ingameMouseCoordinates);
+            this.Controls.Add(this.mouseCoordinatesLabel);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.ledgeDeleteButton);
             this.Controls.Add(this.nodeDeleteButton);
             this.Controls.Add(this.ledgeNodeLabel);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.ledgeCheckBox);
-            this.Controls.Add(this.mapEditorMain1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.ledgeListBox);
             this.Controls.Add(this.addSegmentButton);
@@ -467,13 +663,32 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem1;
         private System.Windows.Forms.ComboBox layerSelectComboBox;
         private System.Windows.Forms.Label label4;
-        private MapEditorMain mapEditorMain1;
+       
         private System.Windows.Forms.CheckBox ledgeCheckBox;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label ledgeNodeLabel;
         private System.Windows.Forms.ToolStripMenuItem deleteSegmentsToolStripMenuItem;
         private System.Windows.Forms.Button nodeDeleteButton;
         private System.Windows.Forms.Button ledgeDeleteButton;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label mouseCoordinatesLabel;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label ingameMouseCoordinates;
+        private System.Windows.Forms.ListBox scriptListBox;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox scriptLineTextBox;
+        private System.Windows.Forms.Button scriptDeleteButton;
+        private System.Windows.Forms.Button scriptEditButton;
+        private System.Windows.Forms.ListBox scriptCommandsListBox;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Button addScriptCommandButton;
+        private System.Windows.Forms.Button getMouseCoordButton;
+        private System.Windows.Forms.Button scriptInsertLineButton;
+        
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.TextBox scriptDetailTextBox;
+        private System.Windows.Forms.ToolStripMenuItem scriptCoordinatesToolStripMenuItem;
+        private MapEditorMain mapEditorMain1;
         
     }
 }

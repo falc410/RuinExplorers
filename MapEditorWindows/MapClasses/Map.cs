@@ -17,8 +17,7 @@ namespace MapEditorWindows.MapClasses
 		int[,] colisionGrid;
 		Ledge[] ledges;
 		private string path = "mapname";
-        
-
+        public String[] Scripts = new String[128];
 
         #endregion
 
@@ -26,6 +25,11 @@ namespace MapEditorWindows.MapClasses
 
         public Map()
 		{
+            for (int i = 0; i < Scripts.Length; i++)
+            {
+                Scripts[i] = "";
+            }
+
 			segDef = new SegmentDefinitions[512];
 			mapSegment = new MapSegment[3, 64];
 			colisionGrid = new int[20, 20];
@@ -247,6 +251,9 @@ namespace MapEditorWindows.MapClasses
                     file.Write(colisionGrid[x, y]);
                 }
             }
+            // write script information
+            for (int i = 0; i < Scripts.Length; i++)
+                file.Write(Scripts[i]);
 
             file.Close();
         }
@@ -293,6 +300,10 @@ namespace MapEditorWindows.MapClasses
                     colisionGrid[x, y] = file.ReadInt32();
                 }
             }
+            // read script information
+            for (int i = 0; i < Scripts.Length; i++)
+                Scripts[i] = file.ReadString();
+
             file.Close();
         }
         #endregion
