@@ -8,18 +8,18 @@ namespace RuinExplorers.Helpers
 {
     public static class RandomGenerator
     {
-        private static Random random;
+        public static readonly Random random = new Random();
 
-        public static Random Random
-        {
-            get { return random; }
-            private set { random = value; }
-        }
+        //public static Random Random
+        //{
+        //    get { return random; }
+        //    private set { random = value; }
+        //}
 
-        static RandomGenerator()
-        {
-            random = new Random();
-        }
+        //static RandomGenerator()
+        //{
+        //    random = new Random();
+        //}
 
         public static float GetRandomFloat(float min, float max)
         {

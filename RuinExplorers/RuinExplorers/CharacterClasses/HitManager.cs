@@ -133,6 +133,7 @@ namespace RuinExplorers.CharacterClasses
                                             character[i].SetAnim("jhit");
                                             character[i].SetJump(300f);
                                             RuinExplorersMain.SlowTime = 0.25f;
+                                            //QuakeManager.SetBlast(0.5f, particle.location);
                                             break;
                                     }
                                 }

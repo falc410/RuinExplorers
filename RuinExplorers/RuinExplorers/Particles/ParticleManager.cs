@@ -147,6 +147,7 @@ namespace RuinExplorers.Particles
                     RandomGenerator.GetRandomFloat(0.01f, 0.25f), RandomGenerator.GetRandomInt(0, 4)));
             }
             // I think it's overkill to have steam on normal hits
+            // at least as long as our particle system is broken
             //MakeBulletDust(location, trajectory * -20f);
             //MakeBulletDust(location, trajectory * 10f);
         }

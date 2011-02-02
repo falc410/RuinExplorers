@@ -27,7 +27,7 @@ namespace RuinExplorers
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         RenderTarget2D mainTarget;
-
+       
         private static float frameTime = 0f;
         private static Vector2 scroll;
         private const float friction = 1000f;
@@ -40,6 +40,7 @@ namespace RuinExplorers
         Texture2D[] mapTexture = new Texture2D[1];
         Texture2D[] mapBackgroundTexture = new Texture2D[1];
         Character[] character = new Character[16];
+    
         CharacterDefinition[] characterDefinition = new CharacterDefinition[16];
 
         Texture2D spritesTexture;
@@ -90,6 +91,7 @@ namespace RuinExplorers
             graphics.PreferredBackBufferWidth = 800;
             screenSize.X = 800f;
             screenSize.Y = 600f;
+            
             this.IsMouseVisible = true;
             Content.RootDirectory = "Content";
         }
@@ -134,9 +136,11 @@ namespace RuinExplorers
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+                        
+            // not sure if there is a visible difference with these two constructors
+            //mainTarget = new RenderTarget2D(GraphicsDevice, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight, true, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
+            mainTarget = new RenderTarget2D(GraphicsDevice, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
 
-            // TODO: not working - RenderTarget2D Constructor has changed probably
-            //mainTarget = new RenderTarget2D(GraphicsDevice, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight, 1, SurfaceFormat.Color);
             particleManager = new ParticleManager(spriteBatch);
             spritesTexture = Content.Load<Texture2D>(@"gfx/sprites");
 
@@ -227,7 +231,7 @@ namespace RuinExplorers
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            //graphics.GraphicsDevice.SetRenderTarget(mainTarget);
+            graphics.GraphicsDevice.SetRenderTarget(mainTarget);
             graphics.GraphicsDevice.Clear(Color.Black);
             
             // draw the background and back layers first
@@ -236,8 +240,7 @@ namespace RuinExplorers
             // next draw the background particles
             particleManager.DrawParticles(spritesTexture, true);
 
-            // next draw the character(s)
-           //character[0].Draw(spriteBatch);
+            // next draw the character(s)           
             for (int i = 0; i < character.Length; i++)
             {
                 if (character[i] != null)
@@ -253,39 +256,41 @@ namespace RuinExplorers
             // TODO: not working!
             #region Screen Shake Effect
 
-            //graphics.GraphicsDevice.SetRenderTarget(0, null);
+            graphics.GraphicsDevice.SetRenderTarget(null);
 
-            //spriteBatch.Begin(SpriteBlendMode.None);
+            // again I'm not sure if the blendstate does have a visiual impact on the rendertarget
+            //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque);
+            spriteBatch.Begin();
 
-            //spriteBatch.Draw(mainTarget.GetTexture(), new Vector2(), Color.White);
+            spriteBatch.Draw(mainTarget, new Vector2(), Color.White);
 
-            //spriteBatch.End();
+            spriteBatch.End();
 
             ///*
             // * Draw our blast effect, which we set up in chapter 8.
             // */
 
-            //spriteBatch.Begin(SpriteBlendMode.AlphaBlend);
+            spriteBatch.Begin();
 
-            //if (QuakeManager.Blast.Value > 0f)
-            //{
-            //    for (int i = 7; i >= 0; i--)
-            //    {
-            //        spriteBatch.Draw(mainTarget.GetTexture(),
-            //            QuakeManager.Blast.center - Scroll,
-            //            new Rectangle(0, 0, (int)ScreenSize.X, (int)ScreenSize.Y),
-            //            new Color(new Vector4(1f, 1f, 1f,
-            //            .25f * (QuakeManager.Blast.Value / QuakeManager.Blast.Magnitude))),
-            //            0f, QuakeManager.Blast.center - Scroll,
-            //            (1.0f + (QuakeManager.Blast.Magnitude - QuakeManager.Blast.Value)
-            //            * .1f
-            //            + ((float)(i) / 50f)),
-            //            SpriteEffects.None, 1f);
+            if (QuakeManager.Blast.Value > 0f)
+            {
+                for (int i = 7; i >= 0; i--)
+                {
+                    spriteBatch.Draw(mainTarget,
+                        QuakeManager.Blast.Center - Scroll,
+                        new Rectangle(0, 0, (int)ScreenSize.X, (int)ScreenSize.Y),
+                        new Color(new Vector4(1f, 1f, 1f,
+                        .25f * (QuakeManager.Blast.Value / QuakeManager.Blast.Magnitude))),
+                        0f, QuakeManager.Blast.Center - Scroll,
+                        (1.0f + (QuakeManager.Blast.Magnitude - QuakeManager.Blast.Value)
+                        * .1f
+                        + ((float)(i) / 50f)),
+                        SpriteEffects.None, 1f);
 
-            //    }
-            //}
+                }
+            }
 
-            //spriteBatch.End();
+            spriteBatch.End();
 
             #endregion
            
