@@ -115,9 +115,9 @@ namespace RuinExplorers
             character[0].map = map;
             character[0].HP = character[0].MHP = 100;
 
-            for (int i = 1; i < 9; i++)
+            for (int i = 1; i < 3; i++)
             {
-                character[i] = new Character(new Vector2((float)i * 100f, 100f),
+                character[i] = new Character(new Vector2((float)i * 200f, 100f),
                     characterDefinition[(int)CharacterType.Enemy], i, Character.TEAM_NPC);
                 character[i].map = map;
             }
@@ -231,6 +231,7 @@ namespace RuinExplorers
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            graphics.GraphicsDevice.Clear(Color.Black);
             graphics.GraphicsDevice.SetRenderTarget(mainTarget);
             graphics.GraphicsDevice.Clear(Color.Black);
             
@@ -251,16 +252,14 @@ namespace RuinExplorers
             particleManager.DrawParticles(spritesTexture, false);
 
             // finally draw the foreground layer
-            map.Draw(spriteBatch, mapTexture, mapBackgroundTexture, 2, 3);
-           
-            // TODO: not working!
+            map.Draw(spriteBatch, mapTexture, mapBackgroundTexture, 2, 3);           
+            
             #region Screen Shake Effect
 
             graphics.GraphicsDevice.SetRenderTarget(null);
 
             // again I'm not sure if the blendstate does have a visiual impact on the rendertarget
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque);
-            //spriteBatch.Begin();
+            spriteBatch.Begin();            
 
             spriteBatch.Draw(mainTarget, new Vector2(), Color.White);
 
@@ -270,7 +269,7 @@ namespace RuinExplorers
             // * Draw our blast effect, which we set up in chapter 8.
             // */
 
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.Deferred,BlendState.NonPremultiplied);
 
             if (QuakeManager.Blast.Value > 0f)
             {

@@ -682,17 +682,17 @@ namespace RuinExplorers.CharacterClasses
                 case TRIG_PISTOL_ACROSS:
                     particleManager.MakeBullet(location, new Vector2(2000f, 0f), Face, ID);
                     Sound.PlayCue("revol");
-                    //QuakeManager.SetQuake(0.3f);
+                    QuakeManager.SetQuake(0.3f);
                     break;
                 case TRIG_PISTOL_DOWN:
                     particleManager.MakeBullet(location, new Vector2(1400f, 1400f), Face, ID);
                     Sound.PlayCue("revol");
-                    //QuakeManager.SetQuake(0.3f);
+                    QuakeManager.SetQuake(0.3f);
                     break;
                 case TRIG_PISTOL_UP:
                     particleManager.MakeBullet(location, new Vector2(1400f, -1400f), Face, ID);
                     Sound.PlayCue("revol");
-                    //QuakeManager.SetQuake(0.3f);
+                    QuakeManager.SetQuake(0.3f);
                     break;
                 case TRIG_BLOOD_SQUIRT_BACK:
                 case TRIG_BLOOD_SQUIRT_DOWN:
@@ -737,19 +737,19 @@ namespace RuinExplorers.CharacterClasses
                             (float)Math.Sin(r)
                             ) * RandomGenerator.GetRandomFloat(10f, 500f) +
                             RandomGenerator.GetRandomVector2(-90f, 90f, -90f, 90f),
-                            1f, 0f, 0f, 1f, RandomGenerator.GetRandomFloat(0.1f, 0.5f),
+                            0.3f, 0f, 0f, 1f, RandomGenerator.GetRandomFloat(0.1f, 0.5f),
                             RandomGenerator.GetRandomInt(0, 4)));
                     }
                     particleManager.AddParticle(new BloodDust(location,
                         RandomGenerator.GetRandomVector2(-30f, 30f, -30f, 30f),
-                        1f, 0f, 0f, .2f,
+                        0.3f, 0f, 0f, .2f,
                         RandomGenerator.GetRandomFloat(.25f, .5f),
                         RandomGenerator.GetRandomInt(0, 4)));
                     break;
                 case TRIG_BLOOD_CLOUD:
                     particleManager.AddParticle(new BloodDust(location,
                         RandomGenerator.GetRandomVector2(-30f, 30f, -30f, 30f),
-                        1f, 0f, 0f, .4f,
+                        0.3f, 0f, 0f, .4f,
                         RandomGenerator.GetRandomFloat(.25f, .75f),
                         RandomGenerator.GetRandomInt(0, 4)));
                     break;
@@ -758,7 +758,7 @@ namespace RuinExplorers.CharacterClasses
                     {
                         particleManager.AddParticle(new BloodDust(location,
                         RandomGenerator.GetRandomVector2(-30f, 30f, -30f, 30f),
-                        1f, 0f, 0f, .4f,
+                        0.3f, 0f, 0f, .4f,
                         RandomGenerator.GetRandomFloat(.025f, .125f),
                         RandomGenerator.GetRandomInt(0, 4)));
                     }
@@ -789,11 +789,20 @@ namespace RuinExplorers.CharacterClasses
                     Location.X = pLocation.X;            
         }
 
-        // This method has been verified but not yet documented!
+        
+        /// <summary>
+        /// Compares if a Particle is within a characters bounds.
+        /// Essentially this is the bounding box around the character.
+        /// I did modify the .X values from 110f to 60f because 
+        /// bullets would explode even before hitting a zombie.
+        /// This method has been verified!
+        /// </summary>
+        /// <param name="hitLocation">The hit location.</param>
+        /// <returns></returns>
         public bool InHitBounds(Vector2 hitLocation)
         {
-            if (hitLocation.X > Location.X - 110f * Scale &&
-                hitLocation.X < Location.X + 110f * Scale &&
+            if (hitLocation.X > Location.X - 60f * Scale &&
+                hitLocation.X < Location.X + 60f * Scale &&
                 hitLocation.Y > Location.Y - 190f * Scale &&
                 hitLocation.Y < Location.Y + 10f * Scale)
                 return true;

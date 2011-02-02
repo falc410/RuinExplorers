@@ -122,7 +122,7 @@ namespace RuinExplorers.Particles
             for (int i = 0; i < 32; i++)
             {
                 AddParticle(new Blood(location, trajectory * -1f * RandomGenerator.GetRandomFloat(0.01f, 0.1f) +
-                    RandomGenerator.GetRandomVector2(-50f, 50f, -50f, 50f), 1f, 0f, 0f, 1f, RandomGenerator.GetRandomFloat(0.1f, 0.3f),
+                    RandomGenerator.GetRandomVector2(-50f, 50f, -50f, 50f), 0.3f, 0f, 0f, 1f, RandomGenerator.GetRandomFloat(0.1f, 0.3f),
                     RandomGenerator.GetRandomInt(0, 4)));
             }
         }
@@ -139,11 +139,11 @@ namespace RuinExplorers.Particles
             for (int i = 0; i < 64; i++)
             {
                 AddParticle(new Blood(location, trajectory * RandomGenerator.GetRandomFloat(0.1f, 3.5f) +
-                    RandomGenerator.GetRandomVector2(-70f, 70f, -70f, 70f), 1f, 0f, 0f, 1f,
+                    RandomGenerator.GetRandomVector2(-70f, 70f, -70f, 70f), 0.3f, 0f, 0f, 1f,
                     RandomGenerator.GetRandomFloat(0.01f, 0.25f), RandomGenerator.GetRandomInt(0, 4)));
 
                 AddParticle(new Blood(location, trajectory * RandomGenerator.GetRandomFloat(-0.2f, 0f) +
-                    RandomGenerator.GetRandomVector2(-120f, 120f, -120f, 120f), 1f, 0f, 0f, 1f,
+                    RandomGenerator.GetRandomVector2(-120f, 120f, -120f, 120f), 0.3f, 0f, 0f, 1f,
                     RandomGenerator.GetRandomFloat(0.01f, 0.25f), RandomGenerator.GetRandomInt(0, 4)));
             }
             // I think it's overkill to have steam on normal hits

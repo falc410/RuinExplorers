@@ -48,7 +48,7 @@ namespace RuinExplorers.CharacterClasses
                                         character[i].Slide(-100f);
                                         Sound.PlayCue("bullethit");
 
-                                        particleManager.MakeBulletBlood(particle.location, particle.trajectory / 2f);
+                                        particleManager.MakeBulletBlood(particle.location, particle.trajectory / 2);
                                         particleManager.MakeBulletBlood(particle.location, -particle.trajectory);
                                         // imho white smoke doesn't look so cool when zombies get hit by bullets!
                                         //particleManager.MakeBulletDust(particle.location, particle.trajectory);
