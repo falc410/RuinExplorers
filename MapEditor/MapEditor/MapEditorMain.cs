@@ -29,7 +29,8 @@ namespace MapEditor
 		Map map;
 		Texture2D[] segmentTextures;
 		Texture2D nullTexture;
-		Texture2D arrowsTexture;
+		Texture2D upArrowTexture;
+        Texture2D downArrowTexture;
 		Texture2D openIcon;
 		Texture2D saveIcon;
 		DrawingMode drawingMode = DrawingMode.SegmentSelection;
@@ -43,7 +44,14 @@ namespace MapEditor
 		int currentLayer = 1;
 		Vector2 scroll;
 		int currentLedge = 0;
-		int currentNode = 0;
+		//int currentNode = 0;
+
+        int scriptScroll;
+        int selectedScript = -1;
+
+        const int COLOR_NONE = 0;
+        const int COLOR_YELLOW = 1;
+        const int COLOR_GREEN = 2;
 
 		int previousMouseX, previousMouseY;
 
@@ -52,7 +60,8 @@ namespace MapEditor
 		enum EditingMode
 		{
 			None,
-			Path
+			Path,
+            Script
 		}
 
 		KeyboardState keyboardState;
@@ -107,7 +116,8 @@ namespace MapEditor
 			{
 					segmentTextures[i] = Content.Load<Texture2D>(@"gfx/segments" + (i + 1).ToString());
 			}
-			arrowsTexture = Content.Load<Texture2D>(@"gfx/arrows");
+			upArrowTexture = Content.Load<Texture2D>(@"gfx/uparrow");
+            downArrowTexture = Content.Load<Texture2D>(@"gfx/downarrow");
 		}
 
 		/// <summary>
@@ -165,7 +175,7 @@ namespace MapEditor
 							//	map.Grid[x, y] = 0;
 						}
 					}
-					else if (drawingMode == DrawingMode.Ledges)
+					if (drawingMode == DrawingMode.Ledges)
 					{
 						if (map.Legdes[currentLedge] == null)
 							map.Legdes[currentLedge] = new Ledge();
@@ -176,6 +186,20 @@ namespace MapEditor
 							map.Legdes[currentLedge].TotalNodes++;
 						}
 					}
+                    if (drawingMode == DrawingMode.Script)
+                    {
+                        if (selectedScript > -1)
+                        {
+                            if (mouseX < 400)
+                            {
+                                Vector2 v = new Vector2((float)mouseX, (float)mouseY) + scroll / 2.0f;
+                                v *= 2f;
+                                map.Scripts[selectedScript] +=
+                                    ((int)(v.X)).ToString() + " " +
+                                    ((int)(v.Y)).ToString();
+                            }
+                        }
+                    }
 				}
 				LeftMouseButtonDown = true;
 			}                
@@ -229,6 +253,9 @@ namespace MapEditor
 				case DrawingMode.Ledges:
 					DrawLedgeList();
 					break;
+                case DrawingMode.Script:
+                    DrawScriptRegion();
+                    break;
 				default:
 					break;
 			}
@@ -249,6 +276,63 @@ namespace MapEditor
 		
 
 		#region Custom Draw Methods
+
+        private void DrawScriptRegion()
+        {
+            spriteBatch.Begin();
+            spriteBatch.Draw(nullTexture, new Rectangle(400, 20, 400, 565), new Color(new Vector4(0f, 0f, 0f, .62f)));
+            spriteBatch.End();
+
+            for (int i = scriptScroll; i < scriptScroll + 28; i++)
+            {
+                if (selectedScript == i)
+                {
+                    text.color = Color.White;
+                    text.DrawText(405, 25 + (i - scriptScroll) * 20,
+                    i.ToString() + ": " + map.Scripts[i] + "*");
+                }
+                else
+                {
+                    if (text.DrawClickText(405, 25 + (i - scriptScroll) * 20,i.ToString() + ": " + map.Scripts[i],mouseX, mouseY, mouseClick))
+                    {
+                        selectedScript = i;
+                        editmode = EditingMode.Script;
+                    }
+                }
+
+                if (map.Scripts[i].Length > 0)
+                {
+                    String[] split = map.Scripts[i].Split(' ');
+                    int c = GetCommandColor(split[0]);
+                    if (c > COLOR_NONE)
+                    {
+                        switch (c)
+                        {
+                            case COLOR_GREEN:
+                                text.color = Color.Lime;
+                                break;
+                            case COLOR_YELLOW:
+                                text.color = Color.Yellow;
+                                break;
+                        }
+                        text.DrawText(405, 25 + (i - scriptScroll) * 20,
+                            i.ToString() + ": " + split[0]);
+                    }
+                }
+                text.color = Color.White;
+                text.DrawText(405, 25 + (i - scriptScroll) * 20,
+                    i.ToString() + ": ");
+
+            }
+
+            if (DrawButton(770, 20, upArrowTexture, mouseX, mouseY, mouseClick) &&
+                   scriptScroll > 0)
+                scriptScroll--;
+
+            if (DrawButton(770, 550, downArrowTexture, mouseX, mouseY, mouseClick) &&
+                scriptScroll < map.Scripts.Length - 28)
+                scriptScroll++;
+        }
 
 		// Used to draw a texture as a clickable button
 		private bool DrawButton(int x, int y, Texture2D buttonTexture, int mouseX, int mouseY, bool mouseClick)
@@ -450,12 +534,15 @@ namespace MapEditor
 				case DrawingMode.Ledges:
 					layerName = "ledges";
 					break;
+                case DrawingMode.Script:
+                    layerName = "script";
+                    break;
 				default:
 					break;
 			}
 
 			if (text.DrawClickText(5, 25, "draw: " + layerName, mouseX, mouseY, mouseClick))
-				drawingMode = (DrawingMode)((int)(drawingMode + 1) % 3);
+				drawingMode = (DrawingMode)((int)(drawingMode + 1) % 4);
 
 			text.color = Color.White;
 			if (editmode == EditingMode.Path)
@@ -473,7 +560,7 @@ namespace MapEditor
 		private void DrawLedges()
 		{
 			// Rectangle so select arrow from arrowTexture
-			Rectangle rect = new Rectangle(264, 14, 242, 137);
+			Rectangle rect = new Rectangle(6, 4, 48, 28);
 			spriteBatch.Begin();
 
 			Color tColor = new Color();
@@ -496,7 +583,7 @@ namespace MapEditor
 						else
 							tColor = Color.White;
 
-						spriteBatch.Draw(arrowsTexture, tVec, rect, tColor, 0.0f, Vector2.Zero, 0.08f, SpriteEffects.None, 0.0f);
+						spriteBatch.Draw(upArrowTexture, tVec, rect, tColor, 0.0f, Vector2.Zero, 0.5f, SpriteEffects.None, 0.0f);
 
 						if (n < map.Legdes[i].TotalNodes - 1)
 						{
@@ -516,7 +603,7 @@ namespace MapEditor
 								if (map.Legdes[i].isHardLedge == 1)
 									nColor = new Color(255, 0, 0, 75);
 
-								spriteBatch.Draw(arrowsTexture, iVec, rect, nColor, 0.0f, Vector2.Zero, 0.03f, SpriteEffects.None, 0.0f);
+								spriteBatch.Draw(upArrowTexture, iVec, rect, nColor, 0.0f, Vector2.Zero, 0.3f, SpriteEffects.None, 0.0f);
 							}
 						}
 					}
@@ -527,9 +614,33 @@ namespace MapEditor
 
 		#endregion
 
-		#region Handle Keyboard input
-		
-		// Registers Key presses and sends them to PressKey(Keys key) method
+        #region Script related
+
+        private bool ScriptEnter()
+        {
+            if (selectedScript >= map.Scripts.Length - 1)
+                return false;
+            for (int i = map.Scripts.Length - 1; i > selectedScript; i--)
+                map.Scripts[i] = map.Scripts[i - 1];
+            selectedScript++;
+            return true;
+        }
+
+        private bool ScriptDelLine()
+        {
+            if (selectedScript <= 0)
+                return false;
+            for (int i = selectedScript; i < map.Scripts.Length - 1; i++)
+                map.Scripts[i] = map.Scripts[i + 1];
+            return true;
+        }
+
+        #endregion
+
+
+        #region Handle Keyboard input
+
+        // Registers Key presses and sends them to PressKey(Keys key) method
 		private void UpdateKeys()
 		{
 			keyboardState = Keyboard.GetState();
@@ -555,49 +666,191 @@ namespace MapEditor
 			oldKeyboardState = keyboardState;
 		}
 
+        //private void PressKey(Keys key)
+        //{
+        //    String t = "";
+        //    switch (editmode)
+        //    {
+        //        case EditingMode.None:
+        //            t = map.Path;
+        //            break;
+        //        case EditingMode.Script:
+        //            if (selectedScript < 0)
+        //                return;
+        //            t = map.Scripts[selectedScript];
+        //            break;
+        //        default:
+        //            return;
+        //    }
+
+        //    bool delLine = false;
+
+        //    if (key == Keys.Back)
+        //    {
+        //        if (t.Length > 0)
+        //            t = t.Substring(0, t.Length - 1);
+        //        else if (editmode == EditingMode.Script)
+        //        {
+        //            delLine = ScriptDelLine();
+        //        }
+        //    }
+        //    else if (key == Keys.Enter)
+        //    {
+        //        if (editmode == EditingMode.Script)
+        //        {
+        //            if (ScriptEnter())
+        //            {
+        //                t = "";
+        //            }
+        //        }
+        //        else
+        //            editmode = EditingMode.None;
+        //    }
+        //    else
+        //    {
+        //        t = (t + (char)key).ToLower();
+        //    }
+
+        //    if (!delLine)
+        //    {
+        //        switch (editmode)
+        //        {
+        //            case EditingMode.Path:
+        //                map.Path = t;
+        //                break;
+        //            case EditingMode.Script:
+        //                map.Scripts[selectedScript] = t;
+        //                break;
+        //        }
+        //    }
+        //    else
+        //        selectedScript--;
+        //}
+
 		// Adds Keypress to string
 		// TODO: very crude implementation
-		private void PressKey(Keys key)
-		{
-			string t = String.Empty;
-			switch (editmode)
-			{
-				case EditingMode.None:
-					break;
-				case EditingMode.Path:
-					t = map.Path;
-					break;
-				default:
-					break;
-			}
+        private void PressKey(Keys key)
+        {
+            string t = String.Empty;
+            switch (editmode)
+            {
+                case EditingMode.None:
+                    break;
+                case EditingMode.Path:
+                    t = map.Path;
+                    break;
+                default:
+                    break;
+            }
 
-			if (key == Keys.Back)
-			{
-				if (t.Length > 0)
-					t = t.Substring(0, t.Length - 1);
-			}
-			else if (key == Keys.Enter)
-			{
-				editmode = EditingMode.None;
-			}
-			else
-			{
-				t = (t + (char)key).ToLower();
-			}
+            if (key == Keys.Back)
+            {
+                if (t.Length > 0)
+                    t = t.Substring(0, t.Length - 1);
+            }
+            else if (key == Keys.Enter)
+            {
+                editmode = EditingMode.None;
+            }
+            else
+            {
+                t = (t + (char)key).ToLower();
+            }
 
-			switch (editmode)
-			{
-				case EditingMode.None:
-					break;
-				case EditingMode.Path:
-					map.Path = t;
-					break;
-				default:
-					break;
-			}
-		}
+            switch (editmode)
+            {
+                case EditingMode.None:
+                    break;
+                case EditingMode.Path:
+                    map.Path = t;
+                    break;
+                default:
+                    break;
+            }
+        }
 
 		#endregion
+
+        private int GetCommandColor(String s)
+        {
+            /*
+             * A simle script could look like this:
+             * tag init
+             * fog
+             * 
+             * ifglobaltruegoto roomclear cleartag
+             * 
+             * monster zombie 200 100 z1
+             * monster zombie 300 100 z2
+             * 
+             * tag waitz1
+             * wait 5
+             * 
+             * iffalsegoto z1 waitz1
+             * iffalsegoto z2 waitz1
+             * 
+             * makebucket 3
+             * addbucket zombie 300 100
+             * addbucket zombie 400 100
+             * addbucket zombie 500 100
+             * addbucket zombie 600 100
+             * addbucket zombie 700 100
+             * 
+             * tag waitb
+             * wait 5
+             * 
+             * ifnotbucketgoto waitb
+             * 
+             * setglobalflag roomclear
+             * 
+             * tag cleartag
+             * stop
+             * 
+             */
+
+            switch (s)
+            {
+                    // fog: turns map fog on or off
+                case "fog":
+                    // monster type x y name: creates a monster of type at location x,y with a name
+                case "monster":
+                    // makebucket size : creates a bucket of size size. a bucket is a list of monsters 
+                    // will empty itself onto the game as long as the screen population is less then size
+                case "makebucket":
+                    // addbucket type x y : adds a monster of type to the bucket with spawn location x,y
+                case "addbucket":
+                    // ifnotbucketgoto tag : if bucket is not empty go to tag. we always start with tag init
+                case "ifnotbucketgoto":
+                    // wait ticks : pause the script for amount of ticks
+                case "wait":
+                    // setflag flag : sets the local map flag to flag
+                case "setflag":
+                    // iftruegoto flag tag : if local flag flag is set, go to tag
+                case "iftruegoto":
+                    // iffalsegoto flag tag : if local flag is not set, go to tag
+                case "iffalsegoto":
+                    // setglobalflag flag : set the global map flag to flag
+                case "setglobalflag":
+                    //ifglobaltruegoto flag tag : if global flag flag is set, go to tag
+                case "ifglobaltruegoto":
+                    // ifglobalfalsegoto flag tag : if global flag is not set, go to tag
+                case "ifglobalfalsegoto":
+                    // stops reading the script
+                case "stop":
+                    // 
+                case "setleftexit":
+                case "setleftentrance":
+                case "setrightexit":
+                case "setrightentrance":
+                case "setintroentrance":
+                case "water":
+                    return COLOR_GREEN;
+                    // tag tag : sets a goto destination
+                case "tag":
+                    return COLOR_YELLOW;
+            }
+            return COLOR_NONE;
+        }
 
 		private bool GetCanEdit()
 		{

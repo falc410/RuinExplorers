@@ -9,6 +9,7 @@ namespace MapEditor.MapClasses
     {
         SegmentSelection,
         CollisionMap,
-        Ledges
+        Ledges,
+        Script
     }
 }
