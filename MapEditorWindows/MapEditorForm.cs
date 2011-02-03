@@ -74,6 +74,7 @@ namespace MapEditorWindows
                 mapEditorMain1.Map.Read();
             }
 
+            segmentListBox.Items.Clear();
             for (int i = 0; i < mapEditorMain1.Map.segDef.Length; i++)
             {
                 if (mapEditorMain1.Map.segDef[i] != null)
@@ -81,17 +82,20 @@ namespace MapEditorWindows
             }
             FillPictureBox(mapEditorMain1.SegmentImage, mapEditorMain1.Map.segDef[0].sourceRect.X, mapEditorMain1.Map.segDef[0].sourceRect.Y, mapEditorMain1.Map.segDef[0].sourceRect.Width, mapEditorMain1.Map.segDef[0].sourceRect.Height);
 
+            ledgeListBox.Items.Clear();
             for (int i = 0; i < mapEditorMain1.Map.Legdes.Length; i++)
             {
                 ledgeListBox.Items.Add("ledge " + i.ToString());
             }
 
+            scriptListBox.Items.Clear();
             // Read Script Data from file
             for (int i = 0; i < mapEditorMain1.Map.Scripts.Length; i++)
             {
                 scriptListBox.Items.Add(i.ToString() + ": " + mapEditorMain1.Map.Scripts[i]);
             }
-            
+
+            scriptCommandsListBox.Items.Clear();
             // Fill Scriptcommands Box
             foreach (var command in Enum.GetNames(typeof(ScriptCommands)))
             {
@@ -112,7 +116,8 @@ namespace MapEditorWindows
 
         private void saveMapToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            mapEditorMain1.Map.Path = saveFileDialog1.FileName;
+            mapEditorMain1.Map.Write();
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)

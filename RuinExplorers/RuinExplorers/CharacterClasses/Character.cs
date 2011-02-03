@@ -67,7 +67,7 @@ namespace RuinExplorers.CharacterClasses
         public int HP;
         public int MHP;
         public bool CanCancel;
-        public int LastHitBy;
+        public int LastHitBy = -1;
         
         public bool keyLeft;
         public bool keyRight;
@@ -83,7 +83,7 @@ namespace RuinExplorers.CharacterClasses
         public int ID;
         public int Team;
         public String Name = "";
-
+        
         float frame = 0f;
         int ledgeAttach = -1;
 
@@ -858,7 +858,13 @@ namespace RuinExplorers.CharacterClasses
         public void KillMe()
         {
             if (DyingFrame < 0f)
+            {
                 DyingFrame = 0f;
+                // if killed by player add to score
+                if (LastHitBy == 0)
+                    RuinExplorersMain.Score += MHP * 50;
+            }
+                
         }
 
         /// <summary>

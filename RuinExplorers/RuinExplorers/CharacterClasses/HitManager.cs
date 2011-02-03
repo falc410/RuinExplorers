@@ -29,6 +29,7 @@ namespace RuinExplorers.CharacterClasses
                             if (character[i].InHitBounds(particle.location))
                             {
                                 float hVal = 1f;
+                                character[i].LastHitBy = particle.owner;
 
                                 #region hit by bullet
 
@@ -159,6 +160,13 @@ namespace RuinExplorers.CharacterClasses
                                 #endregion
 
                                 character[i].HP -= (int)hVal;
+
+                                // calculate score
+                                if (character[i].LastHitBy == 0)
+                                {
+                                    RuinExplorersMain.Score += (int)hVal * 50;
+                                }
+
                                 if (character[i].HP < 0)
                                 {
                                     if (character[i].AnimationName == "hit")
