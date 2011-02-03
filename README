@@ -1,24 +1,22 @@
 RuinExplorers - MapEditor
 
-Currently being ported to Windows Forms Application!
+Please use the Windows Application - no support for the XNA version!
 
 Improvements planned for the future:
 - Code cleanup & documentation
 - Better Texture handling / loading
-- Segment deleting
-- Ledge deleting
-- Script editor (planned)
-- Map script definition (planned)
+- Extend Script Help Text
 - Undo Function
 
 
 RuinExplorers - CharacterEditor
+Please use the Windows Application - no support for the XNA version!
 
-Now available as native Windows Forms Application.
-Mostly functional. Still needs to be implemented:
-
+Improvements planned for the future:
 - Better preview animation handling (draw at 60fps!)
-- Import / switching of Texture Sets
+- Do not open a character if the Textures have not been hardcoded into the Editor!
+- Add Script Help text
+- Automatically add animation names
 - Undo Function
 - More Documentation
 
@@ -26,9 +24,19 @@ Mostly functional. Still needs to be implemented:
 RuinExplorers - MainEngine
 
 Current Bugs:
-- crashes when trying to do air-combo (reason is that the attack animation on keyframe 6 (attack 7) sets setanygoto 11, so the next time attack is pressed any animation should play frame 11. but in midair we are using the fly animation which does not have a frame 11)
+- Menu is not complete
+- Menu can not be navigated with Keyboard while ingame
+- Particle Engine does not draw correctly (Refraction)
+- Postprocessing Effects are messed up (especially water and bloom)
+- No Multiplayer
 
 Improvements planned for the future:
 
+- Recreate Postprocessing effects
+- Replace Menu by GameStateManagement Engine
+- Replace Particle Engine
 - Code cleanup & documentation
 - Allow for Different Resolutions
+
+
+I can't wait to get my own assets into the game

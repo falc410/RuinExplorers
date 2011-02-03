@@ -171,6 +171,15 @@ namespace RuinExplorers.CharacterClasses
                                 {
                                     if (character[i].AnimationName == "hit")
                                         character[i].SetAnim("diehit");
+                                    if (i == 0)
+                                    {
+                                        if (character[i].AnimationName == "hit")
+                                        {
+                                            character[i].SetAnim("jmid");
+                                            character[i].SetJump(300f);
+                                        }
+                                        RuinExplorersMain.Menu.Die();
+                                    }
                                 }
                             }
                         }

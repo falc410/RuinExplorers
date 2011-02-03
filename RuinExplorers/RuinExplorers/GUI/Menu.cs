@@ -345,6 +345,17 @@ namespace RuinExplorers.GUI
                 transType = Trans.Buttons;
         }
 
+        public void Die()
+        {
+
+            menuMode = MenuMode.Dead;
+            RuinExplorersMain.GameMode = RuinExplorersMain.GameModes.Menu;
+
+            transFrame = 1f;
+            level = Level.Dead;
+            transType = Trans.All;
+        }
+
         public void Pause()
         {
 
