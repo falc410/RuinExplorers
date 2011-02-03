@@ -327,7 +327,7 @@ namespace RuinExplorers.MapClasses
                     path = transitionDestination[(int)TransDir];
                     Read();
                     transInFrame = 1.1f;
-                    for (int i = 0; i < characters.Length; i++)
+                    for (int i = 1; i < characters.Length; i++)
                     {
                         characters[i] = null;
                     }

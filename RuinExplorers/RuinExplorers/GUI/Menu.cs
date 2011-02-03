@@ -83,6 +83,8 @@ namespace RuinExplorers.GUI
         float frame;
         
         GamePadState[] oldState = new GamePadState[4];
+        KeyboardState keyboardState;
+        KeyboardState oldKeyboardState;
 
         public MenuMode menuMode = MenuMode.Main;
 
@@ -105,6 +107,8 @@ namespace RuinExplorers.GUI
 
         public void Update(RuinExplorersMain game)
         {
+            keyboardState = Keyboard.GetState();
+
             frame += RuinExplorersMain.FrameTime / 2f;
             if (frame > 6.28f) frame -= 6.28f;
 
@@ -191,7 +195,8 @@ namespace RuinExplorers.GUI
                     if ((gs.ThumbSticks.Left.Y > 0.3f &&
                         oldState[i].ThumbSticks.Left.Y <= 0.3f) ||
                         (gs.DPad.Up == ButtonState.Pressed &&
-                        oldState[i].DPad.Up == ButtonState.Released))
+                        oldState[i].DPad.Up == ButtonState.Released) ||
+                        oldKeyboardState.IsKeyDown(Keys.Down) && keyboardState.IsKeyUp(Keys.Down))
                     {
                         selectedItem = (selectedItem + (totalOptions - 1)) % totalOptions;
                     }
@@ -199,7 +204,8 @@ namespace RuinExplorers.GUI
                     if ((gs.ThumbSticks.Left.Y < -0.3f &&
                         oldState[i].ThumbSticks.Left.Y >= -0.3f) ||
                         (gs.DPad.Down == ButtonState.Pressed &&
-                        oldState[i].DPad.Down == ButtonState.Released))
+                        oldState[i].DPad.Down == ButtonState.Released) ||
+                        oldKeyboardState.IsKeyDown(Keys.Up) && keyboardState.IsKeyUp(Keys.Up))
                     {
                         selectedItem = (selectedItem + 1) % totalOptions;
                     }
@@ -211,11 +217,13 @@ namespace RuinExplorers.GUI
                 bool ok = false;
                 if (transFrame > 1.9f)
                 {
-                    if (gs.Buttons.A == ButtonState.Pressed &&
-                        oldState[i].Buttons.A == ButtonState.Released)
+                    if ((gs.Buttons.A == ButtonState.Pressed &&
+                        oldState[i].Buttons.A == ButtonState.Released) ||
+                        keyboardState.IsKeyDown(Keys.Enter))
                         ok = true;
-                    if (gs.Buttons.Start == ButtonState.Pressed &&
-                        oldState[i].Buttons.Start == ButtonState.Released)
+                    if ((gs.Buttons.Start == ButtonState.Pressed &&
+                        oldState[i].Buttons.Start == ButtonState.Released) ||
+                        keyboardState.IsKeyDown(Keys.Enter))
                     {
                         if (menuMode == MenuMode.Main ||
                             menuMode == MenuMode.Dead)
@@ -319,6 +327,7 @@ namespace RuinExplorers.GUI
                 }
                 oldState[i] = gs;
             }
+            oldKeyboardState = keyboardState;
         }
 
         private void Transition(Level goal)
@@ -419,7 +428,7 @@ namespace RuinExplorers.GUI
 
             if (menuMode != MenuMode.Dead)
             {
-                spriteBatch.Begin();
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
 
 
                 pan *= 2f;
