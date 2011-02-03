@@ -114,50 +114,50 @@ namespace RuinExplorers.MapClasses
                             case ScriptCommands.Tag:
                                 //
                                 break;
-                            //case ScriptCommands.SetLeftExit:
-                            //    map.TransitionDestination[(int)TransitionDirection.Left] =
-                            //        Lines[currentLine].StringParameter[1];
-                            //    break;
-                            //case ScriptCommands.SetRightExit:
-                            //    map.TransitionDestination[(int)TransitionDirection.Right] =
-                            //        Lines[currentLine].StringParameter[1];
-                            //    break;
-                            //case ScriptCommands.SetLeftEntrance:
-                            //    if (map.TransDir ==
-                            //        TransitionDirection.Right)
-                            //    {
-                            //        characters[0].Loc = Lines[currentLine].Vector2Parameter;
-                            //        characters[0].Face = CharDir.Right;
-                            //        characters[0].SetAnim("fly");
-                            //        characters[0].State = CharState.Air;
-                            //        characters[0].Trajectory = new Vector2(200f, 0f);
-                            //        map.TransDir = TransitionDirection.None;
-                            //    }
-                            //    break;
-                            //case ScriptCommands.SetRightEntrance:
-                            //    if (map.TransDir ==
-                            //        TransitionDirection.Left)
-                            //    {
-                            //        characters[0].Loc = Lines[currentLine].Vector2Parameter;
-                            //        characters[0].Face = CharDir.Left;
-                            //        characters[0].SetAnim("fly");
-                            //        characters[0].State = CharState.Air;
-                            //        characters[0].Trajectory = new Vector2(-200f, 0f);
-                            //        map.TransDir = TransitionDirection.None;
-                            //    }
-                            //    break;
-                            //case ScriptCommands.SetIntroEntrance:
-                            //    if (map.TransDir ==
-                            //        TransitionDirection.Intro)
-                            //    {
-                            //        characters[0].Loc = Lines[currentLine].Vector2Parameter;
-                            //        characters[0].Face = CharDir.Right;
-                            //        characters[0].SetAnim("fly");
-                            //        characters[0].State = CharState.Air;
-                            //        characters[0].Trajectory = new Vector2(0f, 0f);
-                            //        map.TransDir = TransitionDirection.None;
-                            //    }
-                            //    break;
+                            case ScriptCommands.SetLeftExit:
+                                map.transitionDestination[(int)TransitionDirection.Left] =
+                                    Lines[currentLine].StringParameter[1];
+                                break;
+                            case ScriptCommands.SetRightExit:
+                                map.transitionDestination[(int)TransitionDirection.Right] =
+                                    Lines[currentLine].StringParameter[1];
+                                break;
+                            case ScriptCommands.SetLeftEntrance:
+                                if (map.TransDir ==
+                                    TransitionDirection.Right)
+                                {
+                                    characters[0].Location = Lines[currentLine].Vector2Parameter;
+                                    characters[0].Face = CharacterDirection.Right;
+                                    characters[0].SetAnim("fly");
+                                    characters[0].State = CharacterState.Air;
+                                    characters[0].Trajectory = new Vector2(200f, 0f);
+                                    map.TransDir = TransitionDirection.None;
+                                }
+                                break;
+                            case ScriptCommands.SetRightEntrance:
+                                if (map.TransDir ==
+                                    TransitionDirection.Left)
+                                {
+                                    characters[0].Location = Lines[currentLine].Vector2Parameter;
+                                    characters[0].Face = CharacterDirection.Left;
+                                    characters[0].SetAnim("fly");
+                                    characters[0].State = CharacterState.Air;
+                                    characters[0].Trajectory = new Vector2(-200f, 0f);
+                                    map.TransDir = TransitionDirection.None;
+                                }
+                                break;
+                            case ScriptCommands.SetIntroEntrance:
+                                if (map.TransDir ==
+                                    TransitionDirection.Intro)
+                                {
+                                    characters[0].Location = Lines[currentLine].Vector2Parameter;
+                                    characters[0].Face = CharacterDirection.Right;
+                                    characters[0].SetAnim("fly");
+                                    characters[0].State = CharacterState.Air;
+                                    characters[0].Trajectory = new Vector2(0f, 0f);
+                                    map.TransDir = TransitionDirection.None;
+                                }
+                                break;
                             default:
                                 break;
                         }

@@ -14,6 +14,7 @@ using RuinExplorers.Helpers;
 using RuinExplorers.Particles;
 using RuinExplorers.Audio;
 using RuinExplorers.Shakes;
+using RuinExplorers.GUI;
 
 namespace RuinExplorers
 {
@@ -22,6 +23,18 @@ namespace RuinExplorers
     /// </summary>
     public class RuinExplorersMain : Microsoft.Xna.Framework.Game
     {
+        public enum GameModes : int
+        {
+            Menu = 0,
+            Playing = 1
+        };
+
+        public enum GameType : int
+        {
+            Solo = 0,
+            Arena = 1
+        };
+
         #region Fields
         
         GraphicsDeviceManager graphics;
@@ -35,14 +48,24 @@ namespace RuinExplorers
         private static Vector2 screenSize = new Vector2();
         private static float slowTime = 0f;
 
+        private static long score = 0;
+
         Map map;
+        HUD hud;
+
+        private static GameType gameType;
+        private static int players;
+        private static Menu menu;
+        private static GameModes gameMode;
 
         Texture2D[] mapTexture = new Texture2D[1];
         Texture2D[] mapBackgroundTexture = new Texture2D[1];
+        
         Character[] characters = new Character[16];
     
         static CharacterDefinition[] characterDefinitions = new CharacterDefinition[16];
 
+        Texture2D nullTexture;
         Texture2D spritesTexture;
         ParticleManager particleManager;
 
@@ -52,6 +75,24 @@ namespace RuinExplorers
         public static CharacterDefinition[] CharacterDefinitions
         {
             get { return characterDefinitions; }
+        }
+
+        public static GameModes GameMode
+        {
+            get { return gameMode; }
+            set { gameMode = value; }
+        }
+
+        public static Menu Menu
+        {
+            get { return menu; }
+            set { menu = value; }
+        }
+
+        public static long Score
+        {
+            get { return score; }
+            set { score = value; }
         }
 
         public static float FrameTime
@@ -110,16 +151,10 @@ namespace RuinExplorers
         protected override void Initialize()
         {
             map = new Map();
-            map.Path = "map";
-            map.Read();
-
+          
             characterDefinitions[(int)CharacterType.Player1] = new CharacterDefinition("player",CharacterType.Player1);
             characterDefinitions[(int)CharacterType.Zombie] = new CharacterDefinition("zombie",CharacterType.Zombie);
-
-            characters[0] = new Character(new Vector2(100f, 100f), characterDefinitions[(int)CharacterType.Player1],0,Character.TEAM_PLAYERS);
-            characters[0].map = map;
-            characters[0].HP = characters[0].MHP = 100;            
-
+            
             Sound.Initialize();
             Music.Initialize();
 
@@ -143,8 +178,7 @@ namespace RuinExplorers
 
             particleManager = new ParticleManager(spriteBatch);
             spritesTexture = Content.Load<Texture2D>(@"gfx/sprites");
-
-            characters[0].particleManager = particleManager;
+                        
 
             for (int i = 0; i < mapTexture.Length; i++)
                 mapTexture[i] = Content.Load<Texture2D>(@"gfx/segments" + (i + 1).ToString());
@@ -152,6 +186,58 @@ namespace RuinExplorers
                 mapBackgroundTexture[i] = Content.Load<Texture2D>(@"gfx/background" + (i + 1).ToString());
 
             Character.LoadTextures(Content);
+
+            nullTexture = Content.Load<Texture2D>(@"gfx/1x1");
+
+            /*
+             * Create our menu and HUD objects, which we'll use in Chapter 9.
+             */
+            menu = new Menu(
+                Content.Load<Texture2D>(@"gfx/pose"),
+                Content.Load<Texture2D>(@"gfx/posefore"),
+                Content.Load<Texture2D>(@"gfx/options"),
+                mapBackgroundTexture[0],
+                spritesTexture,
+                spriteBatch);
+
+            hud = new HUD(spriteBatch, spritesTexture, nullTexture, characters, map);
+        }
+
+        public void NewGame()
+        {
+            gameMode = GameModes.Playing;
+
+
+            particleManager.Reset();
+
+
+            map.Path = "start";
+            gameType = GameType.Solo;
+            players = 1;
+
+
+            for (int i = 0; i < players; i++)
+            {
+                characters[i]
+                    = new Character(new Vector2(300f
+                    + (float)i * 200f, 100f),
+                    characterDefinitions[(int)CharacterType.Player1],
+                    i,
+                    Character.TEAM_PLAYERS);
+                characters[i].HP = characters[i].MHP = 100;
+            }
+            for (int i = players; i < characters.Length; i++)
+                characters[i] = null;
+
+            map.GlobalFlags = new MapFlags(64);
+            map.Read();
+            map.TransDir = TransitionDirection.Intro;
+            map.transInFrame = 1f;
+        }
+
+        public void Quit()
+        {
+            this.Exit();
         }
 
         /// <summary>
@@ -185,52 +271,103 @@ namespace RuinExplorers
             {
                 slowTime -= frameTime;
                 frameTime /= 10f;
-            }           
-            
-            if (characters[0] != null)
-            {
-                scroll += ((characters[0].Location - new Vector2(400f, 400f)) - scroll) * frameTime * 20f;               
             }
 
-            // added for rumble
-            scroll += QuakeManager.Quake.Vector;
+            switch (gameMode)
+            {
+                case GameModes.Playing:
+                    UpdateGame();
+
+                    break;
+                case GameModes.Menu:
+                    if (menu.menuMode == Menu.MenuMode.Dead)
+                    {
+                        float pTime = FrameTime;
+                        frameTime /= 3f;
+                        UpdateGame();
+
+                        frameTime = pTime;
+                    }
+                    menu.Update(this);
+                    break;
+            }
+
+            base.Update(gameTime);
+        }
+
+        private void UpdateGame()
+        {
+            if (GamePad.GetState(PlayerIndex.One).Triggers.Left > .2f)
+                frameTime /= 20f;
+
+            int idx = 0;
+
+
+            if (characters[idx] != null)
+            {
+                Scroll += ((characters[idx].Location -
+                                    new Vector2(400f, 400f)) - Scroll) * FrameTime * 20f;
+            }
+
+            Scroll += QuakeManager.Quake.Vector;
+
+            //bloomPulse[0] += FrameTime * .5f;
+            //bloomPulse[1] += FrameTime * .9f;
+            //for (int i = 0; i < bloomPulse.Length; i++)
+            //    if (bloomPulse[i] > 6.28f) bloomPulse[i] -= 6.28f;
 
             float xLim = map.GetXLim();
             float yLim = map.GetYLim();
 
-            if (scroll.X < 0f) scroll.X = 0f;
-            if (scroll.X > xLim) scroll.X = xLim;
-            if (scroll.Y < 0f) scroll.Y = 0f;
-            if (scroll.Y > yLim) scroll.Y = yLim;
-            
 
-            particleManager.UpdateParticles(frameTime, map, characters);
+            //waterDelta += FrameTime * 8f;
+            //waterTheta += FrameTime * 10f;
+            //if (waterDelta > 6.28f)
+            //    waterDelta -= 6.28f;
+            //if (waterTheta > 6.28f)
+            //    waterTheta -= 6.28f;
 
-            if(characters[0] != null)
-                characters[0].DoInput(0);
+            if (Scroll.X < 0f) scroll.X = 0f;
+            if (Scroll.X > xLim) scroll.X = xLim;
+            if (Scroll.Y < 0f) scroll.Y = 0f;
+            if (Scroll.Y > yLim) scroll.Y = yLim;
 
-            for (int i = 0; i < characters.Length; i++)
+            if (map.transOutFrame <= 0f)
             {
-                if (characters[i] != null)
+                particleManager.UpdateParticles(FrameTime, map, characters);
+
+
+                if (gameType == GameType.Solo)
                 {
-                    characters[i].Update(map, particleManager, characters);
-
-                    // set character to null if he is dead
-                    if (characters[i].DyingFrame > 1f)
-                    {
-                        if (characters[i].Name != "")
-                            map.mapScript.Flags.SetFlag(characters[i].Name);     
-          
-                        characters[i] = null;
-                    }                   
+                    if (characters[0] != null)
+                        characters[0].DoInput(0);
                 }
-                  
+
+
+                for (int i = 0; i < characters.Length; i++)
+                {
+                    if (characters[i] != null)
+                    {
+                        characters[i].Update(map, particleManager, characters);
+                        if (characters[i].DyingFrame > 1f)
+                        {
+                            if (characters[i].Team == Character.TEAM_PLAYERS)
+                            {
+                                characters[i].DyingFrame = 1f;
+                            }
+                            else
+                            {
+                                if (characters[i].Name != "")
+                                    map.mapScript.Flags.SetFlag(characters[i].Name);
+                                characters[i] = null;
+                            }
+                        }
+                    }
+                }
             }
-
-            //call map.update() to update fire & smoke particles on torches
-            map.Update(particleManager, characters);
-
-            base.Update(gameTime);
+            if (GamePad.GetState(PlayerIndex.One).Triggers.Left < .2f)
+                map.Update(particleManager, characters);
+            hud.Update();
         }
 
         /// <summary>
@@ -238,7 +375,28 @@ namespace RuinExplorers
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
-        {            
+        {
+            graphics.GraphicsDevice.Clear(Color.Black);
+
+            switch (gameMode)
+            {
+                case GameModes.Playing:
+                    DrawGame();
+                    hud.Draw();
+                    break;
+                case GameModes.Menu:
+                    if (menu.menuMode == Menu.MenuMode.Pause ||
+                        menu.menuMode == Menu.MenuMode.Dead)
+                        DrawGame();
+                    menu.Draw();
+                    break;
+            }
+
+            base.Draw(gameTime);
+        }
+
+        private void DrawGame()
+        {
             graphics.GraphicsDevice.SetRenderTarget(mainTarget);
             graphics.GraphicsDevice.Clear(Color.Black);
             
@@ -298,10 +456,7 @@ namespace RuinExplorers
             }
 
             spriteBatch.End();
-
             #endregion
-           
-            base.Draw(gameTime);
         }
     }
 }

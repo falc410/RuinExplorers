@@ -22,6 +22,14 @@ namespace RuinExplorers.Particles
             this.spriteBatch = spriteBatch;
         }
 
+        public void Reset()
+        {
+            for (int i = 0; i < particles.Length; i++)
+            {
+                particles[i] = null;
+            }
+        }
+
         /// <summary>
         /// Create a new Particle.
         /// </summary>

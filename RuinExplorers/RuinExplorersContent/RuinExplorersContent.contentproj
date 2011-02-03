@@ -54,9 +54,29 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <Name>mapSegments</Name>
     </None>
+    <None Include="data\maps\arena.zmx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>arena</Name>
+    </None>
     <None Include="data\maps\map.dat">
       <Name>map</Name>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\maps\map.zmx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>map</Name>
+    </None>
+    <None Include="data\maps\map2.zmx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>map2</Name>
+    </None>
+    <None Include="data\maps\map3.zmx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>map3</Name>
+    </None>
+    <None Include="data\maps\start.zmx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>start</Name>
     </None>
     <None Include="data\placeholder.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -124,7 +144,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="data\maps\placeholder.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>placeholder</Name>
     </None>
   </ItemGroup>
@@ -218,6 +238,23 @@
   <ItemGroup>
     <Compile Include="gfx\background1.png">
       <Name>background1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="gfx\options.png">
+      <Name>options</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="gfx\pose.png">
+      <Name>pose</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="gfx\posefore.png">
+      <Name>posefore</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

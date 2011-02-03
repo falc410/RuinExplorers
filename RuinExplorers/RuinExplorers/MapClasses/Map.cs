@@ -30,25 +30,34 @@ namespace RuinExplorers.MapClasses
 		Ledge[] ledges;
 		private string path = "mapname";
 
-        public MapScript mapScript;
-        public MapFlags GlobalFlags;
+		public MapScript mapScript;
+		public MapFlags GlobalFlags;
 
-        public int Fog;
-        public float Water;
+		public int Fog;
+		public float Water;
 
-        public Bucket Bucket;
-        
-        protected float previousFrame;
-        protected float frame;
+		public Bucket Bucket;
+		
+		protected float previousFrame;
+		protected float frame;
+
+		public float transInFrame = 0f;
+		public float transOutFrame = 0f;
+
+		public string[] transitionDestination = { "", "", "" };
+
+		public TransitionDirection TransDir;
+
+		private int xSize = 20, ySize = 20;
 
 		const int LAYER_BACK = 0;
-        const int LAYER_MAP = 1;
+		const int LAYER_MAP = 1;
 
-        enum SegmentFlags
-        {
-            None = 0,
-            Torch
-        }
+		enum SegmentFlags
+		{
+			None = 0,
+			Torch
+		}
 
 		#endregion
 
@@ -71,7 +80,7 @@ namespace RuinExplorers.MapClasses
 			{
 				ledges[i] = new Ledge();
 			}
-            GlobalFlags = new MapFlags(64);
+			GlobalFlags = new MapFlags(64);
 
 			ReadSegmentDefinitions();
 		}
@@ -307,67 +316,89 @@ namespace RuinExplorers.MapClasses
 			spriteBatch.End();
 		}
 
-        public void Update(ParticleManager particleManager, Character[] characters)
-        {
-            if (mapScript.IsReading)
-                mapScript.DoScript(characters);
-
-            if (Bucket != null)
+		public void Update(ParticleManager particleManager, Character[] characters)
+		{
+            CheckTransitions(characters);
+            if (transOutFrame > 0f)
             {
-                if (!Bucket.IsEmpty)
-                    Bucket.Update(characters);
-            }
-
-            frame += RuinExplorersMain.FrameTime;
-
-            if (Fog > -1)
-            {
-                if ((int)(previousFrame * 10f) != (int)(frame * 10f))
-                    particleManager.AddParticle(new Fog(RandomGenerator.GetRandomVector2(0f, 1280f, 600f, 1000f)));
-            }
-
-            for (int i = 0; i < 64; i++)
-            {
-                if (mapSegment[LAYER_MAP, i] != null)
+                transOutFrame -= RuinExplorersMain.FrameTime * 3f;
+                if (transOutFrame <= 0)
                 {
-                    if (segDef[mapSegment[LAYER_MAP,i].Index].Flags == (int)SegmentFlags.Torch)
+                    path = transitionDestination[(int)TransDir];
+                    Read();
+                    transInFrame = 1.1f;
+                    for (int i = 0; i < characters.Length; i++)
                     {
-                        particleManager.AddParticle(new Smoke(
-                          mapSegment[LAYER_MAP,i].location * 2f + new Vector2(10f,13f),
-                          RandomGenerator.GetRandomVector2(-50.0f, 50.0f, -300.0f, -200.0f),
-                          1.0f,
-                          0.8f,
-                          0.6f,
-                          1.0f,
-                          RandomGenerator.GetRandomFloat(0.25f, 0.5f),
-                          RandomGenerator.GetRandomInt(0, 4)), true);
-
-                        particleManager.AddParticle(new Fire(
-                            mapSegment[LAYER_MAP, i].location * 2f + new Vector2(10f, 37f),
-                            RandomGenerator.GetRandomVector2(-30.0f, 30.0f, -250.0f, -200.0f),
-                            RandomGenerator.GetRandomFloat(0.25f, 0.75f),
-                            RandomGenerator.GetRandomInt(0, 4)), true);
-
-                        // apparently heat is not the glowing orb I was looking for
-                        particleManager.AddParticle(new Heat(mapSegment[LAYER_MAP, i].location * 2f
-                             + new Vector2(10f, -37f),
-                             RandomGenerator.GetRandomVector2(-50f, 50f, -400f, -300f),
-                             RandomGenerator.GetRandomFloat(1f, 2f)));
+                        characters[i] = null;
                     }
+                    particleManager.Reset();
                 }
             }
 
-            previousFrame = frame;
-        }
+            if (transInFrame > 0f)
+            {
+                transInFrame -= RuinExplorersMain.FrameTime * 3f;
+            }
+
+			if (mapScript.IsReading)
+				mapScript.DoScript(characters);
+
+			if (Bucket != null)
+			{
+				if (!Bucket.IsEmpty)
+					Bucket.Update(characters);
+			}
+
+			frame += RuinExplorersMain.FrameTime;
+
+			if (Fog > -1)
+			{
+				if ((int)(previousFrame * 10f) != (int)(frame * 10f))
+					particleManager.AddParticle(new Fog(RandomGenerator.GetRandomVector2(0f, 1280f, 600f, 1000f)));
+			}
+
+			for (int i = 0; i < 64; i++)
+			{
+				if (mapSegment[LAYER_MAP, i] != null)
+				{
+					if (segDef[mapSegment[LAYER_MAP,i].Index].Flags == (int)SegmentFlags.Torch)
+					{
+						particleManager.AddParticle(new Smoke(
+						  mapSegment[LAYER_MAP,i].location * 2f + new Vector2(10f,13f),
+						  RandomGenerator.GetRandomVector2(-50.0f, 50.0f, -300.0f, -200.0f),
+						  1.0f,
+						  0.8f,
+						  0.6f,
+						  1.0f,
+						  RandomGenerator.GetRandomFloat(0.25f, 0.5f),
+						  RandomGenerator.GetRandomInt(0, 4)), true);
+
+						particleManager.AddParticle(new Fire(
+							mapSegment[LAYER_MAP, i].location * 2f + new Vector2(10f, 37f),
+							RandomGenerator.GetRandomVector2(-30.0f, 30.0f, -250.0f, -200.0f),
+							RandomGenerator.GetRandomFloat(0.25f, 0.75f),
+							RandomGenerator.GetRandomInt(0, 4)), true);
+
+						// apparently heat is not the glowing orb I was looking for
+						particleManager.AddParticle(new Heat(mapSegment[LAYER_MAP, i].location * 2f
+							 + new Vector2(10f, -37f),
+							 RandomGenerator.GetRandomVector2(-50f, 50f, -400f, -300f),
+							 RandomGenerator.GetRandomFloat(1f, 2f)));
+					}
+				}
+			}
+
+			previousFrame = frame;
+		}
 
 		#region Map IO Methods
-        
+		
 		/// <summary>
 		/// Reads the map from file.
 		/// </summary>
 		public void Read()
 		{
-			BinaryReader file = new BinaryReader(File.Open(@"Content/data/maps/" + path + ".dat", FileMode.Open));
+			BinaryReader file = new BinaryReader(File.Open(@"Content/data/maps/" + path + ".zmx", FileMode.Open));
 
 			// read ledge information first
 			for (int i = 0; i < ledges.Length; i++)
@@ -408,27 +439,27 @@ namespace RuinExplorers.MapClasses
 				}
 			}
 
-            mapScript = new MapScript(this);
-            for (int i = 0; i < mapScript.Lines.Length; i++)
-            {
-                String s = file.ReadString();
-                if (s.Length > 0)
-                    mapScript.Lines[i] = new MapScriptLine(s);
-                else
-                    mapScript.Lines[i] = null;
-            }
+			mapScript = new MapScript(this);
+			for (int i = 0; i < mapScript.Lines.Length; i++)
+			{
+				String s = file.ReadString();
+				if (s.Length > 0)
+					mapScript.Lines[i] = new MapScriptLine(s);
+				else
+					mapScript.Lines[i] = null;
+			}
 
 			file.Close();
 
-            // turn off fog by default and start reading MapScript
-            // if we find the init tag in the first line we process
-            // the rest of the script in the update method
-            Bucket = null;
-            Water = 0f;
-            Fog = -1;
+			// turn off fog by default and start reading MapScript
+			// if we find the init tag in the first line we process
+			// the rest of the script in the update method
+			Bucket = null;
+			Water = 0f;
+			Fog = -1;
 
-            if (mapScript.GotoTag("init"))
-                mapScript.IsReading = true;
+			if (mapScript.GotoTag("init"))
+				mapScript.IsReading = true;
 		}
 		#endregion
 
@@ -441,26 +472,72 @@ namespace RuinExplorers.MapClasses
 			return 1280 - RuinExplorersMain.ScreenSize.Y;
 		}
 
-        public bool CheckParticleCollision(Vector2 location)
-        {
-            if (CheckCollision(location))
-                return true;
+		public bool CheckParticleCollision(Vector2 location)
+		{
+			if (CheckCollision(location))
+				return true;
 
-            for (int i = 0; i < 16; i++)
-            {
-                if (ledges[i].TotalNodes > 1)
-                {
-                    if (ledges[i].isHardLedge == 1)
-                    {
-                        int s = GetLedgeSection(i, location.X);
+			for (int i = 0; i < 16; i++)
+			{
+				if (ledges[i].TotalNodes > 1)
+				{
+					if (ledges[i].isHardLedge == 1)
+					{
+						int s = GetLedgeSection(i, location.X);
 
-                        if (s > 1)
-                            if (GetLedgeYLocation(i, s, location.X) < location.Y)
-                                return true;
-                    }
-                }
-            }
-            return false; 
-        }
+						if (s > 1)
+							if (GetLedgeYLocation(i, s, location.X) < location.Y)
+								return true;
+					}
+				}
+			}
+			return false; 
+		}
+
+		#region Transition Related
+		
+		public float GetTransitionValue()
+		{
+			if (transInFrame > 0f)
+				return transInFrame;
+			if (transOutFrame > 0f)
+				return 1 - transOutFrame;
+
+			return 0f;
+		}
+
+		public void CheckTransitions(Character[] characters)
+		{
+			if (transOutFrame <= 0f && transInFrame <= 0f)
+			{
+				if (characters[0].DyingFrame > 0f)
+					return;
+
+				if (characters[0].Location.X > (float)xSize * 64f - 32f &&
+					characters[0].Trajectory.X > 0f &&
+					characters[0].keyRight && characters[0].AnimationName == "run")
+				{
+					if (transitionDestination[(int)TransitionDirection.Right]
+						!= "")
+					{
+						transOutFrame = 1f;
+						TransDir = TransitionDirection.Right;
+					}
+				}
+				if (characters[0].Location.X < 0f + 32f &&
+					characters[0].Trajectory.X < 0f &&
+					characters[0].keyLeft && characters[0].AnimationName == "run")
+				{
+					if (transitionDestination[(int)TransitionDirection.Left]
+						   != "")
+					{
+						transOutFrame = 1f;
+						TransDir = TransitionDirection.Left;
+					}
+				}
+			}
+		}
+
+		#endregion
 	}
 }

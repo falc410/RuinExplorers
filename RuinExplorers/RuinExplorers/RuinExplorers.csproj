@@ -123,9 +123,12 @@
     <Compile Include="CharacterClasses\PressedKeys.cs" />
     <Compile Include="CharacterClasses\Script.cs" />
     <Compile Include="CharacterClasses\ScriptLine.cs" />
+    <Compile Include="GUI\Menu.cs" />
     <Compile Include="Helpers\GlobalFunctions.cs" />
     <Compile Include="Helpers\Log.cs" />
     <Compile Include="Helpers\StringHelper.cs" />
+    <Compile Include="GUI\HUD.cs" />
+    <Compile Include="GUI\ScoreDraw.cs" />
     <Compile Include="MapClasses\Bucket.cs" />
     <Compile Include="MapClasses\BucketItem.cs" />
     <Compile Include="MapClasses\Ledge.cs" />
@@ -136,6 +139,7 @@
     <Compile Include="MapClasses\MapSegment.cs" />
     <Compile Include="MapClasses\ScriptCommands.cs" />
     <Compile Include="MapClasses\SegmentDefinitions.cs" />
+    <Compile Include="MapClasses\TransitionDirection.cs" />
     <Compile Include="Particles\Blood.cs" />
     <Compile Include="Particles\BloodDust.cs" />
     <Compile Include="Particles\Bullet.cs" />

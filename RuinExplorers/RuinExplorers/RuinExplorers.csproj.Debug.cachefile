@@ -21,6 +21,9 @@ Content\gfx\legs2.xnb
 Content\gfx\torso2.xnb
 Content\gfx\background1.xnb
 Content\gfx\sprites.xnb
+Content\gfx\options.xnb
+Content\gfx\pose.xnb
+Content\gfx\posefore.xnb
 Content\sfx\audioproject.xgs
 Content\sfx\sfxwavs.xwb
 Content\sfx\musicwavs.xwb
@@ -28,9 +31,14 @@ Content\sfx\sfxsounds.xsb
 Content\sfx\musicsounds.xsb
 Content\gfx\head1.png
 Content\data\characters\zombie.dat
+Content\data\maps\arena.zmx
+Content\data\maps\map.dat
+Content\data\maps\map.zmx
+Content\data\maps\map2.zmx
+Content\data\maps\map3.zmx
+Content\data\maps\start.zmx
+Content\data\maps\placeholder.txt
 Content\data\characters\player.dat
 Content\data\mapSegments.dat
-Content\data\maps\map.dat
 Content\data\placeholder.txt
 Content\data\characters\placeholder.txt
-Content\data\maps\placeholder.txt
