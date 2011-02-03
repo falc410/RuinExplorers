@@ -7,7 +7,7 @@ using System.IO;
 namespace RuinExplorers.CharacterClasses
 {
     /// <summary>
-    /// Deinfes a character. 
+    /// Defines a character. 
     /// A character consists of an array of Frames[512] (each made up out of parts) 
     /// and another array of animations[64] (each made up out of keyFrames which in fact are frames + duration)
     /// Requires a previously created character data from the editor.
@@ -22,8 +22,8 @@ namespace RuinExplorers.CharacterClasses
         public int TorsoIndex;
         public int LegsIndex;
         public int WeaponIndex;
+        public int CharType;
 
-        public CharacterType CharType = CharacterType.Player1;
         #region Constructor
 
         /// <summary>
@@ -32,22 +32,31 @@ namespace RuinExplorers.CharacterClasses
         /// all fields
         /// </summary>
         /// <param name="path">The path.</param>
-        public CharacterDefinition(string path)
+        public CharacterDefinition(String loadPath, CharacterType type)
+        {
+            Reset();
+            Path = loadPath;
+            Read();
+            CharType = (int)type;
+        }
+
+        public CharacterDefinition()
+        {
+            Reset();
+        }
+
+        private void Reset()
         {
             animations = new Animation[64];
             for (int i = 0; i < animations.Length; i++)
-            {
                 animations[i] = new Animation();
-            }
             frames = new Frame[512];
             for (int i = 0; i < frames.Length; i++)
-            {
                 frames[i] = new Frame();
-            }
 
-            Path = path;
-            Read();
+            Path = "char";
         }
+
         #endregion
         #region Properties
 

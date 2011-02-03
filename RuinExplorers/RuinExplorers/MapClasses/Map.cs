@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using RuinExplorers.Particles;
 using RuinExplorers.Helpers;
+using RuinExplorers.CharacterClasses;
 
 namespace RuinExplorers.MapClasses
 {
@@ -28,6 +29,17 @@ namespace RuinExplorers.MapClasses
 		int[,] colisionGrid;
 		Ledge[] ledges;
 		private string path = "mapname";
+
+        public MapScript mapScript;
+        public MapFlags GlobalFlags;
+
+        public int Fog;
+        public float Water;
+
+        public Bucket Bucket;
+        
+        protected float previousFrame;
+        protected float frame;
 
 		const int LAYER_BACK = 0;
         const int LAYER_MAP = 1;
@@ -59,6 +71,8 @@ namespace RuinExplorers.MapClasses
 			{
 				ledges[i] = new Ledge();
 			}
+            GlobalFlags = new MapFlags(64);
+
 			ReadSegmentDefinitions();
 		}
 		#endregion
@@ -293,8 +307,25 @@ namespace RuinExplorers.MapClasses
 			spriteBatch.End();
 		}
 
-        public void Update(ParticleManager particleManager)
+        public void Update(ParticleManager particleManager, Character[] characters)
         {
+            if (mapScript.IsReading)
+                mapScript.DoScript(characters);
+
+            if (Bucket != null)
+            {
+                if (!Bucket.IsEmpty)
+                    Bucket.Update(characters);
+            }
+
+            frame += RuinExplorersMain.FrameTime;
+
+            if (Fog > -1)
+            {
+                if ((int)(previousFrame * 10f) != (int)(frame * 10f))
+                    particleManager.AddParticle(new Fog(RandomGenerator.GetRandomVector2(0f, 1280f, 600f, 1000f)));
+            }
+
             for (int i = 0; i < 64; i++)
             {
                 if (mapSegment[LAYER_MAP, i] != null)
@@ -318,65 +349,19 @@ namespace RuinExplorers.MapClasses
                             RandomGenerator.GetRandomInt(0, 4)), true);
 
                         // apparently heat is not the glowing orb I was looking for
-                        //particleManager.AddParticle(new Heat(mapSegment[LAYER_MAP, i].location * 2f
-                        //     + new Vector2(10f, -50f),
-                        //     RandomGenerator.GetRandomVector2(-50f, 50f, -400f, -300f),
-                        //     RandomGenerator.GetRandomFloat(1f, 2f)));
+                        particleManager.AddParticle(new Heat(mapSegment[LAYER_MAP, i].location * 2f
+                             + new Vector2(10f, -37f),
+                             RandomGenerator.GetRandomVector2(-50f, 50f, -400f, -300f),
+                             RandomGenerator.GetRandomFloat(1f, 2f)));
                     }
                 }
             }
+
+            previousFrame = frame;
         }
 
 		#region Map IO Methods
-
-		/// <summary>
-		/// Writes the map to disk. Not used in the live engine - only for editor!
-		/// might want to delete this in the future from here.
-		/// </summary>
-		public void Write()
-		{
-			BinaryWriter file = new BinaryWriter(File.Open(@"Content/data/" + path + ".dat", FileMode.Create));
-
-			//Write all information about our map in binary to file
-			// start with ledges information
-			for (int i = 0; i < ledges.Length; i++)
-			{               
-			file.Write(ledges[i].TotalNodes);
-			for (int n = 0; n < ledges[i].TotalNodes; n++)
-			{
-				file.Write(ledges[i].Nodes[n].X);
-				file.Write(ledges[i].Nodes[n].Y);
-			}
-			file.Write(ledges[i].isHardLedge);
-	   
-			}
-			// write layer / segment informatoin
-			for (int l = 0; l < 3; l++)
-			{
-				for (int i = 0; i < 64; i++)
-				{
-					if (mapSegment[l, i] == null)
-						file.Write(-1);
-					else
-					{
-						file.Write(mapSegment[l, i].Index);
-						file.Write(mapSegment[l, i].location.X);
-						file.Write(mapSegment[l, i].location.Y);
-					}
-				}
-			}
-			// write collision grid information
-			for (int x = 0; x < 20; x++)
-			{
-				for (int y = 0; y < 20; y++)
-				{
-					file.Write(colisionGrid[x, y]);
-				}
-			}
-
-			file.Close();
-		}
-
+        
 		/// <summary>
 		/// Reads the map from file.
 		/// </summary>
@@ -422,7 +407,28 @@ namespace RuinExplorers.MapClasses
 					colisionGrid[x, y] = file.ReadInt32();
 				}
 			}
+
+            mapScript = new MapScript(this);
+            for (int i = 0; i < mapScript.Lines.Length; i++)
+            {
+                String s = file.ReadString();
+                if (s.Length > 0)
+                    mapScript.Lines[i] = new MapScriptLine(s);
+                else
+                    mapScript.Lines[i] = null;
+            }
+
 			file.Close();
+
+            // turn off fog by default and start reading MapScript
+            // if we find the init tag in the first line we process
+            // the rest of the script in the update method
+            Bucket = null;
+            Water = 0f;
+            Fog = -1;
+
+            if (mapScript.GotoTag("init"))
+                mapScript.IsReading = true;
 		}
 		#endregion
 

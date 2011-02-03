@@ -39,15 +39,20 @@ namespace RuinExplorers
 
         Texture2D[] mapTexture = new Texture2D[1];
         Texture2D[] mapBackgroundTexture = new Texture2D[1];
-        Character[] character = new Character[16];
+        Character[] characters = new Character[16];
     
-        CharacterDefinition[] characterDefinition = new CharacterDefinition[16];
+        static CharacterDefinition[] characterDefinitions = new CharacterDefinition[16];
 
         Texture2D spritesTexture;
         ParticleManager particleManager;
 
         #endregion
         #region Properties
+
+        public static CharacterDefinition[] CharacterDefinitions
+        {
+            get { return characterDefinitions; }
+        }
 
         public static float FrameTime
         {
@@ -108,22 +113,17 @@ namespace RuinExplorers
             map.Path = "map";
             map.Read();
 
-            characterDefinition[(int)CharacterType.Player1] = new CharacterDefinition("player");
-            characterDefinition[(int)CharacterType.Enemy] = new CharacterDefinition("zombie");
+            characterDefinitions[(int)CharacterType.Player1] = new CharacterDefinition("player",CharacterType.Player1);
+            characterDefinitions[(int)CharacterType.Zombie] = new CharacterDefinition("zombie",CharacterType.Zombie);
 
-            character[0] = new Character(new Vector2(100f, 100f), characterDefinition[(int)CharacterType.Player1],0,Character.TEAM_PLAYERS);
-            character[0].map = map;
-            character[0].HP = character[0].MHP = 100;
-
-            for (int i = 1; i < 3; i++)
-            {
-                character[i] = new Character(new Vector2((float)i * 200f, 100f),
-                    characterDefinition[(int)CharacterType.Enemy], i, Character.TEAM_NPC);
-                character[i].map = map;
-            }
+            characters[0] = new Character(new Vector2(100f, 100f), characterDefinitions[(int)CharacterType.Player1],0,Character.TEAM_PLAYERS);
+            characters[0].map = map;
+            characters[0].HP = characters[0].MHP = 100;            
 
             Sound.Initialize();
             Music.Initialize();
+
+            QuakeManager.Init();
 
             base.Initialize();  
         }
@@ -144,7 +144,7 @@ namespace RuinExplorers
             particleManager = new ParticleManager(spriteBatch);
             spritesTexture = Content.Load<Texture2D>(@"gfx/sprites");
 
-            character[0].particleManager = particleManager;
+            characters[0].particleManager = particleManager;
 
             for (int i = 0; i < mapTexture.Length; i++)
                 mapTexture[i] = Content.Load<Texture2D>(@"gfx/segments" + (i + 1).ToString());
@@ -187,9 +187,9 @@ namespace RuinExplorers
                 frameTime /= 10f;
             }           
             
-            if (character[0] != null)
+            if (characters[0] != null)
             {
-                scroll += ((character[0].Location - new Vector2(400f, 400f)) - scroll) * frameTime * 20f;               
+                scroll += ((characters[0].Location - new Vector2(400f, 400f)) - scroll) * frameTime * 20f;               
             }
 
             // added for rumble
@@ -204,23 +204,31 @@ namespace RuinExplorers
             if (scroll.Y > yLim) scroll.Y = yLim;
             
 
-            particleManager.UpdateParticles(frameTime, map, character);
-            if(character[0] != null)
-                character[0].DoInput(0);
+            particleManager.UpdateParticles(frameTime, map, characters);
 
-            for (int i = 0; i < character.Length; i++)
+            if(characters[0] != null)
+                characters[0].DoInput(0);
+
+            for (int i = 0; i < characters.Length; i++)
             {
-                if (character[i] != null)
+                if (characters[i] != null)
                 {
-                    character[i].Update(map, particleManager, character);
-                    if (character[i].DyingFrame > 1f)
-                        character[i] = null;
+                    characters[i].Update(map, particleManager, characters);
+
+                    // set character to null if he is dead
+                    if (characters[i].DyingFrame > 1f)
+                    {
+                        if (characters[i].Name != "")
+                            map.mapScript.Flags.SetFlag(characters[i].Name);     
+          
+                        characters[i] = null;
+                    }                   
                 }
                   
             }
 
             //call map.update() to update fire & smoke particles on torches
-            map.Update(particleManager);
+            map.Update(particleManager, characters);
 
             base.Update(gameTime);
         }
@@ -230,8 +238,7 @@ namespace RuinExplorers
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
-        {
-            graphics.GraphicsDevice.Clear(Color.Black);
+        {            
             graphics.GraphicsDevice.SetRenderTarget(mainTarget);
             graphics.GraphicsDevice.Clear(Color.Black);
             
@@ -241,11 +248,11 @@ namespace RuinExplorers
             // next draw the background particles
             particleManager.DrawParticles(spritesTexture, true);
 
-            // next draw the character(s)           
-            for (int i = 0; i < character.Length; i++)
+            // next draw the characters(s)           
+            for (int i = 0; i < characters.Length; i++)
             {
-                if (character[i] != null)
-                    character[i].Draw(spriteBatch);
+                if (characters[i] != null)
+                    characters[i].Draw(spriteBatch);
             }
 
             // draw other particles
@@ -259,7 +266,7 @@ namespace RuinExplorers
             graphics.GraphicsDevice.SetRenderTarget(null);
 
             // again I'm not sure if the blendstate does have a visiual impact on the rendertarget
-            spriteBatch.Begin();            
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque);            
 
             spriteBatch.Draw(mainTarget, new Vector2(), Color.White);
 
@@ -268,8 +275,9 @@ namespace RuinExplorers
             ///*
             // * Draw our blast effect, which we set up in chapter 8.
             // */
-
-            spriteBatch.Begin(SpriteSortMode.Deferred,BlendState.NonPremultiplied);
+            // use this spriteBatch call to just have a screen shake without the flash
+            // spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);            
+            spriteBatch.Begin();
 
             if (QuakeManager.Blast.Value > 0f)
             {

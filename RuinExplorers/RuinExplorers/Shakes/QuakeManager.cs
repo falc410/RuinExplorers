@@ -12,7 +12,7 @@ namespace RuinExplorers.Shakes
         public static Quake Quake;
         public static Blast Blast;
 
-        static QuakeManager()
+        public static void Init()
         {
             Quake = new Quake();
             Blast = new Blast();

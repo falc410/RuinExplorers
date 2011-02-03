@@ -82,6 +82,7 @@ namespace RuinExplorers.CharacterClasses
         private CharacterDefinition characterDefinition;
         public int ID;
         public int Team;
+        public String Name = "";
 
         float frame = 0f;
         int ledgeAttach = -1;
