@@ -92,6 +92,31 @@
       <Importer>XactImporter</Importer>
       <Processor>XactProcessor</Processor>
     </Compile>
+    <Compile Include="fx\negative.fx">
+      <Name>negative</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="fx\pause.fx">
+      <Name>pause</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="fx\bloom.fx">
+      <Name>bloom</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="fx\filter.fx">
+      <Name>filter</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="fx\water.fx">
+      <Name>water</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gfx\1x1.bmp">

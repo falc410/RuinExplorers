@@ -345,6 +345,25 @@ namespace RuinExplorers.GUI
                 transType = Trans.Buttons;
         }
 
+        public void Pause()
+        {
+
+            menuMode = MenuMode.Pause;
+            RuinExplorersMain.GameMode = RuinExplorersMain.GameModes.Menu;
+
+            transFrame = 1f;
+            level = Level.Main;
+            transType = Trans.All;
+        }
+
+        public void EndGame()
+        {
+            transFrame = 1f;
+            transType = Trans.All;
+            level = Level.Main;
+            RuinExplorersMain.GameMode = RuinExplorersMain.GameModes.Menu;
+        }
+
         private float GetAlpha(bool buttons)
         {
             if (!buttons && transType == Trans.Buttons)

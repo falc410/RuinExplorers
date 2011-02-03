@@ -34,7 +34,7 @@ namespace RuinExplorers.MapClasses
 		public MapFlags GlobalFlags;
 
 		public int Fog;
-		public float Water;
+		public float Water = 0f;
 
 		public Bucket Bucket;
 		
@@ -52,6 +52,7 @@ namespace RuinExplorers.MapClasses
 
 		const int LAYER_BACK = 0;
 		const int LAYER_MAP = 1;
+        const int LAYER_FORE = 2;
 
 		enum SegmentFlags
 		{

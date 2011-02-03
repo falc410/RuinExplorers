@@ -24,6 +24,11 @@ Content\gfx\sprites.xnb
 Content\gfx\options.xnb
 Content\gfx\pose.xnb
 Content\gfx\posefore.xnb
+Content\fx\negative.xnb
+Content\fx\pause.xnb
+Content\fx\bloom.xnb
+Content\fx\filter.xnb
+Content\fx\water.xnb
 Content\sfx\audioproject.xgs
 Content\sfx\sfxwavs.xwb
 Content\sfx\musicwavs.xwb

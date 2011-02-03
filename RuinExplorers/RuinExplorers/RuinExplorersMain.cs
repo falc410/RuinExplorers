@@ -40,7 +40,23 @@ namespace RuinExplorers
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         RenderTarget2D mainTarget;
-       
+        RenderTarget2D gameTarget;
+        RenderTarget2D[] bloomTarget;
+        RenderTarget2D waterTarget;
+        RenderTarget2D refractTarget;
+
+        Effect filterEffect;
+        Effect negEffect;
+        Effect pauseEffect;
+        Effect bloomEffect;
+        Effect waterEffect;
+
+        float[] bloomPulse = { 0f, 0f };
+        bool hasBloom = false;
+
+        float waterDelta = 0f;
+        float waterTheta = 0f;
+
         private static float frameTime = 0f;
         private static Vector2 scroll;
         private const float friction = 1000f;
@@ -160,7 +176,10 @@ namespace RuinExplorers
 
             QuakeManager.Init();
 
-            base.Initialize();  
+            base.Initialize();
+
+            // override menu for debugging!
+            //NewGame();
         }
 
         /// <summary>
@@ -174,7 +193,20 @@ namespace RuinExplorers
                         
             // not sure if there is a visible difference with these two constructors
             mainTarget = new RenderTarget2D(GraphicsDevice, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight, true, SurfaceFormat.Color, DepthFormat.Depth24);
+            gameTarget = new RenderTarget2D(GraphicsDevice, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight, true, SurfaceFormat.Color, DepthFormat.Depth24);
+            refractTarget = new RenderTarget2D(GraphicsDevice, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight, true, SurfaceFormat.Color, DepthFormat.Depth24);
             //mainTarget = new RenderTarget2D(GraphicsDevice, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+
+            bloomTarget = new RenderTarget2D[2];
+            bloomTarget[0] = new RenderTarget2D(GraphicsDevice, 128, 128, true, SurfaceFormat.Color, DepthFormat.Depth24);
+            bloomTarget[1] = new RenderTarget2D(GraphicsDevice, 256, 256, true, SurfaceFormat.Color, DepthFormat.Depth24);
+            waterTarget = new RenderTarget2D(GraphicsDevice, 256, 256, true, SurfaceFormat.Color, DepthFormat.Depth24);
+
+            filterEffect = Content.Load<Effect>(@"fx/filter");
+            pauseEffect = Content.Load<Effect>(@"fx/pause");
+            negEffect = Content.Load<Effect>(@"fx/negative");
+            bloomEffect = Content.Load<Effect>(@"fx/bloom");
+            waterEffect = Content.Load<Effect>(@"fx/water");
 
             particleManager = new ParticleManager(spriteBatch);
             spritesTexture = Content.Load<Texture2D>(@"gfx/sprites");
@@ -311,21 +343,21 @@ namespace RuinExplorers
 
             Scroll += QuakeManager.Quake.Vector;
 
-            //bloomPulse[0] += FrameTime * .5f;
-            //bloomPulse[1] += FrameTime * .9f;
-            //for (int i = 0; i < bloomPulse.Length; i++)
-            //    if (bloomPulse[i] > 6.28f) bloomPulse[i] -= 6.28f;
+            bloomPulse[0] += FrameTime * .5f;
+            bloomPulse[1] += FrameTime * .9f;
+            for (int i = 0; i < bloomPulse.Length; i++)
+                if (bloomPulse[i] > 6.28f) bloomPulse[i] -= 6.28f;
 
             float xLim = map.GetXLim();
             float yLim = map.GetYLim();
 
 
-            //waterDelta += FrameTime * 8f;
-            //waterTheta += FrameTime * 10f;
-            //if (waterDelta > 6.28f)
-            //    waterDelta -= 6.28f;
-            //if (waterTheta > 6.28f)
-            //    waterTheta -= 6.28f;
+            waterDelta += FrameTime * 8f;
+            waterTheta += FrameTime * 10f;
+            if (waterDelta > 6.28f)
+                waterDelta -= 6.28f;
+            if (waterTheta > 6.28f)
+                waterTheta -= 6.28f;
 
             if (Scroll.X < 0f) scroll.X = 0f;
             if (Scroll.X > xLim) scroll.X = xLim;
@@ -416,25 +448,146 @@ namespace RuinExplorers
             // draw other particles
             particleManager.DrawParticles(spritesTexture, false);
 
-            // finally draw the foreground layer
-            map.Draw(spriteBatch, mapTexture, mapBackgroundTexture, 2, 3);           
+            // Draw our refract Particles to refractTarget
+            graphics.GraphicsDevice.SetRenderTarget(refractTarget);
+            graphics.GraphicsDevice.Clear(Color.Black);
+            particleManager.DrawRefractParticles(spritesTexture);
+
+            #region Water Effect
             
-            #region Screen Shake Effect
+            /*
+            * Set up our water texture. 
+            */
+            //EffectPass pass;
+
+            float waterLevel = map.Water - (.2f * ScreenSize.Y);
+            if (map.Water > 0f)
+            {
+                graphics.GraphicsDevice.SetRenderTarget(waterTarget);
+
+                float wLev = (ScreenSize.Y / 2f + waterLevel - Scroll.Y) / ScreenSize.Y;
+
+                waterEffect.Parameters["delta"].SetValue(waterDelta);
+                waterEffect.Parameters["theta"].SetValue(waterTheta);
+                waterEffect.Parameters["horizon"].SetValue(wLev);
+
+                //waterEffect.CurrentTechnique.Passes[0].Apply();
+                waterEffect.CurrentTechnique = waterEffect.Techniques["WaterTechnique"];
+                
+                spriteBatch.Begin(0, BlendState.Opaque, null,null,null,waterEffect);
+                spriteBatch.Draw(mainTarget, new Rectangle(0, 0, 256, 256), Color.White);
+                spriteBatch.End();
+             
+            }
+
+            #endregion
+
+            #region gameTarget / mainTarget
+            
+            /*
+             * Switch to gameTarget and draw our mainTarget with refraction and
+             * color filter effects as well as water and bloom overlay.
+             */
+
+            graphics.GraphicsDevice.SetRenderTarget(gameTarget);
+
+            if (gameMode == GameModes.Menu)
+            {
+                pauseEffect.CurrentTechnique = pauseEffect.Techniques["PauseTechnique"]; 
+                spriteBatch.Begin(0, BlendState.Opaque,null,null,null,pauseEffect);                               
+                spriteBatch.Draw(mainTarget, new Vector2(), Color.White);                
+                spriteBatch.End();
+              
+            }
+            else
+            {
+                graphics.GraphicsDevice.Textures[1] = refractTarget;
+                filterEffect.Parameters["burn"].SetValue(.15f);
+
+                filterEffect.Parameters["saturation"].SetValue(0.5f);
+                filterEffect.Parameters["r"].SetValue(1.0f);
+                filterEffect.Parameters["g"].SetValue(0.98f);
+                filterEffect.Parameters["b"].SetValue(0.85f);
+                filterEffect.Parameters["brite"].SetValue(0.05f);
+
+
+                filterEffect.CurrentTechnique = filterEffect.Techniques["FilterTechnique"];
+                spriteBatch.Begin(0, BlendState.Opaque,null,null,null,filterEffect);                
+                spriteBatch.Draw(mainTarget, new Vector2(), Color.White);                
+                spriteBatch.End();
+                
+
+                graphics.GraphicsDevice.Textures[1] = null;
+
+                if (map.Water > 0f)
+                {
+                    spriteBatch.Begin();
+
+                    spriteBatch.Draw(waterTarget, new Rectangle(0,
+                        (int)(waterLevel - Scroll.Y),
+                        (int)ScreenSize.X, (int)ScreenSize.Y), Color.White);
+
+                    spriteBatch.End();
+
+                }
+
+                // draw our foreground layer
+                map.Draw(spriteBatch, mapTexture, mapBackgroundTexture, 2, 3);
+
+                if (hasBloom)
+                {
+                    spriteBatch.Begin(SpriteSortMode.Deferred,BlendState.Additive);
+
+                    for (int i = 0; i < 2; i++)
+                        spriteBatch.Draw(bloomTarget[i],
+                        new Rectangle(0, 0, (int)ScreenSize.X,
+                        (int)ScreenSize.Y), Color.White);
+
+                    spriteBatch.End();
+
+                }
+            }
+
+            #endregion
+
+            #region Bloom Effect
+
+            /*
+             * Set up the bloom surfaces with our current scene.  Since we're
+             * using an already-bloomed scene to create bloom, we end up with a
+             * sort of feedback that gives us a nice haze effect.
+             */
+            for (int i = 0; i < 2; i++)
+            {
+                hasBloom = true;
+                graphics.GraphicsDevice.SetRenderTarget(bloomTarget[i]);
+
+                bloomEffect.Parameters["a"].SetValue(.25f);
+                bloomEffect.Parameters["v"].SetValue((float)(i + 1) * 0.01f *
+                    ((float)Math.Cos((double)bloomPulse[i]) * .25f + 0.7f));
+                bloomEffect.CurrentTechnique = bloomEffect.Techniques["BloomTechnique"];
+                spriteBatch.Begin(0, BlendState.Opaque,null,null,null,bloomEffect);
+                spriteBatch.Draw(gameTarget, new Rectangle(0, 0, 128 * (i + 1), 128 * (i + 1)),
+                    Color.White);                
+                spriteBatch.End();                
+            }
+
+            #endregion
+
+            /*
+             * Render back the gameTarget to backbuffer.
+             */
 
             graphics.GraphicsDevice.SetRenderTarget(null);
 
-            // again I'm not sure if the blendstate does have a visiual impact on the rendertarget
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque);            
+            spriteBatch.Begin(SpriteSortMode.Deferred,BlendState.Opaque);
 
-            spriteBatch.Draw(mainTarget, new Vector2(), Color.White);
+            spriteBatch.Draw(gameTarget, new Vector2(), Color.White);
 
-            spriteBatch.End();
-
-            ///*
-            // * Draw our blast effect, which we set up in chapter 8.
-            // */
-            // use this spriteBatch call to just have a screen shake without the flash
-            // spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);            
+            spriteBatch.End();          
+            
+            #region Screen Shake Effect
+      
             spriteBatch.Begin();
 
             if (QuakeManager.Blast.Value > 0f)
@@ -458,5 +611,6 @@ namespace RuinExplorers
             spriteBatch.End();
             #endregion
         }
+
     }
 }

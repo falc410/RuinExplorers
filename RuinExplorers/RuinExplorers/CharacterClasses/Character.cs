@@ -1058,6 +1058,13 @@ namespace RuinExplorers.CharacterClasses
             if ((currentGamepadState.Buttons.B == ButtonState.Pressed &&
                 previousGamepadState.Buttons.B == ButtonState.Released) || currentKeyboardState.IsKeyDown(Keys.C))
                 keySecondary = true;
+
+            if ((currentGamepadState.Buttons.Start == ButtonState.Pressed &&
+                previousGamepadState.Buttons.Start == ButtonState.Released) ||
+                currentKeyboardState.IsKeyDown(Keys.Escape))
+            {
+                RuinExplorersMain.Menu.Pause();
+            }
                         
             previousGamepadState = currentGamepadState;            
         }
