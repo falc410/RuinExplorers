@@ -25,9 +25,8 @@ namespace CharacterEditorWindows
 
 		#region Variable Declartion
 				
-		ContentManager Content;		
-		SpriteBatch spriteBatch;
-		Stopwatch timer;
+		ContentManager Content;
+        SpriteBatch spriteBatch;	
         SpriteFont font;
         Text text;
         
@@ -57,7 +56,16 @@ namespace CharacterEditorWindows
 		int currentKeyFrame = 0;
         float currentFrame = 0;
 		bool playing = false;
-        
+
+        Timer timer;
+        TimeSpan accumulatedTime;
+        TimeSpan lastTime;
+        Stopwatch stopWatch;
+        TimeSpan TargetElapsedTime;
+        TimeSpan MaxElapsedTime;
+
+        bool updated = false;
+
 		#endregion
 
         #region Triggers
@@ -192,8 +200,16 @@ namespace CharacterEditorWindows
             font = Content.Load<SpriteFont>(@"Fonts/Arial");
             text = new Text(spriteBatch, font);
 
+            stopWatch = Stopwatch.StartNew();
 
-			timer = Stopwatch.StartNew();           
+            // I did test different values but / 120 equals to about 64 FPS on my laptop - tested with fraps
+            TargetElapsedTime = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / 120);
+            MaxElapsedTime = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / 10);
+            
+            timer = new Timer();
+            timer.Interval = (int)TargetElapsedTime.TotalMilliseconds;
+            timer.Tick += Tick;
+            timer.Start();
 
 			LoadTextures(legsTexture, @"gfx/legs");
 			LoadTextures(headTexture, @"gfx/head");
@@ -210,9 +226,39 @@ namespace CharacterEditorWindows
 
             characterDefinition = new CharacterDefinition();           
 
+            // not needed anymore since we have a new timer
 			// Hook the idle event to constantly redraw our animation.
-			Application.Idle += delegate { Invalidate(); };						
+			//Application.Idle += delegate { Invalidate(); };						
 		}
+
+        void Tick(object sender, EventArgs e)
+        {
+            TimeSpan currentTime = stopWatch.Elapsed;
+            TimeSpan elapsedTime = currentTime - lastTime;
+            lastTime = currentTime;
+
+            if (elapsedTime > MaxElapsedTime)
+            {
+                elapsedTime = MaxElapsedTime;
+            }
+
+            accumulatedTime += elapsedTime;
+
+            //
+
+            while (accumulatedTime >= TargetElapsedTime)
+            {
+                Update();                
+
+                accumulatedTime -= TargetElapsedTime;
+                updated = true;
+            }
+
+            if (updated)
+            {
+                Invalidate();
+            }
+        }
 
         protected override void Dispose(bool disposing)
         {
@@ -272,25 +318,25 @@ namespace CharacterEditorWindows
 			DrawCharacter(new Vector2(300f, 100f), 0.5f, FACE_RIGHT, fref, true, 1.0f);		
 
             // update preview animation
-            // TODO: NOT WORKING!
+            // Not quite right yet, even with the new timer
             if (playing)
-            {               
-                currentFrame += (float)timer.Elapsed.TotalSeconds;
+            {  
+                // old setting
+                //currentFrame += (float)stopWatch.Elapsed.TotalSeconds;
+                // the new timer should call the draw method about 60 times per second
+                currentFrame++;
 
                 // Switch to next KeyFrame if our Elapsed Time is higher then the Duration                   
                 if (currentFrame > characterDefinition.Animations[selectedAnimation].KeyFrames[selectedKeyFrame].Duration)
                 {
-                    // Reset our Timer
                     currentFrame = 0;
-                    timer.Restart();
                     // Draw next KeyFrame
                     currentKeyFrame++;
 
                     // Did we reach the end or our Animation? Then reset keyFrame and timer and start again
                     if (currentKeyFrame >= characterDefinition.Animations[selectedAnimation].KeyFrames.Length)
                     {                        
-                        currentFrame = 0;
-                        timer.Restart();
+                        currentFrame = 0;                       
 
                         currentKeyFrame = 0;
                     }
